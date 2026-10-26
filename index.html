@@ -30,7 +30,7 @@
         .botao-sair:hover { background: #e5e7eb; }
         .area-chat { min-height: 200px; max-height: 300px; overflow-y: auto; }
         
-        /* VÍDEO SOZINHO — SEM TEXTO EM CIMA */
+        /* VÍDEO SOZINHO */
         .secao-video {
             width: 100%;
             background: #000;
@@ -45,14 +45,7 @@
 </head>
 <body class="bg-sky-50 min-h-screen font-sans">
 
-<!-- 🎬 SÓ O VÍDEO — NADA EM CIMA, NADA ATRÁS -->
-<section class="secao-video">
-    <video src="videos/SerginhoGoku.mp4" controls playsinline>
-        Seu navegador não suporta vídeo.
-    </video>
-</section>
-
-<!-- 📝 INFORMAÇÕES DO EVENTO — ABAIXO DO VÍDEO -->
+<!-- 📝 CABEÇALHO NO TOPO -->
 <section class="text-center py-6 px-4 bg-white">
     <h1 class="text-[clamp(1.8rem,5vw,2.8rem)] font-bold text-sky-800">🪁 FESTIVAL DE PIPAS — NO TIJUCO</h1>
     <div class="mt-4 max-w-2xl mx-auto space-y-2">
@@ -64,7 +57,9 @@
 </section>
 
     <main class="container mx-auto px-4 max-w-5xl pb-6 mt-8">
-        <div class="grid md:grid-cols-2 gap-8 mb-10">
+
+        <!-- PRIMEIRA SEÇÃO: Participar -->
+        <div class="mb-10">
             <div class="bg-white rounded-2xl sombra-card p-6 border-t-4 border-participante">
                 <h2 class="text-xl font-bold text-participante mb-5 flex items-center gap-2">
                     <i class="fa fa-user-check"></i> Quero Participar!
@@ -78,7 +73,19 @@
                     <button onclick="salvarParticipante()" class="w-full bg-participante hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg transition">✅ Confirmar Participação</button>
                 </div>
             </div>
+        </div>
 
+<!-- ============================================== -->
+<!-- 🎬 O VÍDEO AQUI NO MEIO! ENTRE AS SEÇÕES -->
+<section class="secao-video my-8">
+    <video src="videos/SerginhoGoku.mp4" controls playsinline>
+        Seu navegador não suporta vídeo.
+    </video>
+</section>
+<!-- ============================================== -->
+
+        <!-- SEGUNDA SEÇÃO: Apoiar -->
+        <div class="mb-10 mt-10">
             <div class="bg-white rounded-2xl sombra-card p-6 border-t-4 border-patrocinador">
                 <h2 class="text-xl font-bold text-patrocinador mb-5 flex items-center gap-2">
                     <i class="fa fa-star"></i> Quero Apoiar / Patrocinar!
