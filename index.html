@@ -3,215 +3,218 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Festival de Pipas 🪁 — No Tijuco</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primario: '#0284c7',
-                        participante: '#10B981',
-                        patrocinador: '#F59E0B',
-                        admin: '#7C3AED',
-                        sairAdmin: '#dc2626',
-                    }
-                }
-            }
-        }
-    </script>
+    <title>Fã Clube do Serginho Cabeção 🐸👑</title>
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        html, body { width: 100%; overflow-x: hidden; }
-        .escondido { display: none !important; }
-        .sombra-card { box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
-        .botao-sair { background: #f3f4f6; }
-        .botao-sair:hover { background: #e5e7eb; }
-        .area-chat { min-height: 200px; max-height: 300px; overflow-y: auto; }
-        
-        /* VÍDEO SOZINHO */
-        .secao-video {
+        html, body {
+            min-height: 100vh;
+            background: linear-gradient(180deg, #1a1208 0%, #2c1e0f 100%);
+            background-image: 
+                radial-gradient(#3a2a18 1px, transparent 1px),
+                radial-gradient(#3a2a18 1px, transparent 1px);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+            font-family: 'Segoe UI', sans-serif;
+            padding: 1rem;
+            color: #fff;
+
+            /* ✅ Página 100% parada */
+            overflow: hidden;
+            position: fixed;
             width: 100%;
-            background: #000;
+            height: 100%;
+            top: 0;
+            left: 0;
         }
-        .secao-video video {
+        .cartaz {
+            max-width: 450px;
+            margin: 0 auto;
+            background: #000;
+            border-radius: 24px;
+            border: 3px solid #f4a900;
+            overflow: hidden;
+            box-shadow: 0 0 25px rgba(244, 169, 0, 0.25);
+            position: relative;
+        }
+        .logo-topo {
             width: 100%;
             height: auto;
             display: block;
         }
+        .logo-topo img,
+        .imagem-principal {
+            width: 100%;
+            height: auto;
+            display: block;
+
+            /* ✅ Remove qualquer legenda/texto que o navegador coloca sobre a imagem */
+            content-visibility: auto;
+            speak: none;
+        }
+        .conteudo-interno {
+            padding: 0.5rem 1.5rem 1rem;
+            text-align: center;
+        }
+
+        /* ✅ Texto "Clique no" piscando */
+        .texto-clique-no {
+            font-size: 1.5rem;
+            animation: piscarTexto 1.2s infinite alternate;
+        }
+
+        .menu-botao-inferior {
+            background: #39ff14;
+            color: #000;
+            border: none;
+            padding: 0.4rem 1rem;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 0 12px #39ff14;
+            transition: none;
+            vertical-align: middle;
+            margin-left: 0.4rem;
+        }
+        .menu-botao-inferior:hover {
+            transform: none;
+            box-shadow: 0 0 12px #39ff14;
+        }
+        .menu-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 999;
+            justify-content: center;
+            align-items: center;
+        }
+        .menu-overlay.aberto {
+            display: flex;
+        }
+        .menu-conteudo {
+            background: #111;
+            border: 2px solid #f4a900;
+            border-radius: 24px;
+            padding: 2.5rem;
+            text-align: center;
+            max-width: 350px;
+            width: 90%;
+        }
+        .menu-conteudo h2 {
+            color: #f4a900;
+            margin-bottom: 2rem;
+            font-size: 1.5rem;
+        }
+        .menu-opcao {
+            display: block;
+            color: #fff;
+            text-decoration: none;
+            padding: 1rem;
+            margin-bottom: 0.8rem;
+            background: #222;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            transition: none;
+        }
+        .menu-opcao:hover {
+            background: #333;
+            color: #39ff14;
+        }
+
+        /* ✅ Botão Fechar piscando */
+        .fechar-menu {
+            margin-top: 1.5rem;
+            background: transparent;
+            border: 2px solid #f4a900;
+            color: #f4a900;
+            padding: 0.7rem 2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1rem;
+            animation: piscarCor 1.2s infinite alternate;
+        }
+
+        @keyframes piscarCor {
+            0%   { border-color: #ff0000;   color: #ff0000;   box-shadow: 0 0 8px #ff0000; }
+            33%  { border-color: #f4a900;   color: #f4a900;   box-shadow: 0 0 8px #f4a900; }
+            66%  { border-color: #00bfff;   color: #00bfff;   box-shadow: 0 0 8px #00bfff; }
+            100% { border-color: #ffffff;   color: #ffffff;   box-shadow: 0 0 8px #ffffff; }
+        }
+
+        /* ✅ Animação do texto "Clique no" */
+        @keyframes piscarTexto {
+            0%   { color: #ff0000;   text-shadow: 0 0 8px #ff0000; }
+            33%  { color: #f4a900;   text-shadow: 0 0 8px #f4a900; }
+            66%  { color: #00bfff;   text-shadow: 0 0 8px #00bfff; }
+            100% { color: #ffffff;   text-shadow: 0 0 8px #ffffff; }
+        }
     </style>
-    <link rel="stylesheet" href="css/estilo.css">
 </head>
-<body class="bg-sky-50 min-h-screen font-sans">
-
-<!-- 📝 CABEÇALHO NO TOPO -->
-<section class="text-center py-6 px-4 bg-white">
-    <h1 class="text-[clamp(1.8rem,5vw,2.8rem)] font-bold text-sky-800">🪁 FESTIVAL DE PIPAS — NO TIJUCO</h1>
-    <div class="mt-4 max-w-2xl mx-auto space-y-2">
-        <p class="text-lg text-gray-700 font-medium">📍 Rua Sidney Tavares Pereira</p>
-        <p class="text-lg text-gray-700">No pasto, em frente à Rotatória do Bandeirante</p>
-        <p class="text-xl font-bold text-primario mt-3">📅 Dia 16 de Agosto</p>
-    </div>
-    <p class="text-lg text-sky-600 mt-5 font-semibold">✨ Vamos participar!</p>
-</section>
-
-    <main class="container mx-auto px-4 max-w-5xl pb-6 mt-8">
-
-        <!-- PRIMEIRA SEÇÃO: Participar -->
-        <div class="mb-10">
-            <div class="bg-white rounded-2xl sombra-card p-6 border-t-4 border-participante">
-                <h2 class="text-xl font-bold text-participante mb-5 flex items-center gap-2">
-                    <i class="fa fa-user-check"></i> Quero Participar!
-                </h2>
-                <p class="text-gray-600 text-sm mb-5">Inscreva-se para participar do festival!</p>
-                <div class="space-y-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Seu Nome Completo</label>
-                        <input type="text" id="nomeParticipante" placeholder="Digite seu nome" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-200 focus:border-participante outline-none">
-                    </div>
-                    <button onclick="salvarParticipante()" class="w-full bg-participante hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg transition">✅ Confirmar Participação</button>
-                </div>
-            </div>
+<body>
+    <div class="cartaz">
+        <div class="logo-topo">
+            <img src="https://raw.githubusercontent.com/wwwillweb777-ctrl/faclube-do-serginho-cabecao/main/imagens/LogoSerginho.jpg" alt="">
         </div>
 
-<!-- ============================================== -->
-<!-- 🎬 O VÍDEO AQUI NO MEIO! ENTRE AS SEÇÕES -->
-<section class="secao-video my-8">
-    <video src="videos/SerginhoGoku.mp4" controls playsinline>
-        Seu navegador não suporta vídeo.
-    </video>
-</section>
-<!-- ============================================== -->
+        <img class="imagem-principal" src="https://raw.githubusercontent.com/wwwillweb777-ctrl/faclube-do-serginho-cabecao/main/imagens/Serginho.jpg" alt="">
 
-        <!-- SEGUNDA SEÇÃO: Apoiar -->
-        <div class="mb-10 mt-10">
-            <div class="bg-white rounded-2xl sombra-card p-6 border-t-4 border-patrocinador">
-                <h2 class="text-xl font-bold text-patrocinador mb-5 flex items-center gap-2">
-                    <i class="fa fa-star"></i> Quero Apoiar / Patrocinar!
-                </h2>
-                <p class="text-gray-600 text-sm mb-5">Quer ajudar de alguma forma?</p>
-                <div class="space-y-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Seu Nome</label>
-                        <input type="text" id="nomeApoiador" placeholder="Seu nome" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-200 focus:border-patrocinador outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">O que você oferece</label>
-                        <textarea id="ofertaApoio" rows="3" placeholder="Ex: doação de pipas, materiais, serviços..." class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-200 focus:border-patrocinador outline-none resize-none"></textarea>
-                    </div>
-                    <button onclick="salvarApoiador()" class="w-full bg-patrocinador hover:bg-amber-600 text-white font-bold py-3 px-4 rounded-lg transition">⭐ Registrar Apoio</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="grid md:grid-cols-2 gap-8">
-            <div class="bg-white rounded-2xl sombra-card p-6">
-                <h2 class="text-lg font-bold text-sky-800 mb-4 flex items-center justify-between">
-                    <span><i class="fa fa-users text-primario mr-2"></i> Participantes</span>
-                    <div class="flex items-center gap-2">
-                        <span id="qtdParticipantes" class="bg-sky-100 text-sky-800 px-3 py-1 rounded-full text-sm">0</span>
-                        <button id="btnLimparParticipantes" onclick="limparTodosParticipantes()" class="escondido text-red-500 text-xs font-medium hover:text-red-700">🗑️ Apagar Tudo</button>
-                    </div>
-                </h2>
-                <div id="listaParticipantes" class="space-y-2 max-h-80 overflow-y-auto pr-2">
-                    <p class="text-gray-400 text-center py-6">Nenhum participante ainda 🪁</p>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-2xl sombra-card p-6">
-                <h2 class="text-lg font-bold text-amber-700 mb-4 flex items-center justify-between">
-                    <span><i class="fa fa-heart text-patrocinador mr-2"></i> Apoiadores</span>
-                    <div class="flex items-center gap-2">
-                        <span id="qtdApoiadores" class="bg-amber-100 text-amber-800 px-3 py-1 rounded-full text-sm">0</span>
-                        <button id="btnLimparApoiadores" onclick="limparTodosApoiadores()" class="escondido text-red-500 text-xs font-medium hover:text-red-700">🗑️ Apagar Tudo</button>
-                    </div>
-                </h2>
-                <div id="listaApoiadores" class="space-y-2 max-h-80 overflow-y-auto pr-2">
-                    <p class="text-gray-400 text-center py-6">Nenhum apoiador ainda ⭐</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="text-center mt-8">
-            <button onclick="abrirChat()" class="bg-primario hover:bg-sky-700 text-white font-bold py-3 px-6 rounded-xl transition shadow-md">💬 Fale Conosco — Envie sua mensagem</button>
-        </div>
-
-        <div class="text-center mt-6 mb-6 space-y-2">
-            <button onclick="abrirModalSenha()" id="botaoEntrarArea" class="text-gray-500 text-sm hover:text-admin transition">🔐 Área Administrativa</button>
-            <button onclick="sairAreaAdministrativa()" id="botaoSairArea" class="escondido bg-sairAdmin text-white font-bold py-2 px-4 rounded-lg text-sm shadow">🚪 Sair da Área Administrativa</button>
-        </div>
-
-        <div class="bg-amber-50 border border-amber-200 p-4 rounded-lg text-center mt-4">
-            <p class="text-amber-900 text-sm leading-relaxed">
-                ⚠️ <strong>Aviso Importante:</strong> Este site é apenas um espaço de inscrição e divulgação. 
-                Quem criou esta página <strong>não é o organizador do evento</strong> e 
-                <strong>não assume nenhuma responsabilidade</strong> sobre sua realização, 
-                segurança, estrutura, autorizações ou quaisquer questões relacionadas ao festival. 
-                A participação é voluntária e de responsabilidade de cada pessoa.
+        <div class="conteudo-interno">
+            <p>
+                <span class="texto-clique-no">Clique no</span>
+                <button class="menu-botao-inferior" onclick="abrirMenu()">📋 MENU</button>
             </p>
         </div>
-    </main>
+    </div>
 
-    <div id="modalChat" class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 escondido">
-        <div class="bg-white rounded-2xl w-full max-w-md mx-4 flex flex-col max-h-[90vh]">
-            <div class="p-4 border-b flex justify-between items-center bg-sky-50 rounded-t-2xl">
-                <h3 class="font-bold text-sky-800">💬 Fale Conosco</h3>
-                <button onclick="fecharChat()" class="botao-sair px-4 py-1 rounded-lg font-medium text-sm">Sair</button>
-            </div>
-            <div id="areaMensagens" class="area-chat p-4 space-y-3 bg-gray-50">
-                <p class="text-gray-400 text-sm text-center py-4">Olá! Digite seu nome abaixo e depois sua mensagem!</p>
-            </div>
-            <div id="passoNome" class="p-4 border-t space-y-3">
-                <label class="block text-sm font-medium text-gray-700">📝 Qual é o seu nome?</label>
-                <input type="text" id="nomeChat" placeholder="Digite seu nome aqui..." class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-200 focus:border-primario outline-none">
-                <button onclick="confirmarNome()" class="w-full bg-primario text-white font-bold py-2 px-4 rounded-lg hover:bg-sky-700 transition">✅ Confirmar Nome</button>
-            </div>
-            <div id="passoMensagem" class="p-4 border-t space-y-2 escondido">
-                <p class="text-sm text-green-600 font-medium">✅ Olá, <span id="nomeExibido"></span>! Agora escreva sua mensagem:</p>
-                <div class="flex gap-2">
-                    <input type="text" id="campoMensagem" placeholder="Escreva sua mensagem..." class="flex-1 px-4 py-2 border border-gray-300 rounded-full outline-none focus:ring-2 focus:ring-sky-200">
-                    <button onclick="enviarMensagem()" class="bg-primario text-white px-4 py-2 rounded-full font-bold"><i class="fa fa-paper-plane"></i></button>
-                </div>
-            </div>
+    <div id="menuOverlay" class="menu-overlay">
+        <div class="menu-conteudo">
+            <h2>🐸 Fã Clube do Serginho Cabeção</h2>
+            
+            <a href="chat.html" class="menu-opcao">💬 Conversar / Chat</a>
+            <a href="gerenciar.html" class="menu-opcao">🔐 Área Administrativa</a>
+            
+            <button class="fechar-menu" onclick="fecharMenu()">✖️ Fechar</button>
         </div>
     </div>
 
-    <div id="modalResposta" class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 escondido">
-        <div class="bg-white rounded-2xl w-full max-w-lg mx-4 p-6">
-            <h3 id="tituloModalResposta" class="font-bold text-xl mb-4 text-admin">🔐 Responder Mensagem</h3>
-            <p class="text-sm text-gray-500 mb-2">Para:</p>
-            <p id="remetenteMensagem" class="font-medium text-gray-800 mb-3"></p>
-            <input type="hidden" id="chaveMensagemAtual">
-            <input type="hidden" id="idDestinatario">
-            <input type="hidden" id="nomeDestinatario">
-            <label class="block text-sm font-medium text-gray-700 mb-1">Sua mensagem:</label>
-            <textarea id="textoResposta" rows="3" placeholder="Escreva sua mensagem aqui..." class="w-full px-4 py-3 border rounded-lg mb-4"></textarea>
-            <div class="flex gap-3">
-                <button onclick="fecharModalResposta()" class="flex-1 bg-gray-200 rounded-lg py-2">Cancelar</button>
-                <button id="botaoEnviarResposta" onclick="enviarResposta()" class="flex-1 bg-admin text-white rounded-lg py-2">✅ Enviar Mensagem</button>
-            </div>
-        </div>
-    </div>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyCjUBVWJ7f9A8hQXWBhWjLfWxgJ9lhh1YI",
+            authDomain: "gabriel-do-corte.firebaseapp.com",
+            databaseURL: "https://gabriel-do-corte-default-rtdb.firebaseio.com",
+            projectId: "gabriel-do-corte",
+            storageBucket: "gabriel-do-corte.firebasestorage.app",
+            messagingSenderId: "877270325019",
+            appId: "1:877270325019:web:8d75ee1b905a1b8f16a5be"
+        };
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
 
-    <div id="modalSenha" class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 escondido">
-        <div class="bg-white rounded-2xl p-7 w-full max-w-sm mx-4">
-            <h3 class="text-xl font-bold text-center mb-5">🔐 Acesso Restrito</h3>
-            <input type="password" id="campoSenha" placeholder="Digite a senha" class="w-full px-4 py-3 border rounded-lg mb-4 text-center">
-            <p id="avisoErro" class="text-red-500 text-center text-sm mb-3 escondido">Senha incorreta!</p>
-            <div class="flex gap-3">
-                <button onclick="fecharModalSenha()" class="flex-1 bg-gray-200 rounded-lg py-2">Cancelar</button>
-                <button onclick="verificarSenha()" class="flex-1 bg-admin text-white rounded-lg py-2">Entrar</button>
-            </div>
-        </div>
-    </div>
+        const CHAVE_SESSAO = "sessao_faclube";
+        window.onload = async function() {
+            if (!sessionStorage.getItem(CHAVE_SESSAO)) {
+                sessionStorage.setItem(CHAVE_SESSAO, 'ativa');
+                const ref = db.ref("FãClube/visitas");
+                const snap = await ref.once("value");
+                const total = snap.val() || 0;
+                await ref.set(total + 1);
+            }
+        };
 
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
-
-    <script src="js/firebase-config.js"></script>
-    <script src="js/banco-dados.js"></script>
-    <script src="js/chat.js"></script>
-    <script src="js/admin.js"></script>
+        function abrirMenu() {
+            document.getElementById('menuOverlay').classList.add('aberto');
+        }
+        function fecharMenu() {
+            document.getElementById('menuOverlay').classList.remove('aberto');
+        }
+    </script>
 </body>
 </html>
