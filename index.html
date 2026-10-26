@@ -3,50 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Festival de Pipas 🪁 — No Tijuco</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <title>Teste Vídeo</title>
     <style>
-        .escondido { display: none !important; }
-        .sombra-card { box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; }
+        video { max-width: 100%; width: 100%; height: auto; }
     </style>
 </head>
-<body class="bg-sky-50 min-h-screen font-sans">
+<body>
 
-<!-- SEÇÃO COM VÍDEO -->
-<section class="relative w-full h-[70vh] overflow-hidden">
-    <video id="videoHero" autoplay muted loop playsinline class="absolute top-0 left-0 w-full h-full object-cover">
-        <source src="videos/SerginhoGoku.mp4" type="video/mp4">
+    <video src="videos/SerginhoGoku.mp4" controls playsinline>
+        Seu navegador não suporta vídeo.
     </video>
-    <div class="absolute inset-0 bg-black/50 flex items-center justify-center">
-        <div class="text-center text-white px-4">
-            <h1 class="text-3xl font-bold mb-4">🪁 FESTIVAL DE PIPAS — NO TIJUCO</h1>
-            <p class="text-lg mb-1">📍 Rua Sidney Tavares Pereira</p>
-            <p class="text-lg mb-3">No pasto, em frente à Rotatória do Bandeirante</p>
-            <p class="text-xl font-bold text-sky-300">📅 Dia 16 de Agosto</p>
-        </div>
-    </div>
-</section>
-
-<!-- CONTEÚDO PRINCIPAL -->
-<main class="container mx-auto px-4 py-8">
-    <h2 class="text-2xl font-bold text-center text-sky-800 mb-6">✨ Vamos Participar!</h2>
-    
-    <div class="bg-white rounded-2xl sombra-card p-6 max-w-lg mx-auto mb-8">
-        <h3 class="text-xl font-bold text-green-600 mb-4">Quero Participar!</h3>
-        <input type="text" placeholder="Seu nome completo" class="w-full p-3 border rounded-lg mb-4">
-        <button class="w-full bg-green-500 text-white font-bold py-3 rounded-lg">✅ Confirmar Participação</button>
-    </div>
-
-    <div class="bg-white rounded-2xl sombra-card p-6 max-w-lg mx-auto mb-8">
-        <h3 class="text-xl font-bold text-amber-500 mb-4">Quero Apoiar!</h3>
-        <input type="text" placeholder="Seu nome" class="w-full p-3 border rounded-lg mb-4">
-        <textarea placeholder="O que você oferece" class="w-full p-3 border rounded-lg mb-4" rows="3"></textarea>
-        <button class="w-full bg-amber-500 text-white font-bold py-3 rounded-lg">⭐ Registrar Apoio</button>
-    </div>
-
-    <p class="text-center text-gray-500 text-sm mt-8">© 2026 — Festival de Pipas no Tijuco</p>
-</main>
 
 </body>
 </html>
