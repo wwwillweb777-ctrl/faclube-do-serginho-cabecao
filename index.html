@@ -6,15 +6,36 @@
     <title>Teste Vídeo</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; }
-        video { max-width: 100%; width: 100%; height: auto; }
+        body { 
+            background: #000; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            min-height: 100vh;
+        }
+        .container {
+            width: 100%;
+            max-width: 450px; /* Largura máxima no celular */
+            aspect-ratio: 9/16; /* ✅ Proporção vertical igual ao TikTok */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain; /* ✅ Mostra o vídeo inteiro sem cortar */
+            background: #000;
+        }
     </style>
 </head>
 <body>
 
-    <video src="videos/SerginhoGoku.mp4" controls playsinline>
-        Seu navegador não suporta vídeo.
-    </video>
+    <div class="container">
+        <video src="videos/SerginhoGoku.mp4" controls playsinline>
+            Seu navegador não suporta vídeo.
+        </video>
+    </div>
 
 </body>
 </html>
