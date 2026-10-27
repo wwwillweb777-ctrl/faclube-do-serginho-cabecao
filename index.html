@@ -21,8 +21,6 @@
             font-family: 'Segoe UI', sans-serif;
             padding: 1rem;
             color: #fff;
-
-            /* ✅ Página 100% parada */
             overflow: hidden;
             position: fixed;
             width: 100%;
@@ -50,17 +48,15 @@
             width: 100%;
             height: auto;
             display: block;
-
-            /* ✅ Remove qualquer legenda/texto que o navegador coloca sobre a imagem */
             content-visibility: auto;
             speak: none;
         }
 
-        /* ✅ Botões de MÚSICA — canto ESQUERDO, mais abaixo */
+        /* 🟢 INÍCIO: Estilos do Player de Música */
         .player-musica {
             position: absolute;
-            bottom: 5%;        /* ⬇️ Mais para baixo */
-            left: 5%;         /* ⬅️ Bem no canto ESQUERDO */
+            bottom: 12%;    /* ⬆️ Subi para não cortar a borda — testei esse valor */
+            left: 4%;       /* ⬅️ Canto esquerdo, encostadinho */
             display: flex;
             align-items: center;
             justify-content: flex-start;
@@ -93,18 +89,16 @@
             min-width: 38px;
             text-align: center;
         }
+        /* 🔴 FIM: Estilos do Player de Música */
 
         .conteudo-interno {
             padding: 0.5rem 1.5rem 1rem;
             text-align: center;
         }
-
-        /* ✅ Texto "Clique no" piscando — EXATAMENTE como estava */
         .texto-clique-no {
             font-size: 1.5rem;
             animation: piscarTexto 1.2s infinite alternate;
         }
-
         .menu-botao-inferior {
             background: #39ff14;
             color: #000;
@@ -167,8 +161,6 @@
             background: #333;
             color: #39ff14;
         }
-
-        /* ✅ Botão Fechar piscando — EXATAMENTE como estava */
         .fechar-menu {
             margin-top: 1.5rem;
             background: transparent;
@@ -180,15 +172,12 @@
             font-size: 1rem;
             animation: piscarCor 1.2s infinite alternate;
         }
-
         @keyframes piscarCor {
             0%   { border-color: #ff0000;   color: #ff0000;   box-shadow: 0 0 8px #ff0000; }
             33%  { border-color: #f4a900;   color: #f4a900;   box-shadow: 0 0 8px #f4a900; }
             66%  { border-color: #00bfff;   color: #00bfff;   box-shadow: 0 0 8px #00bfff; }
             100% { border-color: #ffffff;   color: #ffffff;   box-shadow: 0 0 8px #ffffff; }
         }
-
-        /* ✅ Animação do texto "Clique no" — EXATAMENTE como estava */
         @keyframes piscarTexto {
             0%   { color: #ff0000;   text-shadow: 0 0 8px #ff0000; }
             33%  { color: #f4a900;   text-shadow: 0 0 8px #f4a900; }
@@ -205,7 +194,7 @@
 
         <img class="imagem-principal" src="https://raw.githubusercontent.com/wwwillweb777-ctrl/faclube-do-serginho-cabecao/main/imagens/Serginho.jpg" alt="">
 
-        <!-- ✅ BOTÕES DE MÚSICA — canto ESQUERDO, mais abaixo -->
+        <!-- 🟢 INÍCIO: HTML do Player de Música -->
         <div class="player-musica">
             <button class="btn-musica" onclick="alternarMusica()" id="btnPlayPause">▶️</button>
             <button class="btn-musica" onclick="diminuirVolume()">−</button>
@@ -213,12 +202,11 @@
             <button class="btn-musica" onclick="aumentarVolume()">+</button>
         </div>
 
-        <!-- ✅ Áudio -->
         <audio id="musicaFundo" loop>
             <source src="https://raw.githubusercontent.com/wwwillweb777-ctrl/faclube-do-serginho-cabecao/main/TamoAiNaAtividade.mp3" type="audio/mpeg">
         
+        <!-- 🔴 FIM: HTML do Player de Música -->
 
-        <!-- ✅ Seu código original — intacto -->
         <div class="conteudo-interno">
             <p>
                 <span class="texto-clique-no">Clique no</span>
@@ -230,10 +218,8 @@
     <div id="menuOverlay" class="menu-overlay">
         <div class="menu-conteudo">
             <h2>🐸 Fã Clube do Serginho Cabeção</h2>
-            
             <a href="chat.html" class="menu-opcao">💬 Conversar / Chat</a>
             <a href="gerenciar.html" class="menu-opcao">🔐 Área Administrativa</a>
-            
             <button class="fechar-menu" onclick="fecharMenu()">✖️ Fechar</button>
         </div>
     </div>
@@ -269,7 +255,7 @@
             document.getElementById('menuOverlay').classList.remove('aberto');
         }
 
-        // ✅ Controles da Música
+        // 🟢 INÍCIO: Scripts do Player de Música
         const audio = document.getElementById('musicaFundo');
         const btnPlayPause = document.getElementById('btnPlayPause');
         const volumeDisplay = document.getElementById('volumeDisplay');
@@ -301,6 +287,7 @@
                 volumeDisplay.textContent = Math.round(audio.volume * 100) + '%';
             }
         }
+        // 🔴 FIM: Scripts do Player de Música
     </script>
 </body>
 </html>
