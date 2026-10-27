@@ -13,9 +13,7 @@
         html, body {
             min-height: 100vh;
             background: linear-gradient(180deg, #1a1208 0%, #2c1e0f 100%);
-            background-image: 
-                radial-gradient(#3a2a18 1px, transparent 1px),
-                radial-gradient(#3a2a18 1px, transparent 1px);
+            background-image: radial-gradient(#3a2a18 1px, transparent 1px), radial-gradient(#3a2a18 1px, transparent 1px);
             background-size: 20px 20px;
             background-position: 0 0, 10px 10px;
             font-family: 'Segoe UI', sans-serif;
@@ -37,42 +35,22 @@
             overflow: hidden;
             box-shadow: 0 0 25px rgba(244, 169, 0, 0.25);
             position: relative;
-            cursor: pointer; /* Mãozinha aparece indicando que pode clicar */
+            cursor: pointer;
         }
-        .logo-topo {
+        .logo-topo img, .imagem-principal {
             width: 100%;
             height: auto;
             display: block;
         }
-        .logo-topo img,
-        .imagem-principal {
-            width: 100%;
-            height: auto;
-            display: block;
-            content-visibility: auto;
-            speak: none;
-        }
-
-        /* ==============================================================
-           📍 COMO MOVER O PLAYER DE MÚSICA
-           ==============================================================
-           Para ABAIXAR: abaixo o valor de "bottom" (ex: 150px, 120px, 70px)
-           Para LEVANTAR: aumente o valor de "bottom" (ex: 50px, 70px, 90px)
-           Exemplo:
-             - Mais embaixo → bottom: 70px;
-             - Mais em cima → bottom: 150px;
-             - No meio → bottom: 120px;
-           ============================================================== */
         .player-musica {
             position: absolute;
-            bottom: 70px; /* ← ← ← MUDA ESTE VALOR AQUI! */
+            bottom: 70px;
             left: 3%;
             display: flex;
             align-items: center;
-            justify-content: flex-start;
             gap: 8px;
             padding: 0.4rem 0.8rem;
-            background: rgba(0, 0, 0, 0.75);
+            background: rgba(0,0,0,0.75);
             border-radius: 50px;
             border: 2px solid #f4a900;
             z-index: 10;
@@ -86,32 +64,12 @@
             font-weight: bold;
             border-radius: 50%;
             cursor: pointer;
-            min-width: 40px;
             width: 40px;
             height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
-        .volume-display {
-            font-size: 0.8rem;
-            color: #fff;
-            min-width: 38px;
-            text-align: center;
-        }
-
-        .conteudo-interno {
-            padding: 0.5rem 1.5rem 1.5rem;
-            text-align: center;
-            position: relative;
-            z-index: 5;
-            background: #000;
-        }
-        .texto-clique-no {
-            font-size: 1.5rem;
-            animation: piscarTexto 1.2s infinite alternate;
-            color: #ff9900;
-        }
+        .volume-display { font-size: 0.8rem; color: #fff; min-width: 38px; text-align: center; }
+        .conteudo-interno { padding: 0.5rem 1.5rem 1.5rem; text-align: center; background: #000; }
+        .texto-clique-no { font-size: 1.5rem; animation: piscarTexto 1.2s infinite alternate; color: #ff9900; }
         .menu-botao-inferior {
             background: #39ff14;
             color: #000;
@@ -122,13 +80,7 @@
             border-radius: 50px;
             cursor: pointer;
             box-shadow: 0 0 12px #39ff14;
-            transition: none;
-            vertical-align: middle;
             margin-left: 0.4rem;
-        }
-        .menu-botao-inferior:hover {
-            transform: none;
-            box-shadow: 0 0 12px #39ff14;
         }
         .menu-overlay {
             display: none;
@@ -137,83 +89,89 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.95);
+            background: rgba(0,0,0,0.95);
             z-index: 999;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start;
+            padding: 1rem;
+            overflow-y: auto;
         }
-        .menu-overlay.aberto {
-            display: flex;
-        }
+        .menu-overlay.aberto { display: flex; }
         .menu-conteudo {
             background: #111;
             border: 2px solid #f4a900;
             border-radius: 24px;
-            padding: 2.5rem;
+            padding: 1.5rem;
             text-align: center;
-            max-width: 350px;
-            width: 90%;
+            max-width: 360px;
+            width: 100%;
+            margin: 1rem auto;
         }
-        .menu-conteudo h2 {
-            color: #f4a900;
-            margin-bottom: 2rem;
-            font-size: 1.5rem;
-        }
-        .menu-opcao {
-            display: block;
-            color: #fff;
-            text-decoration: none;
-            padding: 1rem;
-            margin-bottom: 0.8rem;
-            background: #222;
-            border-radius: 12px;
-            font-size: 1.1rem;
-        }
-        .menu-opcao:hover {
+        .menu-conteudo h2 { color: #f4a900; margin-bottom: 1rem; font-size: 1.2rem; }
+        .bloco { background: #222; border-radius: 12px; padding: 0.9rem; margin-bottom: 0.8rem; text-align: left; }
+        .bloco h3 { color: #f4a900; font-size: 0.95rem; margin-bottom: 0.4rem; text-align: center; }
+        .bloco p { color: #ccc; font-size: 0.85rem; line-height: 1.4; text-align: center; }
+        .destaque-nome { color: #39ff14; font-weight: bold; text-align: center; margin-top: 0.5rem; }
+        textarea {
+            width: 100%;
+            height: 60px;
             background: #333;
-            color: #39ff14;
+            border: 1px solid #444;
+            border-radius: 8px;
+            color: #fff;
+            padding: 0.5rem;
+            margin: 0.5rem 0;
+            resize: none;
         }
+        button.enviar {
+            width: 100%;
+            background: #39ff14;
+            color: #000;
+            border: none;
+            padding: 0.5rem;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        .mensagem-item { background: #333; padding: 0.5rem; border-radius: 6px; margin-bottom: 0.4rem; font-size: 0.85rem; color: #ddd; }
+        .pix-caixa { background: #333; padding: 0.7rem; border-radius: 8px; color: #39ff14; font-weight: bold; font-size: 0.85rem; text-align: center; margin-top: 0.5rem; }
+        .link-opcao { display: block; color: #fff; text-decoration: none; padding: 0.8rem; background: #222; border-radius: 12px; margin-bottom: 0.6rem; font-size: 0.95rem; }
         .fechar-menu {
-            margin-top: 1.5rem;
+            margin-top: 0.5rem;
             background: transparent;
             border: 2px solid #f4a900;
             color: #f4a900;
-            padding: 0.7rem 2rem;
+            padding: 0.6rem 2rem;
             border-radius: 50px;
             cursor: pointer;
             font-size: 1rem;
         }
         @keyframes piscarTexto {
-            0%   { color: #ff6600;   text-shadow: 0 0 8px #ff6600; }
-            100% { color: #ffcc00;   text-shadow: 0 0 8px #ffcc00; }
+            0% { color: #ff6600; text-shadow: 0 0 8px #ff6600; }
+            100% { color: #ffcc00; text-shadow: 0 0 8px #ffcc00; }
         }
     </style>
 </head>
 <body>
     <div class="cartaz" id="areaPrincipal">
         <div class="logo-topo">
-            <img src="imagens/LogoSerginho.jpg" alt="">
+            <img src="https://cdn.jsdelivr.net/gh/wwwillweb777-ctrl/faclube-do-serginho-cabecao@main/imagens/LogoSerginho.jpg" alt="Logo Serginho Cabeção">
         </div>
-
-        <img class="imagem-principal" src="imagens/Serginho.jpg" alt="">
-
-        <!-- 🟢 Player de Música -->
+        <img class="imagem-principal" src="https://cdn.jsdelivr.net/gh/wwwillweb777-ctrl/faclube-do-serginho-cabecao@main/imagens/Serginho.jpg" alt="Serginho Cabeção">
+        
         <div class="player-musica" onclick="event.stopPropagation()">
             <button class="btn-musica" onclick="alternarMusica()" id="btnPlayPause">▶️</button>
             <button class="btn-musica" onclick="diminuirVolume()">−</button>
             <span class="volume-display" id="volumeDisplay">50%</span>
             <button class="btn-musica" onclick="aumentarVolume()">+</button>
         </div>
-
-        <!-- ✅ Conteúdo -->
+        
         <div class="conteudo-interno" onclick="event.stopPropagation()">
-            <p>
-                <span class="texto-clique-no">Clique no</span>
-                <button class="menu-botao-inferior" onclick="abrirMenu()">📋 MENU</button>
-            </p>
+            <p><span class="texto-clique-no">Clique no</span>
+            <button class="menu-botao-inferior" onclick="abrirMenu()">📋 MENU</button></p>
         </div>
-
-        <!-- ✅ ÁUDIO -->
+        
         <audio id="musicaFundo" loop>
             <source src="TamoAiNaAtividade.mp3" type="audio/mpeg">
             Seu navegador não suporta áudio.
@@ -223,8 +181,38 @@
     <div id="menuOverlay" class="menu-overlay">
         <div class="menu-conteudo">
             <h2>🐸 Fã Clube do Serginho Cabeção</h2>
-            <a href="chat.html" class="menu-opcao">💬 Conversar / Chat</a>
-            <a href="gerenciar.html" class="menu-opcao">🔐 Área Administrativa</a>
+
+            <div style="text-align:center; margin-bottom:0.8rem;">
+                <img src="https://cdn.jsdelivr.net/gh/wwwillweb777-ctrl/faclube-do-serginho-cabecao@main/imagens/LogoGmail.jpg" 
+                alt="Fã Clube" style="width:90px; height:90px; border-radius:50%; border:3px solid #f4a900; object-fit:cover;">
+            </div>
+
+            <div class="bloco" style="text-align:center; padding:0.6rem;">
+                👁️ <span id="contadorVisualizacoes">0</span>
+            </div>
+
+            <div class="bloco">
+                <h3>🏆 Destaque da Semana</h3>
+                <p>Participe nas redes sociais e aqui no site. Quem mais interagir terá seu @ e foto em destaque. Ao participar, você autoriza a divulgação.</p>
+                <div class="destaque-nome">@seunome ⭐ 📸</div>
+            </div>
+
+            <div class="bloco">
+                <h3>✍️ Mural de Fãs</h3>
+                <p>Sua mensagem será lida por todos que visitarem este espaço.</p>
+                <textarea id="campoMensagem" placeholder="Sua mensagem de apoio..."></textarea>
+                <button class="enviar" onclick="enviarMensagem()">✅ Enviar</button>
+                <div id="listaMensagens" style="margin-top:0.6rem; max-height:80px; overflow-y:auto;"></div>
+            </div>
+
+            <div class="bloco">
+                <h3>💛 Apoie o Fã Clube</h3>
+                <p>Este espaço foi criado para unir os fãs. Qualquer ajuda faz a diferença! Muito obrigado!</p>
+                <div class="pix-caixa">🔑 PIX:<br>faclubedoSerginhocabecao@gmail.com</div>
+            </div>
+
+            <a href="chat.html" class="link-opcao">💬 Conversar / Chat</a>
+            <a href="gerenciar.html" class="link-opcao">🔐 Área Administrativa</a>
             <button class="fechar-menu" onclick="fecharMenu()">✖️ Fechar</button>
         </div>
     </div>
@@ -248,65 +236,68 @@
                 sessionStorage.setItem(CHAVE_SESSAO, 'ativa');
                 const ref = db.ref("FãClube/visitas");
                 const snap = await ref.once("value");
-                const total = snap.val() || 0;
-                await ref.set(total + 1);
+                await ref.set((snap.val() || 0) + 1);
             }
+            carregarVisualizacoes();
+            carregarMensagens();
         };
 
-        function abrirMenu() {
-            document.getElementById('menuOverlay').classList.add('aberto');
-        }
-        function fecharMenu() {
-            document.getElementById('menuOverlay').classList.remove('aberto');
+        function carregarVisualizacoes() {
+            db.ref("FãClube/visitas").on("value", snap => {
+                const el = document.getElementById('contadorVisualizacoes');
+                if (el) el.textContent = snap.val() || 0;
+            });
         }
 
-        // 🟢 Scripts do Player de Música
+        function carregarMensagens() {
+            db.ref("Mural").on("value", snap => {
+                const lista = document.getElementById('listaMensagens');
+                if (!lista) return;
+                lista.innerHTML = '';
+                const dados = snap.val() || {};
+                Object.keys(dados).reverse().forEach(key => {
+                    lista.innerHTML += `<div class="mensagem-item">${dados[key].texto}</div>`;
+                });
+            });
+        }
+
+        async function enviarMensagem() {
+            const texto = document.getElementById('campoMensagem').value.trim();
+            if (!texto) { alert('Escreva uma mensagem!'); return; }
+            await db.ref("Mural").push({ texto });
+            document.getElementById('campoMensagem').value = '';
+        }
+
+        function abrirMenu() { document.getElementById('menuOverlay').classList.add('aberto'); }
+        function fecharMenu() { document.getElementById('menuOverlay').classList.remove('aberto'); }
+
         const audio = document.getElementById('musicaFundo');
         const btnPlayPause = document.getElementById('btnPlayPause');
         const volumeDisplay = document.getElementById('volumeDisplay');
         const areaPrincipal = document.getElementById('areaPrincipal');
         let estaTocando = false;
-
         audio.volume = 0.5;
 
-        // ✅ CLICAR EM QUALQUER LUGAR DA IMAGEM → COMEÇA A TOCAR
-        areaPrincipal.addEventListener('click', function() {
+        areaPrincipal.addEventListener('click', () => {
             if (!estaTocando) {
-                audio.play().then(() => {
-                    estaTocando = true;
-                    btnPlayPause.textContent = '⏸️';
-                }).catch(erro => {
-                    console.log('Clique no botão de play');
-                });
+                audio.play().then(() => { estaTocando = true; btnPlayPause.textContent = '⏸️'; });
             }
         });
 
-        // ✅ BOTÃO PLAY/PAUSE FUNCIONA NORMALMENTE
         function alternarMusica() {
-            if (estaTocando) {
-                audio.pause();
-                btnPlayPause.textContent = '▶️';
-            } else {
-                audio.play().catch(erro => {
-                    alert('Clique na tela principal para começar! 🎵');
-                });
-                btnPlayPause.textContent = '⏸️';
-            }
+            estaTocando ? audio.pause() : audio.play();
             estaTocando = !estaTocando;
+            btnPlayPause.textContent = estaTocando ? '⏸️' : '▶️';
         }
 
         function aumentarVolume() {
-            if (audio.volume < 1) {
-                audio.volume = Math.min(1, audio.volume + 0.1);
-                volumeDisplay.textContent = Math.round(audio.volume * 100) + '%';
-            }
+            audio.volume = Math.min(1, audio.volume + 0.1);
+            volumeDisplay.textContent = Math.round(audio.volume * 100) + '%';
         }
 
         function diminuirVolume() {
-            if (audio.volume > 0) {
-                audio.volume = Math.max(0, audio.volume - 0.1);
-                volumeDisplay.textContent = Math.round(audio.volume * 100) + '%';
-            }
+            audio.volume = Math.max(0, audio.volume - 0.1);
+            volumeDisplay.textContent = Math.round(audio.volume * 100) + '%';
         }
     </script>
 </body>
