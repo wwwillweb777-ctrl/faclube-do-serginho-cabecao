@@ -55,7 +55,7 @@
         /* 🟢 INÍCIO: Estilos do Player de Música */
         .player-musica {
             position: absolute;
-            bottom: 1%;
+            bottom: 80px;
             left: 3%;
             display: flex;
             align-items: center;
@@ -92,10 +92,10 @@
         /* 🔴 FIM: Estilos do Player de Música */
 
         .conteudo-interno {
-            padding: 0.5rem 1.5rem 1rem;
+            padding: 0.5rem 1.5rem 1.5rem;
             text-align: center;
             position: relative;
-            z-index: 1;
+            z-index: 5;
         }
         .texto-clique-no {
             font-size: 1.5rem;
@@ -196,24 +196,26 @@
 
         <img class="imagem-principal" src="https://raw.githubusercontent.com/wwwillweb777-ctrl/faclube-do-serginho-cabecao/main/imagens/Serginho.jpg" alt="">
 
-        <!-- 🟢 INÍCIO: HTML do Player de Música -->
+        <!-- 🟢 Player de Música -->
         <div class="player-musica">
             <button class="btn-musica" onclick="alternarMusica()" id="btnPlayPause">▶️</button>
             <button class="btn-musica" onclick="diminuirVolume()">−</button>
             <span class="volume-display" id="volumeDisplay">50%</span>
             <button class="btn-musica" onclick="aumentarVolume()">+</button>
         </div>
-<audio id="musicaFundo" loop>
-    <source src="https://raw.githubusercontent.com/wwwillweb777/faclube-do-serginho-cabecao/main/TamoAiNaAtividade.mp3" type="audio/mpeg">
 
-<!-- 🔴 FIM: HTML do Player de Música -->
-
+        <!-- ✅ Conteúdo que estava sumindo - AGORA VEM ANTES E FORA DA TAG DE ÁUDIO -->
         <div class="conteudo-interno">
             <p>
                 <span class="texto-clique-no">Clique no</span>
                 <button class="menu-botao-inferior" onclick="abrirMenu()">📋 MENU</button>
             </p>
         </div>
+
+        <!-- ✅ ÁUDIO FECHADO COMPLETAMENTE - FICA POR ÚLTIMO -->
+        <audio id="musicaFundo" loop>
+            <source src="https://raw.githubusercontent.com/wwwillweb777/faclube-do-serginho-cabecao/main/TamoAiNaAtividade.mp3" type="audio/mpeg">
+        
     </div>
 
     <div id="menuOverlay" class="menu-overlay">
@@ -256,7 +258,7 @@
             document.getElementById('menuOverlay').classList.remove('aberto');
         }
 
-        // 🟢 INÍCIO: Scripts do Player de Música
+        // 🟢 Scripts do Player de Música
         const audio = document.getElementById('musicaFundo');
         const btnPlayPause = document.getElementById('btnPlayPause');
         const volumeDisplay = document.getElementById('volumeDisplay');
@@ -288,7 +290,6 @@
                 volumeDisplay.textContent = Math.round(audio.volume * 100) + '%';
             }
         }
-        // 🔴 FIM: Scripts do Player de Música
     </script>
 </body>
 </html>
