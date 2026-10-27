@@ -168,7 +168,9 @@
         .msg-conteudo {
             padding: 1rem;
             color: #ddd;
-            line-height: 1.5;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-break: break-word;
         }
         .msg-botoes {
             padding: 0 1rem 1rem 1rem;
@@ -411,8 +413,8 @@
                             🌐 ${msg.rede || 'Não informado'}<br>
                             🔗 ${msg.arroba || '@desconhecido'}
                             <div class="horario">🕒 ${msg.horario || 'Sem data'}</div>
-                        </div>
-                        <div class="msg--conteudo">${msg.texto || ''}</div>
+                                                </div>
+                        <div class="msg-conteudo">${msg.texto || ''}</div>
                         <div class="msg-botoes">
                             <button class="btn-apagar" data-caminho="MensagensApoio" data-chave="${chave}">🗑️ Apagar esta mensagem</button>
                         </div>
