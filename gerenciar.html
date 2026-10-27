@@ -3,83 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🔐 Área Administrativa — Fã Clube Serginho Cabeção</title>
+    <title>Área Administrativa — Fã Clube do Serginho Cabeção</title>
     
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
     <script src="config.js"></script>
 
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
         body {
-            min-height: 100vh;
-            background: linear-gradient(180deg, #1a1208 0%, #2c1e0f 100%);
-            background-image: 
-                radial-gradient(#3a2a18 1px, transparent 1px),
-                radial-gradient(#3a2a18 1px, transparent 1px);
+            background-color: #f8f8f8;
+            background-image: radial-gradient(#d4d4d4 1px, transparent 1px);
             background-size: 20px 20px;
-            background-position: 0 0, 10px 10px;
-            font-family: 'Segoe UI', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             padding: 1rem;
-            color: #fff;
-        }
-
-        .caixa-principal {
-            max-width: 480px;
-            margin: 0 auto;
-            padding: 1rem 0;
-        }
-
-        h1 {
-            text-align: center;
-            color: #f4a900;
-            font-size: 1.6rem;
-            margin-bottom: 0.3rem;
-        }
-
-        .subtitulo {
-            text-align: center;
-            color: #ffcc00;
-            font-size: 1rem;
-            margin-bottom: 1.5rem;
         }
 
         .escondido { display: none !important; }
 
-        /* === TELA DE LOGIN === */
-        .tela-login-card {
-            max-width: 420px;
-            margin: 4rem auto;
+        .caixa-login {
             background: #000;
-            border-radius: 28px;
-            border: 4px solid #f4a900;
-            padding: 2.5rem;
-            box-shadow: 0 10px 30px rgba(244, 169, 0, 0.25);
+            border: 6px solid #f4a900;
+            border-radius: 24px;
+            padding: 2.5rem 1.8rem;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
         }
 
-        .grupo-senha {
+        h1 {
+            color: #f4a900;
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitulo {
+            color: #ffcc00;
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+
+        .campo-senha {
             position: relative;
             margin-bottom: 1.5rem;
         }
 
-        input {
+        .campo-senha input {
             width: 100%;
-            padding: 1rem 1.2rem;
-            border: 2px solid #f4a900;
-            border-radius: 16px;
-            font-size: 1rem;
-            outline: none;
+            padding: 1rem 3.5rem 1rem 1.2rem;
             background: #1a1a1a;
+            border: 3px solid #f4a900;
+            border-radius: 12px;
+            font-size: 1rem;
             color: #fff;
+            outline: none;
         }
 
-        input:focus {
-            border-color: #ffcc00;
-            box-shadow: 0 0 0 4px rgba(244, 169, 0, 0.2);
-        }
-
-        .botao-olho {
+        .botao-macaco {
             position: absolute;
             right: 1rem;
             top: 50%;
@@ -90,55 +79,66 @@
             cursor: pointer;
         }
 
-        button {
-            padding: 1rem 1.5rem;
-            border: none;
-            border-radius: 50px;
-            font-weight: bold;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: transform 0.2s;
+        .aviso-erro {
+            color: #ff6b6b;
+            background: #2c1515;
+            padding: 0.8rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border-left: 4px solid #ef5350;
         }
 
-        button:active { transform: scale(0.98); }
-
-        .btn-principal {
-            background: linear-gradient(90deg, #f4a900, #ffcc00);
-            color: #000;
+        .btn-entrar {
             width: 100%;
-            font-size: 1.1rem;
-            box-shadow: 0 0 12px rgba(244, 169, 0, 0.4);
+            padding: 1rem;
+            background: linear-gradient(90deg, #f4a900, #ffcc00);
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            color: #000;
+            margin-bottom: 1.5rem;
+        }
+
+        .link-voltar {
+            color: #f4a900;
+            text-decoration: none;
+            font-size: 1rem;
+        }
+
+        .caixa-painel {
+            background: #000;
+            border: 4px solid #f4a900;
+            border-radius: 20px;
+            padding: 1.5rem;
+            max-width: 500px;
+            width: 100%;
+            min-height: 80vh;
+        }
+
+        .cabecalho {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .cabecalho h2 {
+            color: #f4a900;
+            font-size: 1.3rem;
         }
 
         .btn-sair {
             background: linear-gradient(90deg, #e53935, #f4511e);
             color: white;
-            padding: 0.7rem 1.5rem;
-            font-size: 1rem;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
         }
 
-        .btn-vermelho { 
-            background: linear-gradient(90deg, #ef5350, #e53935); 
-            color: white; 
-        }
-
-        .aviso-erro {
-            color: #ff6b6b;
-            background: #2c1515;
-            padding: 0.8rem 1rem;
-            border-radius: 12px;
-            margin-bottom: 1rem;
-            border-left: 4px solid #ef5350;
-        }
-
-        .cabecalho-tela {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-
-        /* === ABAS === */
         .abas {
             display: flex;
             gap: 0.5rem;
@@ -150,13 +150,12 @@
             padding: 0.7rem;
             background: #222;
             border: 2px solid #444;
-            border-radius: 12px;
+            border-radius: 10px;
             color: #aaa;
             text-align: center;
             cursor: pointer;
             font-weight: bold;
             font-size: 0.9rem;
-            transition: all 0.2s;
         }
 
         .aba.ativa {
@@ -165,129 +164,107 @@
             color: #000;
         }
 
-        /* === LISTA DE MENSAGENS === */
         .bloco-mensagem {
-            margin-bottom: 1rem;
-            border-radius: 16px;
-            overflow: hidden;
-            border: 2px solid #f4a900;
             background: #111;
+            border: 2px solid #f4a900;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            overflow: hidden;
         }
 
-        .cabecalho-msg {
+        .msg-cabecalho {
             background: linear-gradient(90deg, #f4a900, #ffcc00);
             color: #000;
-            padding: 0.7rem 1rem;
-            font-size: 0.85rem;
+            padding: 0.6rem 1rem;
             font-weight: bold;
             display: flex;
             justify-content: space-between;
-            align-items: center;
         }
 
-        .conteudo-msg {
+        .msg-conteudo {
             padding: 1rem;
             color: #ddd;
-            font-size: 0.95rem;
             line-height: 1.5;
         }
 
-        .botoes-msg {
+        .msg-botoes {
             padding: 0 1rem 1rem;
         }
 
-        .botoes-msg button {
+        .btn-apagar {
             width: 100%;
             padding: 0.6rem;
-            font-size: 0.9rem;
+            background: linear-gradient(90deg, #ef5350, #e53935);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
         }
 
-        .botoes-geral {
-            margin-top: 1.5rem;
-            display: flex;
-            flex-direction: column;
-            gap: 0.8rem;
+        .btn-limpar-tudo {
+            width: 100%;
+            padding: 0.8rem;
+            background: linear-gradient(90deg, #ef5350, #e53935);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 1rem;
         }
-
-        .botoes-geral button { width: 100%; }
 
         .vazio {
             text-align: center;
             padding: 3rem 1rem;
-            color: #999;
-        }
-
-        .botao-voltar {
-            display: inline-block;
-            margin-top: 1.5rem;
-            color: #f4a900;
-            text-decoration: none;
-            font-size: 0.95rem;
-        }
-
-        .botao-voltar:before {
-            content: "← ";
-            font-weight: bold;
+            color: #888;
         }
     </style>
 </head>
 <body>
 
-    <!-- 🔐 TELA DE LOGIN -->
-    <div id="telaLogin" class="caixa-principal">
-        <div class="tela-login-card">
-            <h1>🔐 Área Administrativa</h1>
-            <p class="subtitulo">Fã Clube do Serginho Cabeção</p>
+    <div id="telaLogin" class="caixa-login">
+        <h1>🔐 Área Administrativa</h1>
+        <p class="subtitulo">Fã Clube do Serginho Cabeção</p>
 
-            <div class="grupo-senha">
-                <input type="password" id="campoSenha" placeholder="Digite a senha..." autocomplete="off">
-                <button type="button" class="botao-olho" id="botaoOlho" aria-label="Mostrar senha">🙈</button>
-            </div>
-
-            <p id="avisoErro" class="aviso-erro escondido">❌ Senha incorreta!</p>
-
-            <button class="btn-principal" id="botaoEntrar">🔐 Entrar</button>
-
-            <div style="text-align:center; margin-top:1.5rem;">
-                <a href="javascript:history.back()" class="botao-voltar">← Voltar para o Mural de Fãs</a>
-            </div>
+        <div class="campo-senha">
+            <input type="password" id="campoSenha" placeholder="Digite a senha..." autocomplete="off">
+            <button type="button" class="botao-macaco" id="botaoOlho">🙈</button>
         </div>
+
+        <p id="avisoErro" class="aviso-erro escondido">❌ Senha incorreta!</p>
+
+        <button class="btn-entrar" id="botaoEntrar">🔐 Entrar</button>
+
+        <a href="javascript:history.back()" class="link-voltar">← ← Voltar para o Mural de Fãs</a>
     </div>
 
-    <!-- 📋 PAINEL ADMINISTRATIVO -->
-    <div id="telaPainel" class="caixa-principal escondido">
-        <div class="cabecalho-tela">
-            <h1 style="font-size:1.3rem;">📋 Painel de Controle</h1>
+    <div id="telaPainel" class="caixa-painel escondido">
+        <div class="cabecalho">
+            <h2>📋 Painel de Controle</h2>
             <button class="btn-sair" id="botaoSair">🚪 Sair</button>
         </div>
 
-        <!-- ABAS -->
         <div class="abas">
             <div class="aba ativa" id="abaMural">📋 Mural de Fãs</div>
             <div class="aba" id="abaApoio">💪 Mensagens de Apoio</div>
         </div>
 
-        <!-- CONTEÚDO ABA MURAL -->
         <div id="conteudoMural">
             <div id="listaMural"></div>
-            <div class="botoes-geral">
-                <button class="btn-vermelho" id="btnLimparMural">🗑️ Limpar Mural Completo</button>
-            </div>
+            <button class="btn-limpar-tudo" id="btnLimparMural">🗑️ Limpar Mural Completo</button>
         </div>
 
-        <!-- CONTEÚDO ABA APOIO -->
         <div id="conteudoApoio" class="escondido">
             <div id="listaApoio"></div>
-            <div class="botoes-geral">
-                <button class="btn-vermelho" id="btnLimparApoio">🗑️ Limpar Mensagens de Apoio</button>
-            </div>
+            <button class="btn-limpar-tudo" id="btnLimparApoio">🗑️ Limpar Mensagens de Apoio</button>
         </div>
 
-        <a href="javascript:history.back()" class="botao-voltar">← Voltar para o Mural de Fãs</a>
+        <a href="javascript:history.back()" class="link-voltar" style="margin-top: 2rem; display: inline-block;">← ← Voltar para o Mural de Fãs</a>
     </div>
 
     <script>
-        // 📂 CAMINHOS NO FIREBASE
         const CAMINHO_MURAL = "Mural";
         const CAMINHO_APOIO = "MensagensApoio";
 
@@ -296,13 +273,11 @@
         let ouvinteMural = null;
         let ouvinteApoio = null;
 
-        // 🔌 INICIALIZAR FIREBASE
         if (typeof firebase !== 'undefined' && !firebase.apps.length) {
             firebase.initializeApp(firebaseConfig);
             db = firebase.database();
         }
 
-        // 👁️ MOSTRAR/ESCONDER SENHA
         let senhaVisivel = false;
         const campoSenha = document.getElementById('campoSenha');
         const botaoOlho = document.getElementById('botaoOlho');
@@ -311,13 +286,12 @@
         botaoOlho.addEventListener('click', function() {
             senhaVisivel = !senhaVisivel;
             campoSenha.type = senhaVisivel ? 'text' : 'password';
-            botaoOlho.textContent = senhaVisivel ? '👁️' : '🙈';
+            botaoOlho.textContent = senhaVisivel ? '🙉' : '🙈';
         });
 
-        // 🔐 VERIFICAR SENHA
         document.getElementById('botaoEntrar').addEventListener('click', function() {
-            const digitada = campoSenha.value.trim().toLowerCase();
-            if (digitada === SENHA_ADMIN.toLowerCase()) {
+            const digitada = campoSenha.value.trim();
+            if (digitada === SENHA_ADMIN) {
                 document.getElementById('telaLogin').classList.add('escondido');
                 document.getElementById('telaPainel').classList.remove('escondido');
                 carregarMural();
@@ -327,7 +301,6 @@
             }
         });
 
-        // 🚪 SAIR
         document.getElementById('botaoSair').addEventListener('click', function() {
             pararOuvirTudo();
             if (confirm("Sair da área administrativa?")) {
@@ -340,7 +313,6 @@
             }
         });
 
-        // 🔄 PARAR DE OUVIR ALTERAÇÕES
         function pararOuvirMural() {
             if (ouvinteMural && db) {
                 db.ref(CAMINHO_MURAL).off("value", ouvinteMural);
@@ -360,7 +332,6 @@
             pararOuvirApoio();
         }
 
-        // 🔄 TROCAR ABA
         document.getElementById('abaMural').addEventListener('click', function() {
             trocarAba('mural');
         });
@@ -370,17 +341,14 @@
 
         function trocarAba(aba) {
             abaAtual = aba;
-            
             document.getElementById('abaMural').classList.toggle('ativa', aba === 'mural');
             document.getElementById('abaApoio').classList.toggle('ativa', aba === 'apoio');
             document.getElementById('conteudoMural').classList.toggle('escondido', aba !== 'mural');
             document.getElementById('conteudoApoio').classList.toggle('escondido', aba !== 'apoio');
-
             if (aba === 'mural') carregarMural();
             if (aba === 'apoio') carregarApoio();
         }
 
-        // 📋 CARREGAR MURAL DE FÃS
         function carregarMural() {
             if (!db) {
                 document.getElementById('listaMural').innerHTML = 
@@ -405,29 +373,29 @@
                     const div = document.createElement('div');
                     div.className = 'bloco-mensagem';
                     div.innerHTML = `
-                        <div class="cabecalho-msg">
+                        <div class="msg-cabecalho">
                             📝 Mensagem
-                            <span style="font-size:0.75rem; opacity:0.8;">${chave.substring(0, 8)}...</span>
+                            <span style="font-size:0.75rem;">${chave.substring(0, 8)}...</span>
                         </div>
-                        <div class="conteudo-msg">${msg.texto || msg}</div>
-                        <div class="botoes-msg">
-                            <button class="btn-vermelho" data-chave-mural="${chave}">🗑️ Apagar Esta Mensagem</button>
+                        <div class="msg-conteudo">${msg.texto || msg}</div>
+                        <div class="msg-botoes">
+                            <button class="btn-apagar" data-tipo="mural" data-chave="${chave}">🗑️ Apagar Esta Mensagem</button>
                         </div>
                     `;
                     container.appendChild(div);
                 });
 
-                // Adicionar eventos aos botões
-                document.querySelectorAll('[data-chave-mural]').forEach(function(btn) {
+                document.querySelectorAll('[data-tipo="mural"]').forEach(function(btn) {
                     btn.addEventListener('click', function() {
-                        const chave = this.getAttribute('data-chave-mural');
-                        apagarMural(chave);
+                        if (confirm('Apagar esta mensagem?')) {
+                            const chave = this.getAttribute('data-chave');
+                            db.ref(`${CAMINHO_MURAL}/${chave}`).remove();
+                        }
                     });
                 });
             });
         }
 
-        // 💪 CARREGAR MENSAGENS DE APOIO
         function carregarApoio() {
             if (!db) return;
 
@@ -438,4 +406,43 @@
                 container.innerHTML = '';
 
                 if (!snap.exists()) {
-                    container.innerHTML = '<div class="vazio"><p>📭 Nenhuma mensagem de apoio ainda
+                    container.innerHTML = '<div class="vazio"><p>📭 Nenhuma mensagem de apoio ainda</p></div>';
+                    return;
+                }
+
+                const chaves = Object.keys(dados).reverse();
+                chaves.forEach(function(chave) {
+                    const msg = dados[chave];
+                    const div = document.createElement('div');
+                    div.className = 'bloco-mensagem';
+                    div.innerHTML = `
+                        <div class="msg-cabecalho">
+                            💪 Mensagem
+                            <span style="font-size:0.75rem;">${chave.substring(0, 8)}...</span>
+                        </div>
+                        <div class="msg-conteudo">${msg.texto || msg}</div>
+                        <div class="msg-botoes">
+                            <button class="btn-apagar" data-tipo="apoio" data-chave="${chave}">🗑️ Apagar Esta Mensagem</button>
+                        </div>
+                    `;
+                    container.appendChild(div);
+                });
+
+                document.querySelectorAll('[data-tipo="apoio"]').forEach(function(btn) {
+                    btn.addEventListener('click', function() {
+                        if (confirm('Apagar esta mensagem?')) {
+                            const chave = this.getAttribute('data-chave');
+                            db.ref(`${CAMINHO_APOIO}/${chave}`).remove();
+                        }
+                    });
+                });
+            });
+        }
+
+        document.getElementById('btnLimparMural').addEventListener('click', function() {
+            if (confirm('Tem certeza? Isso apagará TODAS as mensagens do Mural!')) {
+                db.ref(CAMINHO_MURAL).remove();
+            }
+        });
+
+        document.getElementById('btnLimparApoio').addEventListener
