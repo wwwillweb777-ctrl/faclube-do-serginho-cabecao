@@ -52,10 +52,10 @@
             speak: none;
         }
 
-        /* 🟢 INÍCIO: Estilos do Player de Música */
+        /* 🟢 Player de Música */
         .player-musica {
             position: absolute;
-            bottom: 80px;
+            bottom: 100px;
             left: 3%;
             display: flex;
             align-items: center;
@@ -89,17 +89,18 @@
             min-width: 38px;
             text-align: center;
         }
-        /* 🔴 FIM: Estilos do Player de Música */
 
         .conteudo-interno {
             padding: 0.5rem 1.5rem 1.5rem;
             text-align: center;
             position: relative;
             z-index: 5;
+            background: #000;
         }
         .texto-clique-no {
             font-size: 1.5rem;
             animation: piscarTexto 1.2s infinite alternate;
+            color: #ff9900;
         }
         .menu-botao-inferior {
             background: #39ff14;
@@ -157,7 +158,6 @@
             background: #222;
             border-radius: 12px;
             font-size: 1.1rem;
-            transition: none;
         }
         .menu-opcao:hover {
             background: #333;
@@ -172,29 +172,20 @@
             border-radius: 50px;
             cursor: pointer;
             font-size: 1rem;
-            animation: piscarCor 1.2s infinite alternate;
-        }
-        @keyframes piscarCor {
-            0%   { border-color: #ff0000;   color: #ff0000;   box-shadow: 0 0 8px #ff0000; }
-            33%  { border-color: #f4a900;   color: #f4a900;   box-shadow: 0 0 8px #f4a900; }
-            66%  { border-color: #00bfff;   color: #00bfff;   box-shadow: 0 0 8px #00bfff; }
-            100% { border-color: #ffffff;   color: #ffffff;   box-shadow: 0 0 8px #ffffff; }
         }
         @keyframes piscarTexto {
-            0%   { color: #ff0000;   text-shadow: 0 0 8px #ff0000; }
-            33%  { color: #f4a900;   text-shadow: 0 0 8px #f4a900; }
-            66%  { color: #00bfff;   text-shadow: 0 0 8px #00bfff; }
-            100% { color: #ffffff;   text-shadow: 0 0 8px #ffffff; }
+            0%   { color: #ff6600;   text-shadow: 0 0 8px #ff6600; }
+            100% { color: #ffcc00;   text-shadow: 0 0 8px #ffcc00; }
         }
     </style>
 </head>
 <body>
     <div class="cartaz">
         <div class="logo-topo">
-            <img src="https://raw.githubusercontent.com/wwwillweb777-ctrl/faclube-do-serginho-cabecao/main/imagens/LogoSerginho.jpg" alt="">
+            <img src="imagens/LogoSerginho.jpg" alt="">
         </div>
 
-        <img class="imagem-principal" src="https://raw.githubusercontent.com/wwwillweb777-ctrl/faclube-do-serginho-cabecao/main/imagens/Serginho.jpg" alt="">
+        <img class="imagem-principal" src="imagens/Serginho.jpg" alt="">
 
         <!-- 🟢 Player de Música -->
         <div class="player-musica">
@@ -204,7 +195,7 @@
             <button class="btn-musica" onclick="aumentarVolume()">+</button>
         </div>
 
-        <!-- ✅ Conteúdo que estava sumindo - AGORA VEM ANTES E FORA DA TAG DE ÁUDIO -->
+        <!-- ✅ Conteúdo -->
         <div class="conteudo-interno">
             <p>
                 <span class="texto-clique-no">Clique no</span>
@@ -212,9 +203,10 @@
             </p>
         </div>
 
-        <!-- ✅ ÁUDIO FECHADO COMPLETAMENTE - FICA POR ÚLTIMO -->
-        <audio id="musicaFundo" loop>
-            <source src="https://raw.githubusercontent.com/wwwillweb777/faclube-do-serginho-cabecao/main/TamoAiNaAtividade.mp3" type="audio/mpeg">
+        <!-- ✅ ÁUDIO - NOME CORRIGIDO + AUTOPLAY + MUTED PARA TENTAR INICIAR SOZINHO -->
+        <audio id="musicaFundo" loop autoplay muted preload="auto">
+            <source src="TamoAiNaAtividade.mp3" type="audio/mpeg">
+            Seu navegador não suporta áudio.
         
     </div>
 
@@ -266,12 +258,26 @@
 
         audio.volume = 0.5;
 
+        // Tenta iniciar o som com som desligado primeiro (muitos navegadores permitem isso)
+        window.addEventListener('click', function desmuta() {
+            audio.muted = false;
+            if (!estaTocando) {
+                audio.play().then(() => {
+                    estaTocando = true;
+                    btnPlayPause.textContent = '⏸️';
+                }).catch(e => console.log('Clique no botão de play'));
+            }
+            window.removeEventListener('click', desmuta);
+        });
+
         function alternarMusica() {
             if (estaTocando) {
                 audio.pause();
                 btnPlayPause.textContent = '▶️';
             } else {
-                audio.play();
+                audio.play().catch(erro => {
+                    alert('Clique no botão para começar a ouvir! 🎵');
+                });
                 btnPlayPause.textContent = '⏸️';
             }
             estaTocando = !estaTocando;
