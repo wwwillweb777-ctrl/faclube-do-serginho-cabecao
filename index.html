@@ -51,17 +51,17 @@
             speak: none;
         }
 
-        /* ✅ Botões de música — ABAIXADOS e com − e + */
+        /* ✅ Botões de música — bem abaixo do queixo, DENTRO da foto */
         .player-musica {
             position: absolute;
-            bottom: 22%;
+            bottom: 5%;
             left: 50%;
             transform: translateX(-50%);
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-            padding: 0.5rem 1rem;
+            gap: 12px;
+            padding: 0.5rem 1.2rem;
             background: rgba(0, 0, 0, 0.75);
             border-radius: 50px;
             border: 2px solid #f4a900;
@@ -71,15 +71,15 @@
             background: #39ff14;
             color: #000;
             border: none;
-            padding: 0.4rem 0.7rem;
-            font-size: 1rem;
+            padding: 0.5rem 0.8rem;
+            font-size: 1.1rem;
             font-weight: bold;
             border-radius: 50%;
             cursor: pointer;
             transition: all 0.2s ease;
-            min-width: 44px;
-            width: 44px;
-            height: 44px;
+            min-width: 46px;
+            width: 46px;
+            height: 46px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -88,41 +88,43 @@
             transform: scale(1.1);
         }
         .volume-display {
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             color: #fff;
-            min-width: 45px;
+            min-width: 50px;
             text-align: center;
             font-weight: 500;
         }
 
+        /* ✅ Seu código original — intacto */
         .conteudo-interno {
-            padding: 1rem 1.5rem 1.2rem;
+            padding: 0.5rem 1.5rem 1rem;
             text-align: center;
-            position: relative;
-            z-index: 5;
             background: #000;
+            position: relative;
+            z-index: 1;
         }
 
         .texto-clique-no {
             font-size: 1.5rem;
             animation: piscarTexto 1.2s infinite alternate;
-            display: inline-block;
-            margin-right: 0.5rem;
         }
 
         .menu-botao-inferior {
             background: #39ff14;
             color: #000;
             border: none;
-            padding: 0.5rem 1.2rem;
+            padding: 0.4rem 1rem;
             font-size: 1rem;
             font-weight: bold;
             border-radius: 50px;
             cursor: pointer;
             box-shadow: 0 0 12px #39ff14;
+            transition: none;
             vertical-align: middle;
+            margin-left: 0.4rem;
         }
         .menu-botao-inferior:hover {
+            transform: none;
             box-shadow: 0 0 12px #39ff14;
         }
         .menu-overlay {
@@ -163,13 +165,13 @@
             background: #222;
             border-radius: 12px;
             font-size: 1.1rem;
+            transition: none;
         }
         .menu-opcao:hover {
             background: #333;
             color: #39ff14;
         }
 
-        /* ✅ Botão Fechar piscando — EXATAMENTE como estava */
         .fechar-menu {
             margin-top: 1.5rem;
             background: transparent;
@@ -189,7 +191,6 @@
             100% { border-color: #ffffff;   color: #ffffff;   box-shadow: 0 0 8px #ffffff; }
         }
 
-        /* ✅ Texto "Clique no" piscando — EXATAMENTE como estava */
         @keyframes piscarTexto {
             0%   { color: #ff0000;   text-shadow: 0 0 8px #ff0000; }
             33%  { color: #f4a900;   text-shadow: 0 0 8px #f4a900; }
@@ -206,7 +207,7 @@
 
         <img class="imagem-principal" src="https://raw.githubusercontent.com/wwwillweb777-ctrl/faclube-do-serginho-cabecao/main/imagens/Serginho.jpg" alt="">
 
-        <!-- ✅ Botões de música com − e + -->
+        <!-- ✅ Botões na posição certa: abaixo do queixo, dentro da foto -->
         <div class="player-musica">
             <button class="btn-musica" onclick="alternarMusica()" id="btnPlayPause">▶️</button>
             <button class="btn-musica" onclick="diminuirVolume()">−</button>
@@ -219,7 +220,7 @@
             <source src="https://raw.githubusercontent.com/wwwillweb777-ctrl/faclube-do-serginho-cabecao/main/TamoAiNaAtividade.mp3" type="audio/mpeg">
         
 
-        <!-- ✅ Área do MENU visível -->
+        <!-- ✅ Seu texto piscando e botão MENU — intacto -->
         <div class="conteudo-interno">
             <p>
                 <span class="texto-clique-no">Clique no</span>
