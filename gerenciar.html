@@ -47,6 +47,7 @@
 
         .escondido { display: none !important; }
 
+        /* === TELA DE LOGIN === */
         .tela-login-card {
             max-width: 420px;
             margin: 4rem auto;
@@ -137,6 +138,7 @@
             margin-bottom: 1rem;
         }
 
+        /* === ABAS === */
         .abas {
             display: flex;
             gap: 0.5rem;
@@ -163,6 +165,7 @@
             color: #000;
         }
 
+        /* === LISTA DE MENSAGENS === */
         .bloco-mensagem {
             margin-bottom: 1rem;
             border-radius: 16px;
@@ -230,6 +233,7 @@
 </head>
 <body>
 
+    <!-- 🔐 TELA DE LOGIN -->
     <div id="telaLogin" class="caixa-principal">
         <div class="tela-login-card">
             <h1>🔐 Área Administrativa</h1>
@@ -237,48 +241,53 @@
 
             <div class="grupo-senha">
                 <input type="password" id="campoSenha" placeholder="Digite a senha..." autocomplete="off">
-                <button type="button" class="botao-olho" onclick="alternarVisibilidade()">🙈</button>
+                <button type="button" class="botao-olho" id="botaoOlho" aria-label="Mostrar senha">🙈</button>
             </div>
 
             <p id="avisoErro" class="aviso-erro escondido">❌ Senha incorreta!</p>
 
-            <button class="btn-principal" onclick="verificarSenha()">🔐 Entrar</button>
+            <button class="btn-principal" id="botaoEntrar">🔐 Entrar</button>
 
             <div style="text-align:center; margin-top:1.5rem;">
-                <a href="index.html" class="botao-voltar">Voltar para o site principal</a>
+                <a href="javascript:history.back()" class="botao-voltar">← Voltar para o Mural de Fãs</a>
             </div>
         </div>
     </div>
 
+    <!-- 📋 PAINEL ADMINISTRATIVO -->
     <div id="telaPainel" class="caixa-principal escondido">
         <div class="cabecalho-tela">
             <h1 style="font-size:1.3rem;">📋 Painel de Controle</h1>
-            <button class="btn-sair" onclick="sair()">🚪 Sair</button>
+            <button class="btn-sair" id="botaoSair">🚪 Sair</button>
         </div>
 
+        <!-- ABAS -->
         <div class="abas">
-            <div class="aba ativa" id="abaMural" onclick="trocarAba('mural')">📋 Mural de Fãs</div>
-            <div class="aba" id="abaApoio" onclick="trocarAba('apoio')">💪 Mensagens de Apoio</div>
+            <div class="aba ativa" id="abaMural">📋 Mural de Fãs</div>
+            <div class="aba" id="abaApoio">💪 Mensagens de Apoio</div>
         </div>
 
+        <!-- CONTEÚDO ABA MURAL -->
         <div id="conteudoMural">
             <div id="listaMural"></div>
             <div class="botoes-geral">
-                <button class="btn-vermelho" onclick="if(confirm('Apagar TODAS as mensagens do Mural?')) limparMural()">🗑️ Limpar Mural Completo</button>
+                <button class="btn-vermelho" id="btnLimparMural">🗑️ Limpar Mural Completo</button>
             </div>
         </div>
 
+        <!-- CONTEÚDO ABA APOIO -->
         <div id="conteudoApoio" class="escondido">
             <div id="listaApoio"></div>
             <div class="botoes-geral">
-                <button class="btn-vermelho" onclick="if(confirm('Apagar TODAS as mensagens de Apoio?')) limparApoio()">🗑️ Limpar Mensagens de Apoio</button>
+                <button class="btn-vermelho" id="btnLimparApoio">🗑️ Limpar Mensagens de Apoio</button>
             </div>
         </div>
 
-        <a href="index.html" class="botao-voltar">← Voltar ao site principal</a>
+        <a href="javascript:history.back()" class="botao-voltar">← Voltar para o Mural de Fãs</a>
     </div>
 
     <script>
+        // 📂 CAMINHOS NO FIREBASE
         const CAMINHO_MURAL = "Mural";
         const CAMINHO_APOIO = "MensagensApoio";
 
@@ -287,43 +296,51 @@
         let ouvinteMural = null;
         let ouvinteApoio = null;
 
+        // 🔌 INICIALIZAR FIREBASE
         if (typeof firebase !== 'undefined' && !firebase.apps.length) {
             firebase.initializeApp(firebaseConfig);
             db = firebase.database();
         }
 
+        // 👁️ MOSTRAR/ESCONDER SENHA
         let senhaVisivel = false;
-        function alternarVisibilidade() {
-            const campo = document.getElementById('campoSenha');
-            const botao = document.querySelector('.botao-olho');
-            senhaVisivel = !senhaVisivel;
-            campo.type = senhaVisivel ? 'text' : 'password';
-            botao.textContent = senhaVisivel ? '👁️' : '🙈';
-        }
+        const campoSenha = document.getElementById('campoSenha');
+        const botaoOlho = document.getElementById('botaoOlho');
+        const avisoErro = document.getElementById('avisoErro');
 
-        function verificarSenha() {
-            const digitada = document.getElementById('campoSenha').value.trim().toLowerCase();
+        botaoOlho.addEventListener('click', function() {
+            senhaVisivel = !senhaVisivel;
+            campoSenha.type = senhaVisivel ? 'text' : 'password';
+            botaoOlho.textContent = senhaVisivel ? '👁️' : '🙈';
+        });
+
+        // 🔐 VERIFICAR SENHA
+        document.getElementById('botaoEntrar').addEventListener('click', function() {
+            const digitada = campoSenha.value.trim().toLowerCase();
             if (digitada === SENHA_ADMIN.toLowerCase()) {
                 document.getElementById('telaLogin').classList.add('escondido');
                 document.getElementById('telaPainel').classList.remove('escondido');
                 carregarMural();
             } else {
-                document.getElementById('avisoErro').classList.remove('escondido');
-                document.getElementById('campoSenha').value = '';
+                avisoErro.classList.remove('escondido');
+                campoSenha.value = '';
             }
-        }
+        });
 
-        function sair() {
+        // 🚪 SAIR
+        document.getElementById('botaoSair').addEventListener('click', function() {
             pararOuvirTudo();
-            if (!confirm("Sair da área administrativa?")) return;
-            document.getElementById('telaPainel').classList.add('escondido');
-            document.getElementById('telaLogin').classList.remove('escondido');
-            document.getElementById('avisoErro').classList.add('escondido');
-            document.getElementById('campoSenha').value = '';
-            senhaVisivel = false;
-            abaAtual = 'mural';
-        }
+            if (confirm("Sair da área administrativa?")) {
+                document.getElementById('telaPainel').classList.add('escondido');
+                document.getElementById('telaLogin').classList.remove('escondido');
+                avisoErro.classList.add('escondido');
+                campoSenha.value = '';
+                senhaVisivel = false;
+                abaAtual = 'mural';
+            }
+        });
 
+        // 🔄 PARAR DE OUVIR ALTERAÇÕES
         function pararOuvirMural() {
             if (ouvinteMural && db) {
                 db.ref(CAMINHO_MURAL).off("value", ouvinteMural);
@@ -343,6 +360,14 @@
             pararOuvirApoio();
         }
 
+        // 🔄 TROCAR ABA
+        document.getElementById('abaMural').addEventListener('click', function() {
+            trocarAba('mural');
+        });
+        document.getElementById('abaApoio').addEventListener('click', function() {
+            trocarAba('apoio');
+        });
+
         function trocarAba(aba) {
             abaAtual = aba;
             
@@ -355,6 +380,7 @@
             if (aba === 'apoio') carregarApoio();
         }
 
+        // 📋 CARREGAR MURAL DE FÃS
         function carregarMural() {
             if (!db) {
                 document.getElementById('listaMural').innerHTML = 
@@ -363,7 +389,7 @@
             }
 
             pararOuvirMural();
-            ouvinteMural = db.ref(CAMINHO_MURAL).on("value", snap => {
+            ouvinteMural = db.ref(CAMINHO_MURAL).on("value", function(snap) {
                 const dados = snap.val() || {};
                 const container = document.getElementById('listaMural');
                 container.innerHTML = '';
@@ -373,58 +399,43 @@
                     return;
                 }
 
-                Object.keys(dados).reverse().forEach(chave => {
+                const chaves = Object.keys(dados).reverse();
+                chaves.forEach(function(chave) {
                     const msg = dados[chave];
-                    container.innerHTML += `
-                        <div class="bloco-mensagem">
-                            <div class="cabecalho-msg">
-                                📝 Mensagem
-                                <span style="font-size:0.75rem; opacity:0.8;">${chave.substring(0, 8)}...</span>
-                            </div>
-                            <div class="conteudo-msg">${msg.texto || msg}</div>
-                            <div class="botoes-msg">
-                                <button class="btn-vermelho" onclick="apagarMural('${chave}')">🗑️ Apagar Esta Mensagem</button>
-                            </div>
+                    const div = document.createElement('div');
+                    div.className = 'bloco-mensagem';
+                    div.innerHTML = `
+                        <div class="cabecalho-msg">
+                            📝 Mensagem
+                            <span style="font-size:0.75rem; opacity:0.8;">${chave.substring(0, 8)}...</span>
+                        </div>
+                        <div class="conteudo-msg">${msg.texto || msg}</div>
+                        <div class="botoes-msg">
+                            <button class="btn-vermelho" data-chave-mural="${chave}">🗑️ Apagar Esta Mensagem</button>
                         </div>
                     `;
+                    container.appendChild(div);
+                });
+
+                // Adicionar eventos aos botões
+                document.querySelectorAll('[data-chave-mural]').forEach(function(btn) {
+                    btn.addEventListener('click', function() {
+                        const chave = this.getAttribute('data-chave-mural');
+                        apagarMural(chave);
+                    });
                 });
             });
         }
 
+        // 💪 CARREGAR MENSAGENS DE APOIO
         function carregarApoio() {
             if (!db) return;
 
             pararOuvirApoio();
-            ouvinteApoio = db.ref(CAMINHO_APOIO).on("value", snap => {
+            ouvinteApoio = db.ref(CAMINHO_APOIO).on("value", function(snap) {
                 const dados = snap.val() || {};
                 const container = document.getElementById('listaApoio');
                 container.innerHTML = '';
 
                 if (!snap.exists()) {
-                    container.innerHTML = '<div class="vazio"><p>📭 Nenhuma mensagem de apoio ainda</p></div>';
-                    return;
-                }
-
-                Object.keys(dados).reverse().forEach(chave => {
-                    const msg = dados[chave];
-                    container.innerHTML += `
-                        <div class="bloco-mensagem">
-                            <div class="cabecalho-msg">
-                                💪 Mensagem de Apoio
-                                <span style="font-size:0.75rem; opacity:0.8;">${chave.substring(0, 8)}...</span>
-                            </div>
-                            <div class="conteudo-msg">${msg.texto || msg}</div>
-                            <div class="botoes-msg">
-                                <button class="btn-vermelho" onclick="apagarApoio('${chave}')">🗑️ Apagar Esta Mensagem</button>
-                            </div>
-                        </div>
-                    `;
-                });
-            });
-        }
-
-        async function apagarMural(chave) {
-            if (!confirm("Apagar esta mensagem?")) return;
-            if (!db) return;
-            await db.ref(`${CAMINHO_MURAL}/${chave}`).remove();
-       
+                    container.innerHTML = '<div class="vazio"><p>📭 Nenhuma mensagem de apoio ainda
