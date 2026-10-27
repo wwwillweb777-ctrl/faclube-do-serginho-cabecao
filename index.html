@@ -47,12 +47,14 @@
             width: 100%;
             height: auto;
             display: block;
+            content-visibility: auto;
+            speak: none;
         }
 
-        /* ✅ Só os botões, abaixo do queixo */
+        /* ✅ Botões de música — ABAIXADOS e com − e + */
         .player-musica {
             position: absolute;
-            bottom: 12%;
+            bottom: 22%;
             left: 50%;
             transform: translateX(-50%);
             display: flex;
@@ -72,44 +74,53 @@
             padding: 0.4rem 0.7rem;
             font-size: 1rem;
             font-weight: bold;
-            border-radius: 50px;
+            border-radius: 50%;
             cursor: pointer;
             transition: all 0.2s ease;
-            min-width: 40px;
+            min-width: 44px;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .btn-musica:hover {
             transform: scale(1.1);
         }
         .volume-display {
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             color: #fff;
-            min-width: 40px;
+            min-width: 45px;
             text-align: center;
+            font-weight: 500;
         }
 
         .conteudo-interno {
-            padding: 0.5rem 1.5rem 1rem;
+            padding: 1rem 1.5rem 1.2rem;
             text-align: center;
             position: relative;
             z-index: 5;
+            background: #000;
         }
 
         .texto-clique-no {
             font-size: 1.5rem;
             animation: piscarTexto 1.2s infinite alternate;
+            display: inline-block;
+            margin-right: 0.5rem;
         }
 
         .menu-botao-inferior {
             background: #39ff14;
             color: #000;
             border: none;
-            padding: 0.4rem 1rem;
+            padding: 0.5rem 1.2rem;
             font-size: 1rem;
             font-weight: bold;
             border-radius: 50px;
             cursor: pointer;
             box-shadow: 0 0 12px #39ff14;
-            margin-left: 0.4rem;
+            vertical-align: middle;
         }
         .menu-botao-inferior:hover {
             box-shadow: 0 0 12px #39ff14;
@@ -158,6 +169,7 @@
             color: #39ff14;
         }
 
+        /* ✅ Botão Fechar piscando — EXATAMENTE como estava */
         .fechar-menu {
             margin-top: 1.5rem;
             background: transparent;
@@ -177,6 +189,7 @@
             100% { border-color: #ffffff;   color: #ffffff;   box-shadow: 0 0 8px #ffffff; }
         }
 
+        /* ✅ Texto "Clique no" piscando — EXATAMENTE como estava */
         @keyframes piscarTexto {
             0%   { color: #ff0000;   text-shadow: 0 0 8px #ff0000; }
             33%  { color: #f4a900;   text-shadow: 0 0 8px #f4a900; }
@@ -193,12 +206,12 @@
 
         <img class="imagem-principal" src="https://raw.githubusercontent.com/wwwillweb777-ctrl/faclube-do-serginho-cabecao/main/imagens/Serginho.jpg" alt="">
 
-        <!-- ✅ Só os botões, abaixo do queixo -->
+        <!-- ✅ Botões de música com − e + -->
         <div class="player-musica">
             <button class="btn-musica" onclick="alternarMusica()" id="btnPlayPause">▶️</button>
-            <button class="btn-musica" onclick="diminuirVolume()">🔉</button>
+            <button class="btn-musica" onclick="diminuirVolume()">−</button>
             <span class="volume-display" id="volumeDisplay">50%</span>
-            <button class="btn-musica" onclick="aumentarVolume()">🔊</button>
+            <button class="btn-musica" onclick="aumentarVolume()">+</button>
         </div>
 
         <!-- ✅ Áudio -->
@@ -206,6 +219,7 @@
             <source src="https://raw.githubusercontent.com/wwwillweb777-ctrl/faclube-do-serginho-cabecao/main/TamoAiNaAtividade.mp3" type="audio/mpeg">
         
 
+        <!-- ✅ Área do MENU visível -->
         <div class="conteudo-interno">
             <p>
                 <span class="texto-clique-no">Clique no</span>
