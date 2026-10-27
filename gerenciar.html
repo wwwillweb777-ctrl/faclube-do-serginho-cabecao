@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Área Administrativa — Fã Clube Serginho Cabeção</title>
-    
+
+    <script src="config.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
-    <script src="config.js"></script>
 
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
-        body { 
+        body {
             background-color: #f8f8f8;
             background-image: radial-gradient(#d4d4d4 1px, transparent 1px);
             background-size: 20px 20px;
@@ -210,7 +210,6 @@
 </head>
 <body>
 
-    <!-- TELA DE LOGIN -->
     <div id="telaLogin" class="caixa-login">
         <h1>🔐 Área Administrativa</h1>
         <p class="subtitulo">Fã Clube do Serginho Cabeção</p>
@@ -227,7 +226,6 @@
         <a href="javascript:history.back()" class="link-voltar">← Voltar para o site</a>
     </div>
 
-    <!-- PAINEL PRINCIPAL -->
     <div id="telaPainel" class="caixa-painel escondido">
         <div class="cabecalho">
             <h2>📋 Painel de Controle</h2>
@@ -249,87 +247,65 @@
     </div>
 
     <script>
-        // ==========================================
-        // VARIÁVEIS GLOBAIS
-        // ==========================================
         let db = null;
-        let abaAtual = 'mural';
-        let ouvinteMural = null;
-        let ouvinteApoio = null;
-
-        // ==========================================
-        // INICIALIZAR FIREBASE
-        // ==========================================
         if (typeof firebase !== 'undefined' && !firebase.apps.length) {
             firebase.initializeApp(firebaseConfig);
             db = firebase.database();
         }
 
-        // ==========================================
-        // MOSTRAR/ESCONDER SENHA — COMEÇA FECHADO
-        // ==========================================
+        let abaAtual = 'mural';
+        let ouvinteMural = null;
+        let ouvinteApoio = null;
+
         const campoSenha = document.getElementById('campoSenha');
         const botaoOlho = document.getElementById('botaoOlho');
-        let senhaEstaVisivel = false; // PADRÃO: FECHADO
+        const avisoErro = document.getElementById('avisoErro');
+        let senhaVisivel = false;
 
         botaoOlho.addEventListener('click', function() {
-            senhaEstaVisivel = !senhaEstaVisivel;
-            
-            if (senhaEstaVisivel) {
+            senhaVisivel = !senhaVisivel;
+            if (senhaVisivel) {
                 campoSenha.type = 'text';
-                botaoOlho.textContent = '👁️'; // OLHO ABERTO = MOSTRANDO
+                botaoOlho.textContent = '👁️';
             } else {
                 campoSenha.type = 'password';
-                botaoOlho.textContent = '🙈'; // OLHO FECHADO = ESCONDENDO
+                botaoOlho.textContent = '🙈';
             }
         });
 
-        // ==========================================
-        // ENTRAR NO SISTEMA
-        // ==========================================
         document.getElementById('botaoEntrar').addEventListener('click', function() {
-            const senhaDigitada = campoSenha.value.trim();
-            const avisoErro = document.getElementById('avisoErro');
-
-            if (typeof SENHA_ADMIN !== 'undefined' && senhaDigitada === SENHA_ADMIN) {
-                // SUCESSO — ENTRAR
+            const digitada = campoSenha.value.trim();
+            
+            if (typeof SENHA_ADMIN !== 'undefined' && digitada === SENHA_ADMIN) {
                 avisoErro.classList.add('escondido');
                 document.getElementById('telaLogin').classList.add('escondido');
                 document.getElementById('telaPainel').classList.remove('escondido');
                 carregarMural();
             } else {
-                // ERRO — SENHA INCORRETA
                 avisoErro.classList.remove('escondido');
                 campoSenha.value = '';
             }
         });
 
-        // ==========================================
-        // SAIR DO SISTEMA
-        // ==========================================
         document.getElementById('botaoSair').addEventListener('click', function() {
-            if (confirm("Tem certeza que deseja sair?")) {
+            if (confirm("Sair da área administrativa?")) {
                 pararOuvirTudo();
                 abaAtual = 'mural';
                 document.getElementById('telaPainel').classList.add('escondido');
                 document.getElementById('telaLogin').classList.remove('escondido');
                 avisoErro.classList.add('escondido');
                 campoSenha.value = '';
-                senhaEstaVisivel = false;
+                senhaVisivel = false;
                 botaoOlho.textContent = '🙈';
                 campoSenha.type = 'password';
             }
         });
 
-        // ==========================================
-        // TROCAR ABA
-        // ==========================================
         document.getElementById('abaMural').addEventListener('click', function() {
             abaAtual = 'mural';
             atualizarAbas();
             carregarMural();
         });
-
         document.getElementById('abaApoio').addEventListener('click', function() {
             abaAtual = 'apoio';
             atualizarAbas();
@@ -345,9 +321,6 @@
             document.getElementById('btnLimparApoio').classList.toggle('escondido', abaAtual !== 'apoio');
         }
 
-        // ==========================================
-        // PARAR DE OUVIR AS ALTERAÇÕES
-        // ==========================================
         function pararOuvirTudo() {
             if (ouvinteMural && db) {
                 db.ref('Mural').off("value", ouvinteMural);
@@ -359,9 +332,6 @@
             }
         }
 
-        // ==========================================
-        // CARREGAR MURAL DE RECADOS
-        // ==========================================
         function carregarMural() {
             if (!db) {
                 document.getElementById('listaMural').innerHTML = 
@@ -390,29 +360,90 @@
                         <div class="msg-cabecalho">📝 Recado</div>
                         <div class="msg-remetente">
                             👤 ${msg.nome || 'Anônimo'}<br>
-                            🌐 ${msg.rede || 'Rede não informada'}<br>
+                            🌐 ${msg.rede || 'Não informado'}<br>
                             🔗 ${msg.arroba || '@desconhecido'}
                             <div class="horario">🕒 ${msg.horario || 'Sem data'}</div>
                         </div>
                         <div class="msg-conteudo">${msg.texto || ''}</div>
                         <div class="msg-botoes">
-                            <button class="btn-apagar" data-tipo="Mural" data-id="${chave}">🗑️ Apagar esta mensagem</button>
+                            <button class="btn-apagar" data-caminho="Mural" data-chave="${chave}">🗑️ Apagar esta mensagem</button>
                         </div>
                     `;
                     container.appendChild(div);
                 });
 
-                // Adicionar eventos nos botões de apagar
                 container.querySelectorAll('.btn-apagar').forEach(function(botao) {
                     botao.addEventListener('click', function() {
-                        const tipo = this.getAttribute('data-tipo');
-                        const id = this.getAttribute('data-id');
-                        if (confirm('Tem certeza que deseja apagar esta mensagem?')) {
-                            db.ref(`${tipo}/${id}`).remove();
+                        const caminho = this.getAttribute('data-caminho');
+                        const chave = this.getAttribute('data-chave');
+                        if (confirm('Apagar esta mensagem?')) {
+                            db.ref(`${caminho}/${chave}`).remove();
                         }
                     });
                 });
             });
         }
 
-        // ==========================================
+        function carregarApoio() {
+            if (!db) return;
+            pararOuvirTudo();
+            
+            ouvinteApoio = db.ref('MensagensApoio').on("value", function(snapshot) {
+                const container = document.getElementById('listaApoio');
+                container.innerHTML = '';
+
+                if (!snapshot.exists()) {
+                    container.innerHTML = '<div class="vazio">📭 Nenhuma mensagem de apoio ainda</div>';
+                    return;
+                }
+
+                const dados = snapshot.val();
+                const chaves = Object.keys(dados).reverse();
+
+                chaves.forEach(function(chave) {
+                    const msg = dados[chave];
+                    const div = document.createElement('div');
+                    div.className = 'bloco-mensagem';
+                    div.innerHTML = `
+                        <div class="msg-cabecalho">💪 Mensagem de Apoio</div>
+                        <div class="msg-remetente">
+                            👤 ${msg.nome || 'Anônimo'}<br>
+                            🌐 ${msg.rede || 'Não informado'}<br>
+                            🔗 ${msg.arroba || '@desconhecido'}
+                            <div class="horario">🕒 ${msg.horario || 'Sem data'}</div>
+                        </div>
+                        <div class="msg--conteudo">${msg.texto || ''}</div>
+                        <div class="msg-botoes">
+                            <button class="btn-apagar" data-caminho="MensagensApoio" data-chave="${chave}">🗑️ Apagar esta mensagem</button>
+                        </div>
+                    `;
+                    container.appendChild(div);
+                });
+
+                container.querySelectorAll('.btn-apagar').forEach(function(botao) {
+                    botao.addEventListener('click', function() {
+                        const caminho = this.getAttribute('data-caminho');
+                        const chave = this.getAttribute('data-chave');
+                        if (confirm('Apagar esta mensagem?')) {
+                            db.ref(`${caminho}/${chave}`).remove();
+                        }
+                    });
+                });
+            });
+        }
+
+        document.getElementById('btnLimparMural').addEventListener('click', function() {
+            if (confirm('⚠️ Tem certeza? Isso apagará TODAS as mensagens do Mural!')) {
+                db.ref('Mural').remove();
+            }
+        });
+
+        document.getElementById('btnLimparApoio').addEventListener('click', function() {
+            if (confirm('⚠️ Tem certeza? Isso apagará TODAS as mensagens de Apoio!')) {
+                db.ref('MensagensApoio').remove();
+            }
+        });
+    </script>
+</body>
+</html>
+
