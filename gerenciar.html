@@ -291,7 +291,7 @@
 
         document.getElementById('botaoEntrar').addEventListener('click', function() {
             const digitada = campoSenha.value.trim();
-            if (digitada === SENHA_ADMIN) {
+            if (digitada.toLowerCase() === SENHA_ADMIN.toLowerCase()) {
                 document.getElementById('telaLogin').classList.add('escondido');
                 document.getElementById('telaPainel').classList.remove('escondido');
                 carregarMural();
@@ -444,5 +444,3 @@
                 db.ref(CAMINHO_MURAL).remove();
             }
         });
-
-        document.getElementById('btnLimparApoio').addEventListener
