@@ -29,7 +29,6 @@
             flex-direction: column;
             background: #000;
         }
-        /* Cabeçalho - o mais compacto e alto possível */
         .cabecalho {
             text-align: center;
             padding: 0.3rem 0 0.6rem;
@@ -54,7 +53,6 @@
             font-size: 0.9rem;
             line-height: 1.4;
         }
-        /* Área de digitação */
         .area-texto {
             flex-shrink: 0;
             margin-bottom: 0.7rem;
@@ -70,7 +68,6 @@
             font-size: 1rem;
             resize: none;
         }
-        /* Botão Enviar - mais estreito e centralizado */
         .botao-enviar-container {
             display: flex;
             justify-content: center;
@@ -92,7 +89,6 @@
         button.enviar:active {
             transform: scale(0.97);
         }
-        /* Área das mensagens - MAIOR */
         .area-mensagens {
             flex: 1;
             background: #111;
@@ -125,7 +121,6 @@
             padding: 2.5rem 1rem;
             font-size: 0.95rem;
         }
-        /* Botão Voltar */
         button.voltar {
             width: 100%;
             background: transparent;
@@ -141,7 +136,6 @@
         button.voltar:active {
             background: rgba(255, 215, 0, 0.1);
         }
-        /* Barra de rolagem estilizada */
         .area-mensagens::-webkit-scrollbar {
             width: 6px;
         }
@@ -153,7 +147,6 @@
 </head>
 <body>
     <div class="tela-completa">
-        <!-- Cabeçalho - mais compacto e no topo -->
         <div class="cabecalho">
             <div class="titulo-com-icone">
                 <span class="icone">💪</span>
@@ -162,17 +155,14 @@
             <p class="descricao">Deixe aqui sua mensagem de força e apoio para o Serginho Cabeção! Sua palavra é importante! 💛</p>
         </div>
 
-        <!-- Área de digitação -->
         <div class="area-texto">
             <textarea id="campoMensagem" placeholder="Escreva sua mensagem de apoio aqui..."></textarea>
         </div>
 
-        <!-- Botão Enviar - mais estreito, centralizado -->
         <div class="botao-enviar-container">
             <button class="enviar" onclick="enviarMensagem()">✅ Enviar Mensagem</button>
         </div>
 
-        <!-- Área das mensagens - AGORA MAIOR -->
         <div class="area-mensagens">
             <h3>📢 Mensagens dos Fãs</h3>
             <div id="listaMensagens">
@@ -180,18 +170,15 @@
             </div>
         </div>
 
-        <!-- Botão Voltar -->
         <button class="voltar" onclick="voltarPagina()">⬅️ Voltar ao Menu</button>
     </div>
 
     <script>
-        // Inicializar Firebase
         if (!firebase.apps.length) {
             firebase.initializeApp(firebaseConfig);
         }
         const db = firebase.database();
 
-        // Função para enviar mensagem
         async function enviarMensagem() {
             const texto = document.getElementById('campoMensagem').value.trim();
             if (!texto) {
@@ -201,8 +188,11 @@
             
             try {
                 await db.ref("MensagensApoio").push({
+                    nome: "Anônimo",
+                    rede: "Não informado",
+                    arroba: "@desconhecido",
                     texto: texto,
-                    data: new Date().toLocaleString('pt-BR')
+                    horario: new Date().toLocaleString('pt-BR')
                 });
                 document.getElementById('campoMensagem').value = '';
                 alert('✅ Mensagem enviada com sucesso! Obrigado pelo apoio! 💪💛');
@@ -212,7 +202,6 @@
             }
         }
 
-        // Função para voltar
         function voltarPagina() {
             if (window.history.length > 1) {
                 history.back();
@@ -221,7 +210,6 @@
             }
         }
 
-        // Carregar mensagens em tempo real
         function carregarMensagens() {
             const lista = document.getElementById('listaMensagens');
             db.ref("MensagensApoio").limitToLast(50).on("value", (snapshot) => {
@@ -238,7 +226,7 @@
                     const div = document.createElement('div');
                     div.className = 'mensagem-item';
                     div.innerHTML = `
-                        <span style="font-size:0.75rem; color:#999;">${mensagem.data || ''}</span>
+                        <span style="font-size:0.75rem; color:#999;">${mensagem.horario || ''}</span>
                         <p style="margin-top:0.3rem;">${mensagem.texto}</p>
                     `;
                     lista.appendChild(div);
