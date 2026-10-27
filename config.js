@@ -1,4 +1,3 @@
-// config.js — Configuração do Firebase do Fã Clube
 const firebaseConfig = {
   apiKey: "AIzaSyAROBYhE8GLFyJ3vrqkVYAa383pKAI88Yg",
   authDomain: "faclubeserginho-e0c8e.firebaseapp.com",
@@ -8,3 +7,5 @@ const firebaseConfig = {
   messagingSenderId: "871956894909",
   appId: "1:871956894909:web:a35251e63afb5166b993d4"
 };
+
+const SENHA_ADMIN = "Lico@321";
