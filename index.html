@@ -221,8 +221,8 @@
                 <p style="color: #ddd; font-size: 0.9rem; margin-bottom: 0.6rem;">
                     ❤️ Quer ajudar o Fã Clube crescer? Veja como contribuir com PIX! ❤️
                 </p>
-                <div style="font-size: 1.3rem; margin-bottom: 0.5rem;">👆</div>
-                <a href="mensagemapoio.html" class="botao-pix-link">
+                <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">👇</div>
+                <a href="mensagemapoio.html" class="botao-pix-link" onclick="sessionStorage.setItem('manterMenuAberto', 'sim')">
                     ❤️ APOIE O FÃ CLUBE — PIX 💳
                 </a>
             </div>
@@ -248,6 +248,12 @@
 
         const CHAVE_SESSAO = "sessao_faclube";
         window.onload = async function() {
+            // ✅ Se voltou da página de apoio, reabre o menu
+            if (sessionStorage.getItem('manterMenuAberto') === 'sim') {
+                sessionStorage.removeItem('manterMenuAberto');
+                abrirMenu();
+            }
+
             if (!sessionStorage.getItem(CHAVE_SESSAO)) {
                 sessionStorage.setItem(CHAVE_SESSAO, 'ativa');
                 const ref = db.ref("FãClube/visitas");
