@@ -50,13 +50,46 @@
             width: 100%;
             height: auto;
             display: block;
-
-            /* ✅ Remove qualquer legenda/texto que o navegador coloca sobre a imagem */
-            content-visibility: auto;
-            speak: none;
         }
         .conteudo-interno {
             padding: 0.5rem 1.5rem 1rem;
+            text-align: center;
+        }
+
+        /* ✅ Controles de música na horizontal */
+        .player-musica {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 0.6rem;
+            background: rgba(0, 0, 0, 0.6);
+            border-top: 2px solid #f4a900;
+            flex-wrap: wrap;
+        }
+        .nome-musica {
+            font-size: 0.9rem;
+            color: #f4a900;
+            font-weight: 500;
+        }
+        .btn-musica {
+            background: #39ff14;
+            color: #000;
+            border: none;
+            padding: 0.35rem 0.7rem;
+            font-size: 0.9rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .btn-musica:hover {
+            transform: scale(1.05);
+        }
+        .volume-display {
+            font-size: 0.85rem;
+            color: #aaa;
+            min-width: 30px;
             text-align: center;
         }
 
@@ -172,6 +205,20 @@
                 <button class="menu-botao-inferior" onclick="abrirMenu()">📋 MENU</button>
             </p>
         </div>
+
+        <!-- ✅ Player de Música na Horizontal -->
+        <div class="player-musica">
+            <span class="nome-musica">🎵 Tamo Aí Na Atividade — Charlie Brown Jr.</span>
+            <button class="btn-musica" onclick="alternarMusica()" id="btnPlayPause">⏸️</button>
+            <button class="btn-musica" onclick="diminuirVolume()">🔉−</button>
+            <span class="volume-display" id="volumeDisplay">50%</span>
+            <button class="btn-musica" onclick="aumentarVolume()">🔊+</button>
+        </div>
+
+        <!-- ✅ Áudio invisível mas funcionando -->
+        <audio id="musicaFundo" loop>
+            <source src="https://raw.githubusercontent.com/wwwillweb777-ctrl/faclube-do-serginho-cabecao/main/TamoAiNaAtividade.mp3" type="audio/mpeg">
+        
     </div>
 
     <div id="menuOverlay" class="menu-overlay">
@@ -214,6 +261,51 @@
         }
         function fecharMenu() {
             document.getElementById('menuOverlay').classList.remove('aberto');
+        }
+
+        // ✅ Controles da Música
+        const audio = document.getElementById('musicaFundo');
+        const btnPlayPause = document.getElementById('btnPlayPause');
+        const volumeDisplay = document.getElementById('volumeDisplay');
+        let estaTocando = false;
+
+        // Volume inicial
+        audio.volume = 0.5;
+
+        // ⚠️ Importante: A maioria dos navegadores bloqueia tocar automaticamente
+        // Então a música começa parada e dá um aviso para a pessoa clicar
+        window.addEventListener('click', function iniciarMusica() {
+            if (!estaTocando) {
+                audio.play();
+                estaTocando = true;
+                btnPlayPause.textContent = '⏸️';
+                window.removeEventListener('click', iniciarMusica);
+            }
+        }, { once: true });
+
+        function alternarMusica() {
+            if (estaTocando) {
+                audio.pause();
+                btnPlayPause.textContent = '▶️';
+            } else {
+                audio.play();
+                btnPlayPause.textContent = '⏸️';
+            }
+            estaTocando = !estaTocando;
+        }
+
+        function aumentarVolume() {
+            if (audio.volume < 1) {
+                audio.volume = Math.min(1, audio.volume + 0.1);
+                volumeDisplay.textContent = Math.round(audio.volume * 100) + '%';
+            }
+        }
+
+        function diminuirVolume() {
+            if (audio.volume > 0) {
+                audio.volume = Math.max(0, audio.volume - 0.1);
+                volumeDisplay.textContent = Math.round(audio.volume * 100) + '%';
+            }
         }
     </script>
 </body>
