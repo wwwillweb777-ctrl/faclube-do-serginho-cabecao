@@ -52,6 +52,27 @@
             color: #ddd;
             font-size: 0.9rem;
             line-height: 1.4;
+            margin-bottom: 0.7rem;
+        }
+        .campos-info {
+            flex-shrink: 0;
+            margin-bottom: 0.7rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .campos-info input {
+            width: 100%;
+            background: #222;
+            border: 2px solid #444;
+            border-radius: 10px;
+            color: #fff;
+            padding: 0.6rem 0.9rem;
+            font-size: 0.95rem;
+            outline: none;
+        }
+        .campos-info input:focus {
+            border-color: #ffd700;
         }
         .area-texto {
             flex-shrink: 0;
@@ -67,11 +88,16 @@
             padding: 0.7rem 0.9rem;
             font-size: 1rem;
             resize: none;
+            outline: none;
+        }
+        textarea:focus {
+            border-color: #ffd700;
         }
         .botao-enviar-container {
             display: flex;
             justify-content: center;
             margin-bottom: 0.8rem;
+            flex-shrink: 0;
         }
         button.enviar {
             width: 65%;
@@ -115,6 +141,11 @@
             line-height: 1.4;
             border-left: 3px solid #ffd700;
         }
+        .mensagem-item .quem {
+            font-size: 0.8rem;
+            color: #ffd700;
+            margin-bottom: 0.3rem;
+        }
         .sem-mensagens {
             color: #666;
             text-align: center;
@@ -155,6 +186,13 @@
             <p class="descricao">Deixe aqui sua mensagem de força e apoio para o Serginho Cabeção! Sua palavra é importante! 💛</p>
         </div>
 
+        <!-- ✅ CAMPOS NOVOS: Nome, Rede e Arroba -->
+        <div class="campos-info">
+            <input type="text" id="campoNome" placeholder="Seu nome ou apelido..." maxlength="30">
+            <input type="text" id="campoRede" placeholder="De onde você é? Ex: TikTok / Instagram..." maxlength="30">
+            <input type="text" id="campoArroba" placeholder="Seu @ (opcional)" maxlength="30">
+        </div>
+
         <div class="area-texto">
             <textarea id="campoMensagem" placeholder="Escreva sua mensagem de apoio aqui..."></textarea>
         </div>
@@ -180,6 +218,12 @@
         const db = firebase.database();
 
         async function enviarMensagem() {
+            const nome = document.getElementById('campoNome').value.trim() || "Anônimo";
+            const rede = document.getElementById('campoRede').value.trim() || "Não informado";
+            let arroba = document.getElementById('campoArroba').value.trim();
+            if (!arroba) arroba = "@desconhecido";
+            else if (!arroba.startsWith('@')) arroba = '@' + arroba;
+
             const texto = document.getElementById('campoMensagem').value.trim();
             if (!texto) {
                 alert('Por favor, escreva sua mensagem primeiro! 💛');
@@ -188,13 +232,19 @@
             
             try {
                 await db.ref("MensagensApoio").push({
-                    nome: "Anônimo",
-                    rede: "Não informado",
-                    arroba: "@desconhecido",
+                    nome: nome,
+                    rede: rede,
+                    arroba: arroba,
                     texto: texto,
                     horario: new Date().toLocaleString('pt-BR')
                 });
+                
+                // Limpa os campos após enviar
+                document.getElementById('campoNome').value = '';
+                document.getElementById('campoRede').value = '';
+                document.getElementById('campoArroba').value = '';
                 document.getElementById('campoMensagem').value = '';
+                
                 alert('✅ Mensagem enviada com sucesso! Obrigado pelo apoio! 💪💛');
             } catch (erro) {
                 alert('❌ Erro ao enviar. Tente novamente!');
@@ -226,8 +276,11 @@
                     const div = document.createElement('div');
                     div.className = 'mensagem-item';
                     div.innerHTML = `
-                        <span style="font-size:0.75rem; color:#999;">${mensagem.horario || ''}</span>
-                        <p style="margin-top:0.3rem;">${mensagem.texto}</p>
+                        <div class="quem">
+                            👤 ${mensagem.nome || 'Anônimo'} — 🌐 ${mensagem.rede || 'Não informado'} — ${mensagem.arroba || '@desconhecido'}
+                            <br><span style="font-size:0.7rem; color:#777;">🕒 ${mensagem.horario || ''}</span>
+                        </div>
+                        <p>${mensagem.texto}</p>
                     `;
                     lista.appendChild(div);
                 });
