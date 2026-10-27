@@ -109,7 +109,7 @@
         }
         .menu-conteudo h2 { color: #f4a900; margin-bottom: 1rem; font-size: 1.2rem; }
         .bloco { background: #222; border-radius: 12px; padding: 0.9rem; margin-bottom: 0.8rem; text-align: left; }
-        .bloco h3 { color: #f4a900; font-size: 0.95rem; margin-bottom: 0.4rem; text-align: center; }
+        .bloco h3 { color: #f4a900; font-size: 0.95rem; margin-bottom: 0.6rem; text-align: center; }
         .bloco p { color: #ccc; font-size: 0.85rem; line-height: 1.4; text-align: center; }
         .destaque-nome { color: #39ff14; font-weight: bold; text-align: center; margin-top: 0.5rem; }
         textarea {
@@ -135,7 +135,18 @@
             font-size: 0.9rem;
         }
         .mensagem-item { background: #333; padding: 0.5rem; border-radius: 6px; margin-bottom: 0.4rem; font-size: 0.85rem; color: #ddd; }
-        .pix-caixa { background: #333; padding: 0.7rem; border-radius: 8px; color: #39ff14; font-weight: bold; font-size: 0.85rem; text-align: center; margin-top: 0.5rem; }
+        .botao-pix-link {
+            display: inline-block;
+            background: linear-gradient(90deg, #39ff14, #22cc00);
+            color: #000;
+            font-weight: bold;
+            font-size: 1rem;
+            padding: 0.6rem 1.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            box-shadow: 0 0 12px rgba(57, 255, 20, 0.5);
+            border: 2px solid #fff;
+        }
         .link-opcao { display: block; color: #fff; text-decoration: none; padding: 0.8rem; background: #222; border-radius: 12px; margin-bottom: 0.6rem; font-size: 0.95rem; }
         .fechar-menu {
             margin-top: 0.5rem;
@@ -205,10 +216,15 @@
                 <div id="listaMensagens" style="margin-top:0.6rem; max-height:80px; overflow-y:auto;"></div>
             </div>
 
-            <div class="bloco">
-                <h3>💛 Apoie o Fã Clube</h3>
-                <p>Este espaço foi criado para unir os fãs. Qualquer ajuda faz a diferença! Muito obrigado!</p>
-                <div class="pix-caixa">🔑 PIX:<br>faclubedoSerginhocabecao@gmail.com</div>
+            <div class="bloco" style="text-align: center; background: #2a1a0f; border: 2px solid #ff3333;">
+                <h3 style="color: #ff6666;">❤️ Apoie o Fã Clube</h3>
+                <p style="color: #ddd; font-size: 0.9rem; margin-bottom: 0.6rem;">
+                    ❤️ Quer ajudar o Fã Clube crescer? Veja como contribuir com PIX! ❤️
+                </p>
+                <div style="font-size: 1.3rem; margin-bottom: 0.5rem;">👆</div>
+                <a href="mensagemapoio.html" class="botao-pix-link">
+                    ❤️ APOIE O FÃ CLUBE — PIX 💳
+                </a>
             </div>
 
             <a href="chat.html" class="link-opcao">💬 Conversar / Chat</a>
