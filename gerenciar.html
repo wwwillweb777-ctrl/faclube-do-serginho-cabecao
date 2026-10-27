@@ -1,1 +1,430 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔐 Área Administrativa — Fã Clube Serginho Cabeção</title>
+    
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+    <script src="config.js"></script>
 
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            min-height: 100vh;
+            background: linear-gradient(180deg, #1a1208 0%, #2c1e0f 100%);
+            background-image: 
+                radial-gradient(#3a2a18 1px, transparent 1px),
+                radial-gradient(#3a2a18 1px, transparent 1px);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+            font-family: 'Segoe UI', sans-serif;
+            padding: 1rem;
+            color: #fff;
+        }
+
+        .caixa-principal {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 1rem 0;
+        }
+
+        h1 {
+            text-align: center;
+            color: #f4a900;
+            font-size: 1.6rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .subtitulo {
+            text-align: center;
+            color: #ffcc00;
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .escondido { display: none !important; }
+
+        .tela-login-card {
+            max-width: 420px;
+            margin: 4rem auto;
+            background: #000;
+            border-radius: 28px;
+            border: 4px solid #f4a900;
+            padding: 2.5rem;
+            box-shadow: 0 10px 30px rgba(244, 169, 0, 0.25);
+        }
+
+        .grupo-senha {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 1rem 1.2rem;
+            border: 2px solid #f4a900;
+            border-radius: 16px;
+            font-size: 1rem;
+            outline: none;
+            background: #1a1a1a;
+            color: #fff;
+        }
+
+        input:focus {
+            border-color: #ffcc00;
+            box-shadow: 0 0 0 4px rgba(244, 169, 0, 0.2);
+        }
+
+        .botao-olho {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        button {
+            padding: 1rem 1.5rem;
+            border: none;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        button:active { transform: scale(0.98); }
+
+        .btn-principal {
+            background: linear-gradient(90deg, #f4a900, #ffcc00);
+            color: #000;
+            width: 100%;
+            font-size: 1.1rem;
+            box-shadow: 0 0 12px rgba(244, 169, 0, 0.4);
+        }
+
+        .btn-sair {
+            background: linear-gradient(90deg, #e53935, #f4511e);
+            color: white;
+            padding: 0.7rem 1.5rem;
+            font-size: 1rem;
+        }
+
+        .btn-vermelho { 
+            background: linear-gradient(90deg, #ef5350, #e53935); 
+            color: white; 
+        }
+
+        .aviso-erro {
+            color: #ff6b6b;
+            background: #2c1515;
+            padding: 0.8rem 1rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            border-left: 4px solid #ef5350;
+        }
+
+        .cabecalho-tela {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .abas {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .aba {
+            flex: 1;
+            padding: 0.7rem;
+            background: #222;
+            border: 2px solid #444;
+            border-radius: 12px;
+            color: #aaa;
+            text-align: center;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .aba.ativa {
+            background: #f4a900;
+            border-color: #ffcc00;
+            color: #000;
+        }
+
+        .bloco-mensagem {
+            margin-bottom: 1rem;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 2px solid #f4a900;
+            background: #111;
+        }
+
+        .cabecalho-msg {
+            background: linear-gradient(90deg, #f4a900, #ffcc00);
+            color: #000;
+            padding: 0.7rem 1rem;
+            font-size: 0.85rem;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .conteudo-msg {
+            padding: 1rem;
+            color: #ddd;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .botoes-msg {
+            padding: 0 1rem 1rem;
+        }
+
+        .botoes-msg button {
+            width: 100%;
+            padding: 0.6rem;
+            font-size: 0.9rem;
+        }
+
+        .botoes-geral {
+            margin-top: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .botoes-geral button { width: 100%; }
+
+        .vazio {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: #999;
+        }
+
+        .botao-voltar {
+            display: inline-block;
+            margin-top: 1.5rem;
+            color: #f4a900;
+            text-decoration: none;
+            font-size: 0.95rem;
+        }
+
+        .botao-voltar:before {
+            content: "← ";
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="telaLogin" class="caixa-principal">
+        <div class="tela-login-card">
+            <h1>🔐 Área Administrativa</h1>
+            <p class="subtitulo">Fã Clube do Serginho Cabeção</p>
+
+            <div class="grupo-senha">
+                <input type="password" id="campoSenha" placeholder="Digite a senha..." autocomplete="off">
+                <button type="button" class="botao-olho" onclick="alternarVisibilidade()">🙈</button>
+            </div>
+
+            <p id="avisoErro" class="aviso-erro escondido">❌ Senha incorreta!</p>
+
+            <button class="btn-principal" onclick="verificarSenha()">🔐 Entrar</button>
+
+            <div style="text-align:center; margin-top:1.5rem;">
+                <a href="index.html" class="botao-voltar">Voltar para o site principal</a>
+            </div>
+        </div>
+    </div>
+
+    <div id="telaPainel" class="caixa-principal escondido">
+        <div class="cabecalho-tela">
+            <h1 style="font-size:1.3rem;">📋 Painel de Controle</h1>
+            <button class="btn-sair" onclick="sair()">🚪 Sair</button>
+        </div>
+
+        <div class="abas">
+            <div class="aba ativa" id="abaMural" onclick="trocarAba('mural')">📋 Mural de Fãs</div>
+            <div class="aba" id="abaApoio" onclick="trocarAba('apoio')">💪 Mensagens de Apoio</div>
+        </div>
+
+        <div id="conteudoMural">
+            <div id="listaMural"></div>
+            <div class="botoes-geral">
+                <button class="btn-vermelho" onclick="if(confirm('Apagar TODAS as mensagens do Mural?')) limparMural()">🗑️ Limpar Mural Completo</button>
+            </div>
+        </div>
+
+        <div id="conteudoApoio" class="escondido">
+            <div id="listaApoio"></div>
+            <div class="botoes-geral">
+                <button class="btn-vermelho" onclick="if(confirm('Apagar TODAS as mensagens de Apoio?')) limparApoio()">🗑️ Limpar Mensagens de Apoio</button>
+            </div>
+        </div>
+
+        <a href="index.html" class="botao-voltar">← Voltar ao site principal</a>
+    </div>
+
+    <script>
+        const CAMINHO_MURAL = "Mural";
+        const CAMINHO_APOIO = "MensagensApoio";
+
+        let db = null;
+        let abaAtual = 'mural';
+        let ouvinteMural = null;
+        let ouvinteApoio = null;
+
+        if (typeof firebase !== 'undefined' && !firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+            db = firebase.database();
+        }
+
+        let senhaVisivel = false;
+        function alternarVisibilidade() {
+            const campo = document.getElementById('campoSenha');
+            const botao = document.querySelector('.botao-olho');
+            senhaVisivel = !senhaVisivel;
+            campo.type = senhaVisivel ? 'text' : 'password';
+            botao.textContent = senhaVisivel ? '👁️' : '🙈';
+        }
+
+        function verificarSenha() {
+            const digitada = document.getElementById('campoSenha').value.trim().toLowerCase();
+            if (digitada === SENHA_ADMIN.toLowerCase()) {
+                document.getElementById('telaLogin').classList.add('escondido');
+                document.getElementById('telaPainel').classList.remove('escondido');
+                carregarMural();
+            } else {
+                document.getElementById('avisoErro').classList.remove('escondido');
+                document.getElementById('campoSenha').value = '';
+            }
+        }
+
+        function sair() {
+            pararOuvirTudo();
+            if (!confirm("Sair da área administrativa?")) return;
+            document.getElementById('telaPainel').classList.add('escondido');
+            document.getElementById('telaLogin').classList.remove('escondido');
+            document.getElementById('avisoErro').classList.add('escondido');
+            document.getElementById('campoSenha').value = '';
+            senhaVisivel = false;
+            abaAtual = 'mural';
+        }
+
+        function pararOuvirMural() {
+            if (ouvinteMural && db) {
+                db.ref(CAMINHO_MURAL).off("value", ouvinteMural);
+                ouvinteMural = null;
+            }
+        }
+
+        function pararOuvirApoio() {
+            if (ouvinteApoio && db) {
+                db.ref(CAMINHO_APOIO).off("value", ouvinteApoio);
+                ouvinteApoio = null;
+            }
+        }
+
+        function pararOuvirTudo() {
+            pararOuvirMural();
+            pararOuvirApoio();
+        }
+
+        function trocarAba(aba) {
+            abaAtual = aba;
+            
+            document.getElementById('abaMural').classList.toggle('ativa', aba === 'mural');
+            document.getElementById('abaApoio').classList.toggle('ativa', aba === 'apoio');
+            document.getElementById('conteudoMural').classList.toggle('escondido', aba !== 'mural');
+            document.getElementById('conteudoApoio').classList.toggle('escondido', aba !== 'apoio');
+
+            if (aba === 'mural') carregarMural();
+            if (aba === 'apoio') carregarApoio();
+        }
+
+        function carregarMural() {
+            if (!db) {
+                document.getElementById('listaMural').innerHTML = 
+                    '<div class="vazio"><p>⚠️ Firebase não conectado. Verifique o config.js</p></div>';
+                return;
+            }
+
+            pararOuvirMural();
+            ouvinteMural = db.ref(CAMINHO_MURAL).on("value", snap => {
+                const dados = snap.val() || {};
+                const container = document.getElementById('listaMural');
+                container.innerHTML = '';
+
+                if (!snap.exists()) {
+                    container.innerHTML = '<div class="vazio"><p>📭 Nenhuma mensagem no Mural ainda</p></div>';
+                    return;
+                }
+
+                Object.keys(dados).reverse().forEach(chave => {
+                    const msg = dados[chave];
+                    container.innerHTML += `
+                        <div class="bloco-mensagem">
+                            <div class="cabecalho-msg">
+                                📝 Mensagem
+                                <span style="font-size:0.75rem; opacity:0.8;">${chave.substring(0, 8)}...</span>
+                            </div>
+                            <div class="conteudo-msg">${msg.texto || msg}</div>
+                            <div class="botoes-msg">
+                                <button class="btn-vermelho" onclick="apagarMural('${chave}')">🗑️ Apagar Esta Mensagem</button>
+                            </div>
+                        </div>
+                    `;
+                });
+            });
+        }
+
+        function carregarApoio() {
+            if (!db) return;
+
+            pararOuvirApoio();
+            ouvinteApoio = db.ref(CAMINHO_APOIO).on("value", snap => {
+                const dados = snap.val() || {};
+                const container = document.getElementById('listaApoio');
+                container.innerHTML = '';
+
+                if (!snap.exists()) {
+                    container.innerHTML = '<div class="vazio"><p>📭 Nenhuma mensagem de apoio ainda</p></div>';
+                    return;
+                }
+
+                Object.keys(dados).reverse().forEach(chave => {
+                    const msg = dados[chave];
+                    container.innerHTML += `
+                        <div class="bloco-mensagem">
+                            <div class="cabecalho-msg">
+                                💪 Mensagem de Apoio
+                                <span style="font-size:0.75rem; opacity:0.8;">${chave.substring(0, 8)}...</span>
+                            </div>
+                            <div class="conteudo-msg">${msg.texto || msg}</div>
+                            <div class="botoes-msg">
+                                <button class="btn-vermelho" onclick="apagarApoio('${chave}')">🗑️ Apagar Esta Mensagem</button>
+                            </div>
+                        </div>
+                    `;
+                });
+            });
+        }
+
+        async function apagarMural(chave) {
+            if (!confirm("Apagar esta mensagem?")) return;
+            if (!db) return;
+            await db.ref(`${CAMINHO_MURAL}/${chave}`).remove();
+       
