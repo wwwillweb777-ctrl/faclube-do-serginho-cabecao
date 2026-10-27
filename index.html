@@ -8,7 +8,6 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
 
-    <!-- ✅ Apenas adicionei esta linha -->
     <script src="config.js"></script>
 
     <style>
@@ -115,29 +114,20 @@
         .bloco h3 { color: #f4a900; font-size: 0.95rem; margin-bottom: 0.6rem; text-align: center; }
         .bloco p { color: #ccc; font-size: 0.85rem; line-height: 1.4; text-align: center; }
         .destaque-nome { color: #39ff14; font-weight: bold; text-align: center; margin-top: 0.5rem; }
-        textarea {
-            width: 100%;
-            height: 60px;
-            background: #333;
-            border: 1px solid #444;
-            border-radius: 8px;
-            color: #fff;
-            padding: 0.5rem;
-            margin: 0.5rem 0;
-            resize: none;
-        }
-        button.enviar {
-            width: 100%;
-            background: #39ff14;
+        .botao-mural {
+            display: block;
+            background: linear-gradient(90deg, #ffd700, #ffb300);
             color: #000;
-            border: none;
-            padding: 0.5rem;
-            border-radius: 8px;
             font-weight: bold;
-            cursor: pointer;
-            font-size: 0.9rem;
+            font-size: 1rem;
+            padding: 0.8rem;
+            border-radius: 10px;
+            text-decoration: none;
+            text-align: center;
+            border: 2px solid #fff;
+            box-shadow: 0 0 12px rgba(255, 215, 0, 0.3);
+            margin-top: 0.7rem;
         }
-        .mensagem-item { background: #333; padding: 0.5rem; border-radius: 6px; margin-bottom: 0.4rem; font-size: 0.85rem; color: #ddd; }
         .botao-pix-link {
             display: inline-block;
             background: linear-gradient(90deg, #39ff14, #22cc00);
@@ -201,7 +191,6 @@
                 alt="Fã Clube" style="width:90px; height:90px; border-radius:50%; border:3px solid #f4a900; object-fit:cover;">
             </div>
 
-            <!-- ✅ AQUI é a ÚNICA alteração no conteúdo: adicionei "Visualizações" -->
             <div class="bloco" style="text-align:center; padding:0.6rem;">
                 Visualizações 👁️ <span id="contadorVisualizacoes">0</span>
             </div>
@@ -212,12 +201,11 @@
                 <div class="destaque-nome">@seunome ⭐ 📸</div>
             </div>
 
-            <div class="bloco">
+            <!-- ✅ MURAL DE FÃS — Agora com botão que leva para página dedicada -->
+            <div id="mural" class="bloco">
                 <h3>✍️ Mural de Fãs</h3>
                 <p>Sua mensagem será lida por todos que visitarem este espaço.</p>
-                <textarea id="campoMensagem" placeholder="Sua mensagem de apoio..."></textarea>
-                <button class="enviar" onclick="enviarMensagem()">✅ Enviar</button>
-                <div id="listaMensagens" style="margin-top:0.6rem; max-height:80px; overflow-y:auto;"></div>
+                <a href="primeiroapoio.html" class="botao-mural">💪 Deixar Minha Mensagem</a>
             </div>
 
             <div class="bloco" style="text-align: center; background: #2a1a0f; border: 2px solid #ff3333;">
@@ -238,7 +226,6 @@
     </div>
 
     <script>
-        // ✅ Usa config.js — a chave NÃO está mais aqui
         if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
@@ -256,7 +243,6 @@
                 await ref.set((snap.val() || 0) + 1);
             }
             carregarVisualizacoes();
-            carregarMensagens();
         };
 
         function carregarVisualizacoes() {
@@ -264,25 +250,6 @@
                 const el = document.getElementById('contadorVisualizacoes');
                 if (el) el.textContent = snap.val() || 0;
             });
-        }
-
-        function carregarMensagens() {
-            db.ref("Mural").on("value", snap => {
-                const lista = document.getElementById('listaMensagens');
-                if (!lista) return;
-                lista.innerHTML = '';
-                const dados = snap.val() || {};
-                Object.keys(dados).reverse().forEach(key => {
-                    lista.innerHTML += `<div class="mensagem-item">${dados[key].texto}</div>`;
-                });
-            });
-        }
-
-        async function enviarMensagem() {
-            const texto = document.getElementById('campoMensagem').value.trim();
-            if (!texto) { alert('Escreva uma mensagem!'); return; }
-            await db.ref("Mural").push({ texto });
-            document.getElementById('campoMensagem').value = '';
         }
 
         function abrirMenu() { document.getElementById('menuOverlay').classList.add('aberto'); }
