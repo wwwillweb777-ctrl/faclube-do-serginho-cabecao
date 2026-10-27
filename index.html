@@ -8,6 +8,9 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
 
+    <!-- ✅ Apenas adicionei esta linha -->
+    <script src="config.js"></script>
+
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body {
@@ -198,8 +201,9 @@
                 alt="Fã Clube" style="width:90px; height:90px; border-radius:50%; border:3px solid #f4a900; object-fit:cover;">
             </div>
 
+            <!-- ✅ AQUI é a ÚNICA alteração no conteúdo: adicionei "Visualizações" -->
             <div class="bloco" style="text-align:center; padding:0.6rem;">
-                👁️ <span id="contadorVisualizacoes">0</span>
+                Visualizações 👁️ <span id="contadorVisualizacoes">0</span>
             </div>
 
             <div class="bloco">
@@ -234,21 +238,12 @@
     </div>
 
     <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyCjUBVWJ7f9A8hQXWBhWjLfWxgJ9lhh1YI",
-            authDomain: "gabriel-do-corte.firebaseapp.com",
-            databaseURL: "https://gabriel-do-corte-default-rtdb.firebaseio.com",
-            projectId: "gabriel-do-corte",
-            storageBucket: "gabriel-do-corte.firebasestorage.app",
-            messagingSenderId: "877270325019",
-            appId: "1:877270325019:web:8d75ee1b905a1b8f16a5be"
-        };
+        // ✅ Usa config.js — a chave NÃO está mais aqui
         if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
         const CHAVE_SESSAO = "sessao_faclube";
         window.onload = async function() {
-            // ✅ Se voltou da página de apoio, reabre o menu
             if (sessionStorage.getItem('manterMenuAberto') === 'sim') {
                 sessionStorage.removeItem('manterMenuAberto');
                 abrirMenu();
