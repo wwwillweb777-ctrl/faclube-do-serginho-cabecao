@@ -37,6 +37,7 @@
             overflow: hidden;
             box-shadow: 0 0 25px rgba(244, 169, 0, 0.25);
             position: relative;
+            cursor: pointer; /* Mãozinha aparece indicando que pode clicar */
         }
         .logo-topo {
             width: 100%;
@@ -52,10 +53,19 @@
             speak: none;
         }
 
-        /* 🟢 Player de Música */
+        /* ==============================================================
+           📍 COMO MOVER O PLAYER DE MÚSICA
+           ==============================================================
+           Para ABAIXAR: aumente o valor de "bottom" (ex: 110px, 120px, 150px)
+           Para LEVANTAR: diminua o valor de "bottom" (ex: 90px, 70px, 50px)
+           Exemplo:
+             - Mais embaixo → bottom: 150px;
+             - Mais em cima → bottom: 50px;
+             - No meio → bottom: 100px;
+           ============================================================== */
         .player-musica {
             position: absolute;
-            bottom: 100px;
+            bottom: 100px; /* ← ← ← MUDA ESTE VALOR AQUI! */
             left: 3%;
             display: flex;
             align-items: center;
@@ -180,7 +190,7 @@
     </style>
 </head>
 <body>
-    <div class="cartaz">
+    <div class="cartaz" id="areaPrincipal">
         <div class="logo-topo">
             <img src="imagens/LogoSerginho.jpg" alt="">
         </div>
@@ -188,7 +198,7 @@
         <img class="imagem-principal" src="imagens/Serginho.jpg" alt="">
 
         <!-- 🟢 Player de Música -->
-        <div class="player-musica">
+        <div class="player-musica" onclick="event.stopPropagation()">
             <button class="btn-musica" onclick="alternarMusica()" id="btnPlayPause">▶️</button>
             <button class="btn-musica" onclick="diminuirVolume()">−</button>
             <span class="volume-display" id="volumeDisplay">50%</span>
@@ -196,15 +206,15 @@
         </div>
 
         <!-- ✅ Conteúdo -->
-        <div class="conteudo-interno">
+        <div class="conteudo-interno" onclick="event.stopPropagation()">
             <p>
                 <span class="texto-clique-no">Clique no</span>
                 <button class="menu-botao-inferior" onclick="abrirMenu()">📋 MENU</button>
             </p>
         </div>
 
-        <!-- ✅ ÁUDIO - NOME CORRIGIDO + AUTOPLAY + MUTED PARA TENTAR INICIAR SOZINHO -->
-        <audio id="musicaFundo" loop autoplay muted preload="auto">
+        <!-- ✅ ÁUDIO -->
+        <audio id="musicaFundo" loop>
             <source src="TamoAiNaAtividade.mp3" type="audio/mpeg">
             Seu navegador não suporta áudio.
         
@@ -254,29 +264,31 @@
         const audio = document.getElementById('musicaFundo');
         const btnPlayPause = document.getElementById('btnPlayPause');
         const volumeDisplay = document.getElementById('volumeDisplay');
+        const areaPrincipal = document.getElementById('areaPrincipal');
         let estaTocando = false;
 
         audio.volume = 0.5;
 
-        // Tenta iniciar o som com som desligado primeiro (muitos navegadores permitem isso)
-        window.addEventListener('click', function desmuta() {
-            audio.muted = false;
+        // ✅ CLICAR EM QUALQUER LUGAR DA IMAGEM → COMEÇA A TOCAR
+        areaPrincipal.addEventListener('click', function() {
             if (!estaTocando) {
                 audio.play().then(() => {
                     estaTocando = true;
                     btnPlayPause.textContent = '⏸️';
-                }).catch(e => console.log('Clique no botão de play'));
+                }).catch(erro => {
+                    console.log('Clique no botão de play');
+                });
             }
-            window.removeEventListener('click', desmuta);
         });
 
+        // ✅ BOTÃO PLAY/PAUSE FUNCIONA NORMALMENTE
         function alternarMusica() {
             if (estaTocando) {
                 audio.pause();
                 btnPlayPause.textContent = '▶️';
             } else {
                 audio.play().catch(erro => {
-                    alert('Clique no botão para começar a ouvir! 🎵');
+                    alert('Clique na tela principal para começar! 🎵');
                 });
                 btnPlayPause.textContent = '⏸️';
             }
