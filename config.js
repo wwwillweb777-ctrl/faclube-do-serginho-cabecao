@@ -15,4 +15,4 @@ const firebaseConfig = {
 
 // SENHA DA ÁREA ADMINISTRATIVA
 // ALTERE A SENHA ABAIXO PARA UMA QUE VOCÊ ESCOLHER
-const SENHA_ADMIN = "pedreiro321";
+const SENHA_ADMIN = "WJ321";
