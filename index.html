@@ -204,7 +204,7 @@
             <div id="mural" class="bloco">
                 <h3>✍️ Mural de Fãs</h3>
                 <p>Sua mensagem será lida por todos que visitarem este espaço.</p>
-                <a href="mensagemapoio.html" class="botao-mural">💪 Deixar Minha Mensagem</a>
+                <a href="mensagensapoio.html" class="botao-mural">💪 Deixar Minha Mensagem</a>
             </div>
 
             <div class="bloco" style="text-align: center; background: #2a1a0f; border: 2px solid #ff3333;">
@@ -225,7 +225,15 @@
     </div>
 
     <script>
-        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        if (!firebase.apps.length) firebase.initializeApp({
+            apiKey: "AIzaSyDQX0s0KfNQ5hPn8xY6Z7w8X9Y7Z6X5Y4Z3",
+            authDomain: "faclube-serginho-cabecao.firebaseapp.com",
+            databaseURL: "https://faclube-serginho-cabecao-default-rtdb.firebaseio.com",
+            projectId: "faclube-serginho-cabecao",
+            storageBucket: "faclube-serginho-cabecao.appspot.com",
+            messagingSenderId: "123456789012",
+            appId: "1:123456789012:web:abc123def456ghi789jkl01"
+        });
         const db = firebase.database();
 
         window.onload = async function() {
