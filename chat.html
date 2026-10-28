@@ -25,15 +25,13 @@
             display: flex;
             flex-direction: column;
             height: 100vh;
-            max-height: 100vh;
         }
-        /* ✅ CABEÇALHO FIXO — NUNCA SE MEXE */
         .cabecalho {
-            position: fixed !important;
-            top: 0 !important;
+            position: fixed;
+            top: 0;
             left: 0;
             right: 0;
-            z-index: 9999 !important;
+            z-index: 9999;
             background: linear-gradient(90deg, #f4a900, #ffc107);
             color: #000;
             padding: 0.6rem 1rem;
@@ -45,12 +43,11 @@
         .cabecalho p { font-size: 0.78rem; opacity: 0.8; }
         .meu-id { font-size: 0.65rem; opacity: 0.75; margin-top: 0.1rem; background: rgba(0,0,0,.15); padding: 0.15rem 0.5rem; border-radius: 50px; display: inline-block; }
         
-        /* Botão VOLTAR */
         .btn-voltar {
-            position: fixed !important;
+            position: fixed;
             top: 0.55rem;
             left: 0.6rem;
-            z-index: 10000 !important;
+            z-index: 10000;
         }
         .btn-voltar a {
             display: inline-block;
@@ -64,7 +61,6 @@
             text-decoration: none;
         }
 
-        /* ✅ ÁREA DE MENSAGENS — ROLA ABAIXO DO CABEÇALHO */
         .espaco-cabecalho {
             height: 90px;
             flex-shrink: 0;
@@ -111,7 +107,6 @@
             margin-top: 0.2rem; 
             color: #999; 
         }
-        /* ✅ LIXEIRA SEMPRE VISÍVEL NO CELULAR */
         .apagar-msg {
             position: absolute;
             top: 0.4rem;
@@ -122,8 +117,8 @@
             font-size: 1.1rem;
             cursor: pointer;
             z-index: 10;
-            display: block !important;
-            opacity: 1 !important;
+            display: block;
+            opacity: 1;
         }
         .apagar-msg:active, .apagar-msg:hover {
             color: #ff4444;
@@ -199,6 +194,7 @@
             border-radius: 6px;
             font-size: 0.85rem;
             border: none;
+            cursor: pointer;
         }
         .btn-cancelar-nome {
             padding: 0.5rem 0.8rem;
@@ -207,11 +203,22 @@
             border-radius: 6px;
             font-size: 0.85rem;
             border: none;
+            cursor: pointer;
+        }
+        .btn-principal { 
+            background: linear-gradient(90deg, #f4a900, #ffc107); 
+            color: #000; 
+            border: none;
+            padding: 0.8rem;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            width: 100%;
         }
     </style>
 </head>
 <body>
-    <!-- ✅ CABEÇALHO FIXO FORA DO FLUXO DE ROLAGEM -->
     <div class="btn-voltar">
         <a href="#" onclick="history.back(); return false;">← Voltar</a>
     </div>
@@ -222,7 +229,6 @@
     </div>
 
     <div class="caixa-chat">
-        <!-- Espaço para não cobrir a primeira mensagem -->
         <div class="espaco-cabecalho"></div>
 
         <div id="areaMensagens" class="area-mensagens">
@@ -258,8 +264,6 @@
         const CAMINHO_ACESSOS = "FãClube/chat/acessos";
         const CHAVE_ID = "idVisitante_faclube";
         const CHAVE_NOME = "nomeVisitante_faclube";
-
-        let editandoNome = false;
 
         function gerarIdUnico() {
             const p1 = Math.random().toString(36).slice(2,6);
@@ -319,13 +323,11 @@
         }
 
         function mostrarEditarNome() {
-            editandoNome = true;
             document.getElementById('novoNomeInput').value = nomeUsuario;
             document.getElementById('editarNomeBloco').classList.remove('escondido');
         }
 
         function cancelarMudarNome() {
-            editandoNome = false;
             document.getElementById('editarNomeBloco').classList.add('escondido');
             document.getElementById('novoNomeInput').value = '';
         }
@@ -349,7 +351,7 @@
             
             await db.ref(CAMINHO_MSG).push({
                 idRemetente: ID_VISITANTE,
-                nomeRemetente: nomeUsuario || "Fã Anônimo",
+                nomeRemetente: nomeUsuario,
                 texto: texto,
                 data: dataAtual(),
                 resposta: null,
@@ -394,8 +396,8 @@
                                 <p class="data">${m.dataResposta || ''}</p>
                             </div>
                         </div>
-                                `;
-            });
+                    `;
+                            });
             area.scrollTop = area.scrollHeight;
         });
     }
