@@ -13,52 +13,44 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body {
-            min-height: 100vh;
-            height: 100vh;
+            height: 100%;
             background: #1a1208;
             background-image: radial-gradient(#3a2a18 1px, transparent 1px), radial-gradient(#3a2a18 1px, transparent 1px);
             background-size: 20px 20px;
             background-position: 0 0, 10px 10px;
             font-family: 'Segoe UI', sans-serif;
-            padding: 0;
             overflow: hidden;
         }
         .caixa-chat {
-            width: 100%;
-            height: 100vh;
-            max-width: 100%;
-            margin: 0;
-            background: #000;
-            border-radius: 0;
-            border: none;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
-            position: relative;
+            height: 100vh;
+            max-height: 100vh;
         }
-        /* CABEÇALHO FIXO NO TOPO */
+        /* ✅ CABEÇALHO FIXO — NUNCA SE MEXE */
         .cabecalho {
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            position: fixed !important;
+            top: 0 !important;
+            left: 0;
+            right: 0;
+            z-index: 9999 !important;
             background: linear-gradient(90deg, #f4a900, #ffc107);
             color: #000;
             padding: 0.6rem 1rem;
             padding-left: 85px;
             padding-right: 1rem;
             text-align: center;
-            flex-shrink: 0;
         }
         .cabecalho h1 { font-size: 1rem; margin-bottom: 0.1rem; }
         .cabecalho p { font-size: 0.78rem; opacity: 0.8; }
         .meu-id { font-size: 0.65rem; opacity: 0.75; margin-top: 0.1rem; background: rgba(0,0,0,.15); padding: 0.15rem 0.5rem; border-radius: 50px; display: inline-block; }
         
-        /* Botão VOLTAR — Canto Superior Esquerdo */
+        /* Botão VOLTAR */
         .btn-voltar {
-            position: absolute;
+            position: fixed !important;
             top: 0.55rem;
             left: 0.6rem;
-            z-index: 110;
+            z-index: 10000 !important;
         }
         .btn-voltar a {
             display: inline-block;
@@ -71,10 +63,12 @@
             border-radius: 6px;
             text-decoration: none;
         }
-        .btn-voltar a:hover {
-            background: #ff5252;
-        }
 
+        /* ✅ ÁREA DE MENSAGENS — ROLA ABAIXO DO CABEÇALHO */
+        .espaco-cabecalho {
+            height: 90px;
+            flex-shrink: 0;
+        }
         .area-mensagens {
             flex: 1;
             overflow-y: auto;
@@ -91,7 +85,7 @@
             background: #ffffff; 
             color: #000; 
             border-radius: 16px 16px 4px 16px; 
-            padding: 0.5rem 0.75rem; 
+            padding: 0.5rem 2.2rem 0.5rem 0.75rem; 
             font-size: 0.92rem;
             line-height: 1.4;
         }
@@ -117,23 +111,22 @@
             margin-top: 0.2rem; 
             color: #999; 
         }
+        /* ✅ LIXEIRA SEMPRE VISÍVEL NO CELULAR */
         .apagar-msg {
             position: absolute;
-            top: 0.25rem;
-            right: 0.35rem;
+            top: 0.4rem;
+            right: 0.5rem;
             background: transparent;
             border: none;
-            color: #999;
-            font-size: 0.9rem;
+            color: #888;
+            font-size: 1.1rem;
             cursor: pointer;
-            opacity: 0;
-            transition: opacity 0.2s;
+            z-index: 10;
+            display: block !important;
+            opacity: 1 !important;
         }
-        .mensagem-eu:hover .apagar-msg {
-            opacity: 1;
-        }
-        .apagar-msg:hover {
-            color: #ff6b6b;
+        .apagar-msg:active, .apagar-msg:hover {
+            color: #ff4444;
         }
         .aviso-vazio { text-align: center; color: #888; padding: 2rem; font-size: 0.95rem; }
         .form-etapa { 
@@ -144,7 +137,6 @@
         }
         .escondido { display: none !important; }
         
-        /* Área do botão ENVIAR — acima da caixa de texto, canto direito */
         .enviar-cima {
             display: flex;
             justify-content: space-between;
@@ -160,9 +152,6 @@
             border-radius: 6px;
             cursor: pointer;
         }
-        .btn-mudar-nome:hover {
-            background: rgba(244, 169, 0, 0.1);
-        }
         .btn-enviar-topo {
             background: #ff6b6b;
             border: 2px solid #000;
@@ -172,12 +161,7 @@
             padding: 0.4rem 1rem;
             border-radius: 6px;
             cursor: pointer;
-            width: auto;
         }
-        .btn-enviar-topo:hover {
-            background: #ff5252;
-        }
-
         input, textarea { 
             width: 100%; 
             padding: 0.75rem; 
@@ -189,9 +173,6 @@
             background: #222; 
             color: #fff; 
         }
-        input:focus, textarea:focus { border-color: #f4a900; }
-        button { width: 100%; padding: 0.8rem; border: none; border-radius: 50px; font-weight: bold; font-size: 1rem; cursor: pointer; }
-        .btn-principal { background: linear-gradient(90deg, #f4a900, #ffc107); color: #000; box-shadow: 0 0 12px rgba(244, 169, 0, 0.3); }
         .boas-vindas { 
             background: #2a2315; 
             padding: 0.75rem; 
@@ -209,42 +190,40 @@
             margin-bottom: 0.6rem;
             display: flex;
             gap: 0.5rem;
-            align-items: center;
         }
-        .editar-nome-container input {
-            flex: 1;
-            margin: 0;
-        }
+        .editar-nome-container input { flex: 1; margin: 0; }
         .btn-salvar-nome {
-            width: auto;
             padding: 0.5rem 0.8rem;
             background: #39ff14;
             color: #000;
             border-radius: 6px;
             font-size: 0.85rem;
+            border: none;
         }
         .btn-cancelar-nome {
-            width: auto;
             padding: 0.5rem 0.8rem;
             background: #444;
             color: #fff;
             border-radius: 6px;
             font-size: 0.85rem;
+            border: none;
         }
     </style>
 </head>
 <body>
-    <div class="caixa-chat">
-        <!-- Botão VOLTAR — Volta para página anterior do histórico -->
-        <div class="btn-voltar">
-            <a href="#" onclick="history.back(); return false;">← Voltar</a>
-        </div>
+    <!-- ✅ CABEÇALHO FIXO FORA DO FLUXO DE ROLAGEM -->
+    <div class="btn-voltar">
+        <a href="#" onclick="history.back(); return false;">← Voltar</a>
+    </div>
+    <div class="cabecalho">
+        <h1>💬 Chat do Fã Clube 🐸</h1>
+        <p>Converse com outros fãs do Serginho Cabeção 💛</p>
+        <div class="meu-id">🆔 Seu ID: <span id="exibirMeuId">—</span></div>
+    </div>
 
-        <div class="cabecalho">
-            <h1>💬 Chat do Fã Clube 🐸</h1>
-            <p>Converse com outros fãs do Serginho Cabeção 💛</p>
-            <div class="meu-id">🆔 Seu ID: <span id="exibirMeuId">—</span></div>
-        </div>
+    <div class="caixa-chat">
+        <!-- Espaço para não cobrir a primeira mensagem -->
+        <div class="espaco-cabecalho"></div>
 
         <div id="areaMensagens" class="area-mensagens">
             <p class="aviso-vazio">Olá! 🐸<br>Digite seu nome abaixo para começar ↓</p>
@@ -258,7 +237,6 @@
         <div id="passoMensagem" class="form-etapa escondido">
             <div class="boas-vindas" id="mensagemBoasVindas"></div>
             
-            <!-- Área de Mudar Nome + Botão Enviar -->
             <div id="editarNomeBloco" class="editar-nome-container escondido">
                 <input type="text" id="novoNomeInput" placeholder="Seu novo nome...">
                 <button class="btn-salvar-nome" onclick="salvarNovoNome()">✓ Salvar</button>
@@ -340,7 +318,6 @@
             carregarMensagens();
         }
 
-        // FUNÇÕES PARA MUDAR NOME
         function mostrarEditarNome() {
             editandoNome = true;
             document.getElementById('novoNomeInput').value = nomeUsuario;
@@ -394,30 +371,30 @@
                 area.innerHTML = '';
                 if (!snap.exists()) {
                     area.innerHTML = '<p class="aviso-vazio">Ainda não tem mensagens 💬<br>Seja o primeiro a falar!</p>';
-                                    return;
-            }
-            snap.forEach(item => {
-                const chave = item.key;
-                const m = item.val();
-                area.innerHTML += `
-                    <div class="mensagem mensagem-eu">
-                        <button class="apagar-msg" onclick="apagarMensagem('${chave}')">🗑️</button>
-                        <div class="bolha">
-                            <p class="nome-remetente">${m.nomeRemetente}</p>
-                            <p>${m.texto}</p>
-                            <p class="data">${m.data}</p>
+                    return;
+                }
+                snap.forEach(item => {
+                    const chave = item.key;
+                    const m = item.val();
+                    area.innerHTML += `
+                        <div class="mensagem mensagem-eu">
+                            <button class="apagar-msg" onclick="apagarMensagem('${chave}')">🗑️</button>
+                            <div class="bolha">
+                                <p class="nome-remetente">${m.nomeRemetente}</p>
+                                <p>${m.texto}</p>
+                                <p class="data">${m.data}</p>
+                            </div>
                         </div>
-                    </div>
-                `;
-                if (m.resposta) area.innerHTML += `
-                    <div class="mensagem mensagem-resposta">
-                        <div class="bolha">
-                            <p class="nome-remetente">📩 ${NOME_ADMIN}</p>
-                            <p>${m.resposta}</p>
-                            <p class="data">${m.dataResposta || ''}</p>
+                    `;
+                    if (m.resposta) area.innerHTML += `
+                        <div class="mensagem mensagem-resposta">
+                            <div class="bolha">
+                                <p class="nome-remetente">📩 ${NOME_ADMIN}</p>
+                                <p>${m.resposta}</p>
+                                <p class="data">${m.dataResposta || ''}</p>
+                            </div>
                         </div>
-                    </div>
-                `;
+                                `;
             });
             area.scrollTop = area.scrollHeight;
         });
