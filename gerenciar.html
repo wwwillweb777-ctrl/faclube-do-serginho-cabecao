@@ -128,7 +128,7 @@
         }
         .aba {
             flex: 1;
-            min-width: 100px;
+            min-width: 120px;
             padding: 0.7rem;
             background: #222;
             border: 2px solid #444;
@@ -164,6 +164,14 @@
             color: #f4a900;
             font-size: 0.9rem;
             border-bottom: 1px solid #333;
+        }
+        .id-usuario {
+            font-size: 0.8rem;
+            color: #888;
+            margin-left: 0.5rem;
+            background: #2a2a2a;
+            padding: 0.1rem 0.4rem;
+            border-radius: 4px;
         }
         .msg-conteudo {
             padding: 1rem;
@@ -281,17 +289,14 @@
         </div>
 
         <div class="abas">
-            <button class="aba" id="abaMural">📝 Mural</button>
-            <button class="aba" id="abaApoio">💪 Apoio</button>
+            <button class="aba" id="abaApoio">📝 Mural</button>
             <button class="aba ativa" id="abaChat">💬 Chat</button>
         </div>
 
-        <div id="listaMural" class="escondido"></div>
         <div id="listaApoio" class="escondido"></div>
         <div id="listaChat"></div>
 
-        <button class="btn-limpar-tudo escondido" id="btnLimparMural">🗑️ Apagar TODOS os Recados</button>
-        <button class="btn-limpar-tudo escondido" id="btnLimparApoio">🗑️ Apagar TODAS as Mensagens de Apoio</button>
+        <button class="btn-limpar-tudo escondido" id="btnLimparApoio">🗑️ Apagar TODAS as Mensagens do Mural</button>
         <button class="btn-limpar-tudo escondido" id="btnLimparChat">🗑️ Apagar TODAS as Mensagens do Chat</button>
 
         <a href="javascript:history.back()" class="link-voltar" style="display:block;text-align:center;margin-top:2rem;color:#888;">← Voltar para o site</a>
@@ -305,11 +310,11 @@
         }
 
         let abaAtual = 'chat';
-        let ouvinteMural = null;
         let ouvinteApoio = null;
         let ouvinteChat = null;
 
         const CAMINHO_CHAT = "FãClube/chat/mensagens";
+        const CAMINHO_APOIO = "MensagensApoio";
 
         const campoSenha = document.getElementById('campoSenha');
         const botaoOlho = document.getElementById('botaoOlho');
@@ -355,11 +360,6 @@
             }
         });
 
-        document.getElementById('abaMural').addEventListener('click', function() {
-            abaAtual = 'mural';
-            atualizarAbas();
-            carregarMural();
-        });
         document.getElementById('abaApoio').addEventListener('click', function() {
             abaAtual = 'apoio';
             atualizarAbas();
@@ -372,26 +372,19 @@
         });
 
         function atualizarAbas() {
-            document.getElementById('abaMural').classList.toggle('ativa', abaAtual === 'mural');
             document.getElementById('abaApoio').classList.toggle('ativa', abaAtual === 'apoio');
             document.getElementById('abaChat').classList.toggle('ativa', abaAtual === 'chat');
             
-            document.getElementById('listaMural').classList.toggle('escondido', abaAtual !== 'mural');
             document.getElementById('listaApoio').classList.toggle('escondido', abaAtual !== 'apoio');
             document.getElementById('listaChat').classList.toggle('escondido', abaAtual !== 'chat');
             
-            document.getElementById('btnLimparMural').classList.toggle('escondido', abaAtual !== 'mural');
             document.getElementById('btnLimparApoio').classList.toggle('escondido', abaAtual !== 'apoio');
             document.getElementById('btnLimparChat').classList.toggle('escondido', abaAtual !== 'chat');
         }
 
         function pararOuvirTudo() {
-            if (ouvinteMural && db) {
-                db.ref('Mural').off("value", ouvinteMural);
-                ouvinteMural = null;
-            }
             if (ouvinteApoio && db) {
-                db.ref('MensagensApoio').off("value", ouvinteApoio);
+                db.ref(CAMINHO_APOIO).off("value", ouvinteApoio);
                 ouvinteApoio = null;
             }
             if (ouvinteChat && db) {
@@ -400,16 +393,18 @@
             }
         }
 
-        function carregarMural() {
-            if (!db) {
-                document.getElementById('listaMural').innerHTML = 
-                    '<div class="vazio">⚠️ Firebase não conectado. Verifique o config.js</div>';
-                return;
-            }
+        function dataRespostaAtual() {
+            return new Date().toLocaleString('pt-BR', {
+                day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit'
+            });
+        }
+
+        function carregarApoio() {
+            if (!db) return;
             pararOuvirTudo();
             
-            ouvinteMural = db.ref('Mural').on("value", function(snapshot) {
-                const container = document.getElementById('listaMural');
+            ouvinteApoio = db.ref(CAMINHO_APOIO).on("value", function(snapshot) {
+                const container = document.getElementById('listaApoio');
                 container.innerHTML = '';
 
                 if (!snapshot.exists()) {
@@ -424,79 +419,76 @@
                     const msg = dados[chave];
                     const div = document.createElement('div');
                     div.className = 'bloco-mensagem';
-                                        div.innerHTML = `
-                        <div class="msg-cabecalho">📝 Recado</div>
-                        <div class="msg-remetente">
-                            👤 ${msg.nome || 'Anônimo'}<br>
-                            🌐 ${msg.rede || 'Não informado'}<br>
-                            🔗 ${msg.arroba || '@desconhecido'}
-                            <div class="horario">🕒 ${msg.horario || 'Sem data'}</div>
-                        </div>
-                        <div class="msg-conteudo">${msg.texto || ''}</div>
-                        <div class="msg-botoes">
-                            <button class="btn-apagar" data-caminho="Mural" data-chave="${chave}">🗑️ Apagar esta mensagem</button>
-                        </div>
-                    `;
-                    container.appendChild(div);
-                });
+                    
+                    let respostaHTML = "";
+if (msg.resposta) {
+    respostaHTML = `
+        <div class="resposta-area">
+            <span class="resposta-label">✅ Resposta enviada:</span>
+            <div class="resposta-dada">
+                ${msg.resposta}
+                <div class="horario">🕒 ${msg.dataResposta || ''}</div>
+            </div>
+        </div>
+    `;
+} else {
+    respostaHTML = `
+        <div class="resposta-area">
+            <span class="resposta-label">✏️ Responder para o fã:</span>
+            <textarea class="resposta-input" id="resposta-${chave}" placeholder="Escreva sua resposta aqui..."></textarea>
+            <button class="btn-responder" data-chave="${chave}" data-caminho="${CAMINHO_APOIO}">📤 Enviar Resposta</button>
+        </div>
+    `;
+}
 
-                container.querySelectorAll('.btn-apagar').forEach(function(botao) {
-                    botao.addEventListener('click', function() {
-                        const caminho = this.getAttribute('data-caminho');
-                        const chave = this.getAttribute('data-chave');
-                        if (confirm('Apagar esta mensagem?')) {
-                            db.ref(`${caminho}/${chave}`).remove();
-                        }
-                    });
-                });
-            });
+div.innerHTML = `
+    <div class="msg-cabecalho">📝 Mensagem do Mural</div>
+    <div class="msg-remetente">
+        👤 ${msg.nomeRemetente || msg.nome || 'Anônimo'}
+        <span class="id-usuario">🆔 ${msg.idRemetente || msg.id || '—'}</span>
+        <div class="horario">🕒 ${msg.data || msg.horario || 'Sem data'}</div>
+    </div>
+    <div class="msg-conteudo">${msg.texto || msg.mensagem || ''}</div>
+    ${respostaHTML}
+    <div class="msg-botoes">
+        <button class="btn-apagar" data-caminho="${CAMINHO_APOIO}" data-chave="${chave}">🗑️ Apagar esta mensagem</button>
+    </div>
+`;
+container.appendChild(div);
+});
+
+container.querySelectorAll('.btn-responder').forEach(function(botao) {
+    botao.addEventListener('click', function() {
+        const chave = this.getAttribute('data-chave');
+        const caminho = this.getAttribute('data-caminho');
+        const campo = document.getElementById(`resposta-${chave}`);
+        const textoResposta = campo.value.trim();
+        
+        if (!textoResposta) {
+            alert('⚠️ Escreva uma resposta primeiro!');
+            return;
         }
+        
+        db.ref(`${caminho}/${chave}`).update({
+            resposta: textoResposta,
+            dataResposta: dataRespostaAtual()
+        }).then(() => {
+            alert('✅ Resposta enviada com sucesso!');
+        }).catch(err => {
+            alert('❌ Erro ao enviar resposta: ' + err.message);
+        });
+    });
+});
 
-        function carregarApoio() {
-            if (!db) return;
-            pararOuvirTudo();
-            
-            ouvinteApoio = db.ref('MensagensApoio').on("value", function(snapshot) {
-                const container = document.getElementById('listaApoio');
-                container.innerHTML = '';
-
-                if (!snapshot.exists()) {
-                    container.innerHTML = '<div class="vazio">📭 Nenhuma mensagem de apoio ainda</div>';
-                    return;
-                }
-
-                const dados = snapshot.val();
-                const chaves = Object.keys(dados).reverse();
-
-                chaves.forEach(function(chave) {
-                    const msg = dados[chave];
-                    const div = document.createElement('div');
-                    div.className = 'bloco-mensagem';
-                    div.innerHTML = `
-                        <div class="msg-cabecalho">💪 Mensagem de Apoio</div>
-                        <div class="msg-remetente">
-                            👤 ${msg.nome || 'Anônimo'}<br>
-                            🌐 ${msg.rede || 'Não informado'}<br>
-                            🔗 ${msg.arroba || '@desconhecido'}
-                            <div class="horario">🕒 ${msg.horario || 'Sem data'}</div>
-                        </div>
-                        <div class="msg-conteudo">${msg.texto || ''}</div>
-                        <div class="msg-botoes">
-                            <button class="btn-apagar" data-caminho="MensagensApoio" data-chave="${chave}">🗑️ Apagar esta mensagem</button>
-                        </div>
-                    `;
-                    container.appendChild(div);
-                });
-
-                container.querySelectorAll('.btn-apagar').forEach(function(botao) {
-                    botao.addEventListener('click', function() {
-                        const caminho = this.getAttribute('data-caminho');
-                        const chave = this.getAttribute('data-chave');
-                        if (confirm('Apagar esta mensagem?')) {
-                            db.ref(`${caminho}/${chave}`).remove();
-                        }
-                    });
-                });
+container.querySelectorAll('.btn-apagar').forEach(function(botao) {
+    botao.addEventListener('click', function() {
+        const caminho = this.getAttribute('data-caminho');
+        const chave = this.getAttribute('data-chave');
+        if (confirm('Apagar esta mensagem?')) {
+            db.ref(`${caminho}/${chave}`).remove();
+        }
+    });
+});
             });
         }
 
@@ -541,7 +533,7 @@
                             <div class="resposta-area">
                                 <span class="resposta-label">✏️ Responder para o fã:</span>
                                 <textarea class="resposta-input" id="resposta-${chave}" placeholder="Escreva sua resposta aqui..."></textarea>
-                                <button class="btn-responder" data-chave="${chave}">📤 Enviar Resposta</button>
+                                <button class="btn-responder" data-chave="${chave}" data-caminho="${CAMINHO_CHAT}">📤 Enviar Resposta</button>
                             </div>
                         `;
                     }
@@ -550,6 +542,7 @@
                         <div class="msg-cabecalho">💬 Mensagem do Chat</div>
                         <div class="msg-remetente">
                             👤 ${msg.nomeRemetente || 'Anônimo'}
+                            <span class="id-usuario">🆔 ${msg.idRemetente || '—'}</span>
                             <div class="horario">🕒 ${msg.data || 'Sem data'}</div>
                         </div>
                         <div class="msg-conteudo">${msg.texto || ''}</div>
@@ -564,6 +557,7 @@
                 container.querySelectorAll('.btn-responder').forEach(function(botao) {
                     botao.addEventListener('click', function() {
                         const chave = this.getAttribute('data-chave');
+                        const caminho = this.getAttribute('data-caminho');
                         const campo = document.getElementById(`resposta-${chave}`);
                         const textoResposta = campo.value.trim();
                         
@@ -572,13 +566,9 @@
                             return;
                         }
                         
-                        const dataResposta = new Date().toLocaleString('pt-BR', {
-                            day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit'
-                        });
-                        
-                        db.ref(`${CAMINHO_CHAT}/${chave}`).update({
+                        db.ref(`${caminho}/${chave}`).update({
                             resposta: textoResposta,
-                            dataResposta: dataResposta
+                            dataResposta: dataRespostaAtual()
                         }).then(() => {
                             alert('✅ Resposta enviada com sucesso!');
                         }).catch(err => {
@@ -599,15 +589,9 @@
             });
         }
 
-        document.getElementById('btnLimparMural').addEventListener('click', function() {
-            if (confirm('⚠️ Tem certeza? Isso apagará TODAS as mensagens do Mural!')) {
-                db.ref('Mural').remove();
-            }
-        });
-
         document.getElementById('btnLimparApoio').addEventListener('click', function() {
-            if (confirm('⚠️ Tem certeza? Isso apagará TODAS as mensagens de Apoio!')) {
-                db.ref('MensagensApoio').remove();
+            if (confirm('⚠️ Tem certeza? Isso apagará TODAS as mensagens do Mural!')) {
+                db.ref(CAMINHO_APOIO).remove();
             }
         });
 
@@ -619,4 +603,3 @@
     </script>
 </body>
 </html>
-
