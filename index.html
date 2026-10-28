@@ -228,19 +228,17 @@
         if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        const CHAVE_SESSAO = "sessao_faclube";
         window.onload = async function() {
             if (sessionStorage.getItem('manterMenuAberto') === 'sim') {
                 sessionStorage.removeItem('manterMenuAberto');
                 abrirMenu();
             }
 
-            if (!sessionStorage.getItem(CHAVE_SESSAO)) {
-                sessionStorage.setItem(CHAVE_SESSAO, 'ativa');
-                const ref = db.ref("FãClube/visitas");
-                const snap = await ref.once("value");
-                await ref.set((snap.val() || 0) + 1);
-            }
+            // ✅ SEMPRE registra uma nova visualização ao carregar a página
+            const ref = db.ref("FãClube/visitas");
+            const snap = await ref.once("value");
+            await ref.set((snap.val() || 0) + 1);
+
             carregarVisualizacoes();
         };
 
