@@ -3,224 +3,230 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apoio ao Fã Clube — Serginho Cabeção</title>
+    <title>Mensagens de Apoio 💪</title>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+    <script src="config.js"></script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html, body {
+            width: 100%;
+            height: 100%;
             background: #000;
-            color: #fff;
             font-family: 'Segoe UI', sans-serif;
-            min-height: 100vh;
-            padding: 2rem;
-            max-width: 480px;
-            margin: 0 auto;
+            overflow: hidden;
+        }
+        .tela-completa {
+            width: 100%;
+            height: 100%;
+            border: 4px solid #ffd700;
+            padding: 0.8rem 1rem 1rem;
+            display: flex;
+            flex-direction: column;
+            background: #000;
         }
         .cabecalho {
             text-align: center;
-            margin-bottom: 2rem;
+            padding: 0.3rem 0 0.6rem;
         }
-        .coracoes {
-            color: #ff0000;
-            font-size: 1.4rem;
-            margin-bottom: 0.5rem;
+        .titulo-com-icone {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+            margin-bottom: 0.4rem;
+        }
+        .icone {
+            font-size: 2rem;
+            line-height: 1;
         }
         h1 {
-            color: #f4a900;
-            font-size: 1.6rem;
-            text-align: center;
-            line-height: 1.4;
+            color: #ffd700;
+            font-size: 1.4rem;
         }
-        .caixa {
-            background: #1a1a1a;
-            border-radius: 16px;
-            padding: 1.8rem;
-            border: 2px solid #f4a900;
-        }
-        .caixa p {
-            font-size: 1.05rem;
-            line-height: 1.8;
+        .descricao {
             color: #ddd;
-            margin-bottom: 1.2rem;
-        }
-        .pix-container {
-            background: #111;
-            border-radius: 12px;
-            padding: 0.9rem 1.2rem;
-            margin: 1.5rem 0;
-            text-align: center;
-            border: 2px solid #39ff14;
-        }
-        .pix-label {
-            color: #39ff14;
-            font-size: 1rem;
-            margin-bottom: 0.6rem;
-        }
-        .pix-chave-wrapper {
-            background: #ffffff;
-            border-radius: 6px;
-            padding: 0.7rem 1rem;
+            font-size: 0.9rem;
+            line-height: 1.4;
             margin-bottom: 0.7rem;
+        }
+        .campos-info {
+            flex-shrink: 0;
+            margin-bottom: 0.7rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .campos-info input {
             width: 100%;
+            background: #222;
+            border: 2px solid #444;
+            border-radius: 10px;
+            color: #fff;
+            padding: 0.6rem 0.9rem;
+            font-size: 0.95rem;
+            outline: none;
         }
-        .pix-chave {
-            color: #000000;
-            font-size: 0.60rem;
-            font-weight: 900;
-            font-family: 'Segoe UI', monospace;
-            text-align: center;
-            white-space: nowrap;
-            user-select: text;
-            -webkit-user-select: text;
-            cursor: text;
+        .campos-info input:focus {
+            border-color: #ffd700;
         }
-        .botao-copiar {
-            background: #39ff14;
+        .area-texto {
+            flex-shrink: 0;
+            margin-bottom: 0.7rem;
+        }
+        textarea {
+            width: 100%;
+            height: 80px;
+            background: #222;
+            border: 2px solid #444;
+            border-radius: 12px;
+            color: #fff;
+            padding: 0.7rem 0.9rem;
+            font-size: 1rem;
+            resize: none;
+            outline: none;
+        }
+        textarea:focus {
+            border-color: #ffd700;
+        }
+        .botao-enviar-container, .botao-ver-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 0.6rem;
+            flex-shrink: 0;
+        }
+        button.enviar {
+            width: 65%;
+            background: linear-gradient(90deg, #ffd700, #ffb300);
             color: #000;
             border: none;
-            border-radius: 6px;
-            padding: 0.5rem 1.2rem;
-            font-size: 0.9rem;
+            padding: 0.75rem;
+            border-radius: 12px;
+            font-size: 1rem;
             font-weight: bold;
             cursor: pointer;
+            box-shadow: 0 0 12px rgba(255, 215, 0, 0.4);
+            transition: transform 0.2s;
         }
-        .botao-copiar:active {
-            background: #2cd610;
+        button.enviar:active {
+            transform: scale(0.97);
         }
-        .mensagem-copiado {
-            display: none;
-            color: #39ff14;
-            margin-top: 0.5rem;
+        a.ver-mensagens {
+            width: 65%;
+            background: transparent;
+            border: 2px solid #ffd700;
+            color: #ffd700;
+            padding: 0.7rem;
+            border-radius: 12px;
+            font-size: 0.95rem;
             font-weight: bold;
-            font-size: 0.85rem;
-        }
-        .versiculo {
-            margin-top: 1.5rem;
-            padding-top: 1rem;
-            border-top: 1px solid #333;
-        }
-        .versiculo p {
-            font-style: italic;
-            color: #f4a900;
-        }
-        .referencia {
-            text-align: right;
-            font-size: 0.9rem;
-            color: #999;
-            margin-top: 0.5rem;
-        }
-        .voltar {
-            display: inline-block;
-            color: #f4a900;
+            text-align: center;
             text-decoration: none;
-            margin-top: 1.5rem;
-            border: 2px solid #f4a900;
-            padding: 0.7rem 1.5rem;
-            border-radius: 8px;
-            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
         }
-        .voltar:hover {
-            background: #f4a900;
-            color: #000;
+        a.ver-mensagens:active {
+            background: rgba(255, 215, 0, 0.1);
         }
-        .divisor {
-            border: none;
-            border-top: 1px dashed #444;
-            margin: 2rem 0;
+        button.voltar {
+            width: 100%;
+            background: transparent;
+            border: 3px solid #ffd700;
+            color: #ffd700;
+            padding: 0.8rem;
+            border-radius: 12px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            flex-shrink: 0;
+            margin-top: auto;
+        }
+        button.voltar:active {
+            background: rgba(255, 215, 0, 0.1);
         }
     </style>
 </head>
 <body>
-    <div class="cabecalho">
-        <div class="coracoes">❤️ ❤️ ❤️</div>
-        <h1>Apoio ao Fã Clube</h1>
-    </div>
-    
-    <div class="caixa">
-        <p><strong>Queridos fãs,</strong></p>
-
-        <p>A presença de cada um aqui já é muito importante. Cada visualização, cada compartilhamento e cada palavra de apoio fortalece a nossa torcida pelo Serginho.</p>
-
-        <!-- 📍 PIX NO INÍCIO -->
-        <div class="pix-container">
-            <div class="pix-label">Chave Pix 👇</div>
-            <div class="pix-chave-wrapper">
-                <div class="pix-chave" id="chavePixTop">faclubedoserginhocabecao@gmail.com</div>
+    <div class="tela-completa">
+        <div class="cabecalho">
+            <div class="titulo-com-icone">
+                <span class="icone">💪</span>
+                <h1>Mensagens de Apoio</h1>
             </div>
-            <button class="botao-copiar" onclick="copiarPixTop()">📋 COPIAR</button>
-            <div class="mensagem-copiado" id="mensagemCopiadoTop">✅ COPIADO!</div>
+            <p class="descricao">Deixe aqui sua mensagem de força e apoio para o Serginho Cabeção! Sua palavra é importante! 💛</p>
         </div>
 
-        <p>Mas para continuar crescendo e fazendo mais, o Fã Clube também precisa de recursos. Com a sua contribuição, será possível criar novas dinâmicas, desenvolver ferramentas melhores, contratar serviços de qualidade e investir em tecnologia para apoiar o Serginho cada vez melhor. O Serginho é o centro de tudo — o Fã Clube e os fãs existem para estar ao lado dele. Quando nos unimos por ele, todos crescem juntos.</p>
-
-        <p>Qualquer valor faz uma diferença enorme e ajuda diretamente a manter esse trabalho ativo. Acredita-se que juntos podemos fazer muito mais do que separados.</p>
-
-        <p>Se puder ajudar, desde já o nosso muito obrigado! Se não puder agora, sem problema nenhum — a sua presença já é o nosso maior motivo para continuar apoiando ele.</p>
-
-        <hr class="divisor">
-
-        <!-- 📍 PIX NO FINAL -->
-        <div class="pix-container">
-            <div class="pix-label">Chave Pix 👇</div>
-            <div class="pix-chave-wrapper">
-                <div class="pix-chave" id="chavePixBottom">faclubedoserginhocabecao@gmail.com</div>
-            </div>
-            <button class="botao-copiar" onclick="copiarPixBottom()">📋 COPIAR</button>
-            <div class="mensagem-copiado" id="mensagemCopiadoBottom">✅ COPIADO!</div>
+        <div class="campos-info">
+            <input type="text" id="campoNome" placeholder="Seu nome ou apelido..." maxlength="30">
+            <input type="text" id="campoRede" placeholder="De onde você é? Ex: TikTok / Instagram..." maxlength="30">
+            <input type="text" id="campoArroba" placeholder="Seu @ (opcional)" maxlength="30">
         </div>
-        
-        <div class="versiculo">
-            <p>"Lança o teu pão sobre as águas, porque depois de muitos dias o acharás."</p>
-            <p class="referencia">— Eclesiastes 11:1 📖</p>
+
+        <div class="area-texto">
+            <textarea id="campoMensagem" placeholder="Escreva sua mensagem de apoio aqui..."></textarea>
         </div>
-        
-        <a href="index.html" class="voltar">← Voltar</a>
+
+        <div class="botao-enviar-container">
+            <button class="enviar" onclick="enviarMensagem()">✅ Enviar Mensagem</button>
+        </div>
+
+        <div class="botao-ver-container">
+            <a href="mensagens-dos-fas.html" class="ver-mensagens">📜 Ver Mensagens dos Fãs</a>
+        </div>
+
+        <button class="voltar" onclick="voltarPagina()">⬅️ Voltar ao Menu</button>
     </div>
 
     <script>
-        function copiarPixTop() {
-            copiarTexto(document.getElementById('chavePixTop').textContent.trim(), 'mensagemCopiadoTop');
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
         }
-        function copiarPixBottom() {
-            copiarTexto(document.getElementById('chavePixBottom').textContent.trim(), 'mensagemCopiadoBottom');
-        }
+        const db = firebase.database();
 
-        function copiarTexto(texto, msgId) {
-            if (navigator.clipboard && window.isSecureContext) {
-                navigator.clipboard.writeText(texto)
-                    .then(() => {
-                        const msg = document.getElementById(msgId);
-                        msg.style.display = 'inline-block';
-                        setTimeout(() => { msg.style.display = 'none'; }, 2000);
-                    })
-                    .catch(() => fallbackCopiar(texto, msgId));
-            } else {
-                fallbackCopiar(texto, msgId);
+        async function enviarMensagem() {
+            const nome = document.getElementById('campoNome').value.trim() || "Anônimo";
+            const rede = document.getElementById('campoRede').value.trim() || "Não informado";
+            let arroba = document.getElementById('campoArroba').value.trim();
+            if (!arroba) arroba = "@desconhecido";
+            else if (!arroba.startsWith('@')) arroba = '@' + arroba;
+
+            const texto = document.getElementById('campoMensagem').value.trim();
+            if (!texto) {
+                alert('Por favor, escreva sua mensagem primeiro! 💛');
+                return;
             }
-        }
-
-        function fallbackCopiar(texto, msgId) {
-            const input = document.createElement('input');
-            input.value = texto;
-            input.style.position = 'fixed';
-            input.style.opacity = '0';
-            document.body.appendChild(input);
-            input.select();
-            input.setSelectionRange(0, 99999);
-
+            
             try {
-                const sucesso = document.execCommand('copy');
-                if (sucesso) {
-                    const msg = document.getElementById(msgId);
-                    msg.style.display = 'inline-block';
-                    setTimeout(() => { msg.style.display = 'none'; }, 2000);
-                } else {
-                    alert('Não foi possível copiar. Selecione o texto da chave e copie manualmente.');
-                }
-            } catch (err) {
-                alert('Não foi possível copiar. Selecione o texto da chave e copie manualmente.');
+                await db.ref("MensagensApoio").push({
+                    nome: nome,
+                    rede: rede,
+                    arroba: arroba,
+                    texto: texto,
+                    horario: new Date().toLocaleString('pt-BR')
+                });
+                
+                document.getElementById('campoNome').value = '';
+                document.getElementById('campoRede').value = '';
+                document.getElementById('campoArroba').value = '';
+                document.getElementById('campoMensagem').value = '';
+                
+                alert('✅ Mensagem enviada com sucesso! Obrigado pelo apoio! 💪💛');
+            } catch (erro) {
+                alert('❌ Erro ao enviar. Tente novamente!');
+                console.error(erro);
             }
+        }
 
-            document.body.removeChild(input);
+        function voltarPagina() {
+            if (window.history.length > 1) {
+                history.back();
+            } else {
+                window.location.href = 'index.html';
+            }
         }
     </script>
 </body>
