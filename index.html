@@ -204,7 +204,7 @@
             <div id="mural" class="bloco">
                 <h3>✍️ Mural de Fãs</h3>
                 <p>Sua mensagem será lida por todos que visitarem este espaço.</p>
-                <a href="primeiroapoio.html" class="botao-mural">💪 Deixar Minha Mensagem</a>
+                <a href="mensagemapoio.html" class="botao-mural">💪 Deixar Minha Mensagem</a>
             </div>
 
             <div class="bloco" style="text-align: center; background: #2a1a0f; border: 2px solid #ff3333;">
@@ -213,7 +213,7 @@
                     ❤️ Quer ajudar o Fã Clube crescer? Veja como contribuir com PIX! ❤️
                 </p>
                 <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">👇</div>
-                <a href="mensagemapoio.html" class="botao-pix-link" onclick="sessionStorage.setItem('manterMenuAberto', 'sim')">
+                <a href="doacoespix.html" class="botao-pix-link" onclick="sessionStorage.setItem('manterMenuAberto', 'sim')">
                     ❤️ APOIE O FÃ CLUBE — PIX 💳
                 </a>
             </div>
@@ -234,7 +234,6 @@
                 abrirMenu();
             }
 
-            // ✅ SEMPRE registra uma nova visualização ao carregar a página
             const ref = db.ref("FãClube/visitas");
             const snap = await ref.once("value");
             await ref.set((snap.val() || 0) + 1);
