@@ -38,9 +38,7 @@
             align-items: center;
             gap: 4px;
         }
-        .btn-voltar span {
-            font-size: 1.1rem;
-        }
+        .btn-voltar span { font-size: 1.1rem; }
         .cabecalho h1 {
             color: #f4a900;
             font-size: 1.3rem;
@@ -58,25 +56,22 @@
             max-width: 520px;
             margin: 0 auto;
         }
-
         .card-video {
             background: #1a1a1a;
             border-radius: 12px;
             overflow: hidden;
             border: 2px solid transparent;
             transition: all 0.25s ease;
+            cursor: pointer;
         }
         .card-video:active {
             transform: scale(0.97);
             border-color: #f4a900;
         }
-
-        /* Área da capa com botão de play */
         .capa-container {
             position: relative;
             aspect-ratio: 9/16;
             background: #222;
-            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -104,9 +99,7 @@
             box-shadow: 0 0 0 3px rgba(255,255,255,0.9), 0 0 25px rgba(254, 44, 85, 0.5);
             transition: all 0.2s;
         }
-        .capa-container:hover .botao-play {
-            transform: scale(1.08);
-        }
+        .capa-container:hover .botao-play { transform: scale(1.08); }
         .duracao {
             position: absolute;
             bottom: 10px;
@@ -142,11 +135,7 @@
             border-radius: 4px;
             z-index: 2;
         }
-
-        /* Informações abaixo da capa */
-        .info-card {
-            padding: 12px;
-        }
+        .info-card { padding: 12px; }
         .info-card h3 {
             font-size: 0.95rem;
             color: #fff;
@@ -159,7 +148,7 @@
             line-height: 1.4;
         }
 
-        /* ===== TELA DO VÍDEO INCORPORADO ===== */
+        /* ===== TELA DO VÍDEO ===== */
         .tela-video-overlay {
             position: fixed;
             top: 0;
@@ -175,9 +164,7 @@
             padding: 1rem;
             overflow-y: auto;
         }
-        .tela-video-overlay.visivel {
-            display: flex;
-        }
+        .tela-video-overlay.visivel { display: flex; }
         .fechar-tela {
             align-self: flex-end;
             background: #111;
@@ -190,27 +177,104 @@
             z-index: 10;
             margin-bottom: 1rem;
         }
-        .embed-container {
+        .video-container {
             width: 100%;
             max-width: 360px;
         }
-        .embed-container blockquote {
-            width: 100% !important;
-            max-width: 100% !important;
-            margin: 0 !important;
+        .video-container video {
+            width: 100%;
+            border-radius: 8px;
+            background: #000;
         }
-        .descricao-video-grande {
+
+        /* ===== AÇÕES: CURTIR E COMENTAR ===== */
+        .acoes-video {
             width: 100%;
             max-width: 360px;
-            padding: 1rem;
+            display: flex;
+            justify-content: space-around;
+            padding: 1rem 0;
+            border-bottom: 1px solid #333;
+        }
+        .botao-acao {
+            background: transparent;
+            border: none;
+            color: #ccc;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+        .botao-acao span { font-size: 1.3rem; }
+        .botao-acao.curtido { color: #fe2c55; }
+        .botao-acao:hover { transform: scale(1.05); }
+
+        /* ===== COMENTÁRIOS ===== */
+        .area-comentarios {
+            width: 100%;
+            max-width: 360px;
+            padding: 1rem 0;
+        }
+        .area-comentarios h4 {
+            color: #f4a900;
+            margin-bottom: 0.8rem;
+            font-size: 0.95rem;
+        }
+        .lista-comentarios {
+            max-height: 200px;
+            overflow-y: auto;
+            margin-bottom: 1rem;
+        }
+        .comentario {
+            background: #1a1a1a;
+            padding: 0.7rem;
+            border-radius: 6px;
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+        }
+        .comentario strong { color: #f4a900; }
+        .comentario small { color: #666; font-size: 0.75rem; display: block; margin-top: 2px; }
+        .caixa-comentario {
+            display: flex;
+            gap: 8px;
+        }
+        .caixa-comentario input {
+            flex: 1;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 6px;
+            padding: 0.6rem 0.8rem;
+            color: #fff;
+            font-size: 0.85rem;
+            outline: none;
+        }
+        .caixa-comentario input:focus { border-color: #f4a900; }
+        .caixa-comentario button {
+            background: #f4a900;
+            border: none;
+            color: #000;
+            font-weight: bold;
+            padding: 0 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .caixa-comentario button:hover { background: #e09800; }
+
+        .descricao-video {
+            width: 100%;
+            max-width: 360px;
+            padding: 0.5rem 1rem 1rem;
             text-align: center;
         }
-        .descricao-video-grande h3 {
+        .descricao-video h3 {
             color: #f4a900;
             font-size: 1.1rem;
             margin-bottom: 0.4rem;
         }
-        .descricao-video-grande p {
+        .descricao-video p {
             color: #999;
             font-size: 0.9rem;
         }
@@ -229,54 +293,60 @@
     <!-- GRADE DE VÍDEOS -->
     <div class="grade-videos" id="gradeVideos"></div>
 
-    <!-- TELA DO VÍDEO INCORPORADO -->
+    <!-- TELA DO VÍDEO -->
     <div class="tela-video-overlay" id="telaVideoGrande">
         <button class="fechar-tela" onclick="fecharVideo()">✖️ Fechar</button>
-        <div class="embed-container" id="containerEmbed"></div>
-        <div class="descricao-video-grande">
+        
+        <div class="video-container">
+            <video id="playerVideo" controls playsinline webkit-playsinline></video>
+        </div>
+
+        <div class="descricao-video">
             <h3 id="tituloVideoGrande">Título do Vídeo</h3>
             <p id="descricaoVideoGrande">Descrição do Vídeo</p>
+        </div>
+
+        <!-- CURTIR E COMENTAR -->
+        <div class="acoes-video">
+            <button class="botao-acao" id="btnCurtir" onclick="curtirVideo()">
+                <span>❤️</span>
+                <span id="contadorCurtidas">0</span>
+            </button>
+            <button class="botao-acao" onclick="document.getElementById('inputComentario').focus()">
+                <span>💬</span> Comentar
+            </button>
+        </div>
+
+        <!-- COMENTÁRIOS -->
+        <div class="area-comentarios">
+            <h4>💬 Comentários (<span id="qtdComentarios">0</span>)</h4>
+            <div class="lista-comentarios" id="listaComentarios">
+                <p style="color:#666; font-size:0.85rem; text-align:center; padding:1rem;">Seja o primeiro a comentar! ✨</p>
+            </div>
+            <div class="caixa-comentario">
+                <input type="text" id="inputComentario" placeholder="Escreva seu comentário..." maxlength="150">
+                <button onclick="adicionarComentario()">Enviar</button>
+            </div>
         </div>
     </div>
 
     <script>
         // ==================================================
-        // 📋 LISTA DOS VÍDEOS — PRONTO E CONFIGURADO!
+        // 📋 LISTA DOS VÍDEOS — SÓ OS 2 VÍDEOS LOCAIS
         // ==================================================
         const videos = [
-            // 🎬 VÍDEO 1 — TikTok
             {
                 numero: 1,
-                capa: "imagens/capa-video1.jpg",
-                tipo: "tiktok",
-                embedHtml: `<blockquote class="tiktok-embed" cite="https://vt.tiktok.com/ZSgtJhB5S/" data-video-id="ZSgtJhB5S" style="max-width: 605px;min-width: 325px;">
-    <section>
-        <a target="_blank" title="Fã clube do Serginho cabeção" href="https://vt.tiktok.com/ZSgtJhB5S/">Fã clube do Serginho cabeção</a>
-        <p>Juntos nós somos mais fortes. 🤠😎😃🏆</p>
-        <p>🎵 Te Levar Daqui - Charlie Brown Jr.</p>
-    </section>
-</blockquote>`,
-                titulo: "🤠 Juntos nós somos mais fortes",
-                descricao: "Assista direto aqui no site! ❤️ Curtidas e 💬 comentários funcionando!",
-                duracao: "TikTok",
-                fixado: true
-            },
-            // 🎬 VÍDEO 2 — Arquivo de vídeo local
-            {
-                numero: 2,
                 capa: "imagens/capa-biografia.jpg",
-                tipo: "local",
                 arquivo: "videos/BiografiaSerginho.mp4",
                 titulo: "📖 Biografia do Serginho",
                 descricao: "Conheça a história do nosso querido Serginho Cabeção!",
                 duracao: "0:00",
-                fixado: false
+                fixado: true
             },
-            // 🎬 VÍDEO 3 — Arquivo de vídeo local
             {
-                numero: 3,
+                numero: 2,
                 capa: "imagens/capa-goku.jpg",
-                tipo: "local",
                 arquivo: "videos/SerginhoGoku.mp4",
                 titulo: "🐉 Serginho e Goku",
                 descricao: "Um vídeo especial do Serginho!",
@@ -285,9 +355,33 @@
             }
         ];
 
+        // 📊 DADOS: Curtidas e Comentários (salvos no navegador)
+        let videoAtual = null;
+        let curtidas = {};
+        let curtido = {};
+        let comentarios = {};
+
+        // Carrega dados salvos
+        function carregarDados() {
+            const dadosSalvos = localStorage.getItem('dadosVideos');
+            if (dadosSalvos) {
+                const d = JSON.parse(dadosSalvos);
+                curtidas = d.curtidas || {};
+                curtido = d.curtido || {};
+                comentarios = d.comentarios || {};
+            }
+        }
+        function salvarDados() {
+            localStorage.setItem('dadosVideos', JSON.stringify({ curtidas, curtido, comentarios }));
+        }
+
         // 🖼️ MONTA A GRADE
         const grade = document.getElementById('gradeVideos');
         videos.forEach(video => {
+            curtidas[video.numero] = curtidas[video.numero] || 0;
+            curtido[video.numero] = curtido[video.numero] || false;
+            comentarios[video.numero] = comentarios[video.numero] || [];
+
             const card = document.createElement('div');
             card.className = 'card-video';
             card.innerHTML = `
@@ -308,56 +402,105 @@
 
         // ▶️ ABRE O VÍDEO
         function abrirVideo(numero) {
+            carregarDados();
+            videoAtual = numero;
             const video = videos.find(v => v.numero === numero);
             const overlay = document.getElementById('telaVideoGrande');
-            const containerEmbed = document.getElementById('containerEmbed');
-            const tituloEl = document.getElementById('tituloVideoGrande');
-            const descricaoEl = document.getElementById('descricaoVideoGrande');
-            
-            tituloEl.textContent = video.titulo;
-            descricaoEl.textContent = video.descricao;
-            
-            containerEmbed.innerHTML = '';
-            
-            if (video.tipo === 'tiktok') {
-                containerEmbed.innerHTML = video.embedHtml;
-                if (!window.tiktokEmbedLoaded) {
-                    window.tiktokEmbedLoaded = true;
-                    const script = document.createElement('script');
-                    script.src = 'https://www.tiktok.com/embed.js';
-                    script.async = true;
-                    document.head.appendChild(script);
-                }
-            } else {
-                containerEmbed.innerHTML = `<video id="playerVideo" controls playsinline webkit-playsinline style="width:100%; border-radius:8px; background:#000;"></video>`;
-                const player = document.getElementById('playerVideo');
-                player.src = video.arquivo;
-                player.play();
-            }
-            
-            overlay.classList.add('visivel');
-            document.body.style.overflow = 'hidden';
-        }
-
-        // ✕ FECHA O VÍDEO
-        function fecharVideo() {
-            const overlay = document.getElementById('telaVideoGrande');
-            const containerEmbed = document.getElementById('containerEmbed');
             const player = document.getElementById('playerVideo');
             
-            if (player) {
-                player.pause();
-                player.src = '';
-            }
-            containerEmbed.innerHTML = '';
-            overlay.classList.remove('visivel');
-            document.body.style.overflow = 'auto';
+            document.getElementById('tituloVideoGrande').textContent = video.titulo;
+            document.getElementById('descricaoVideoGrande').textContent = video.descricao;
+            
+            player.src = video.arquivo;
+            overlay.classList.add('visivel');
+            document.body.style.overflow = 'hidden';
+            player.play();
+
+            atualizarInterface();
         }
 
-        // ⌨️ Tecla ESC fecha o vídeo
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') fecharVideo();
-        });
-    </script>
+        // ❤️ CURTIR
+        function curtirVideo() {
+            if (!videoAtual) return;
+            if (curtido[videoAtual]) {
+                curtidas[videoAtual]--;
+                curtido[videoAtual] = false;
+            } else {
+                curtidas[videoAtual]++;
+                curtido[videoAtual] = true;
+            }
+            salvarDados();
+            atualizarInterface();
+        }
+
+        // 💬 ADICIONAR COMENTÁRIO
+        function adicionarComentario() {
+            const input = document.getElementById('inputComentario');
+            const texto = input.value.trim();
+            if (!texto || !videoAtual) return;
+
+            comentarios[videoAtual].unshift({
+                texto: texto,
+                data: new Date().toLocaleString('pt-BR')
+            });
+            input.value = '';
+            salvarDados();
+            atualizarInterface();
+        }
+
+        // 🔄 ATUALIZA A INTERFACE
+        function atualizarInterface() {
+            if (!videoAtual) return;
+
+            // Curtir
+            const btnCurtir = document.getElementById('btnCurtir');
+            document.getElementById('contadorCurtidas').textContent = curtidas[videoAtual];
+            if (curtido[videoAtual]) {
+                            btnCurtir.classList.remove('curtido');
+        }
+
+        // Comentários
+        const lista = document.getElementById('listaComentarios');
+        const qtd = document.getElementById('qtdComentarios');
+        qtd.textContent = comentarios[videoAtual].length;
+
+        if (comentarios[videoAtual].length === 0) {
+            lista.innerHTML = '<p style="color:#666; font-size:0.85rem; text-align:center; padding:1rem;">Seja o primeiro a comentar! ✨</p>';
+        } else {
+            lista.innerHTML = comentarios[videoAtual].map(c => `
+                <div class="comentario">
+                    <strong>Visitante</strong>
+                    <p>${c.texto}</p>
+                    <small>${c.data}</small>
+                </div>
+            `).join('');
+        }
+    }
+
+    // ✕ FECHA O VÍDEO
+    function fecharVideo() {
+        const overlay = document.getElementById('telaVideoGrande');
+        const player = document.getElementById('playerVideo');
+        
+        player.pause();
+        player.src = '';
+        overlay.classList.remove('visivel');
+        document.body.style.overflow = 'auto';
+        videoAtual = null;
+    }
+
+    // ⌨️ Tecla ENTER envia comentário
+    document.getElementById('inputComentario').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') adicionarComentario();
+    });
+
+    // ⌨️ Tecla ESC fecha o vídeo
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') fecharVideo();
+    });
+
+    carregarDados();
+</script>
 </body>
 </html>
+
