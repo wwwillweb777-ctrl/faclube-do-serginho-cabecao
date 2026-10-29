@@ -28,6 +28,25 @@
             top: 0;
             left: 0;
         }
+
+        /* ✅ CONTADOR — NO CANTO, MENOR E COMPACTO */
+        .contador-canto {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 0.8rem;
+            color: #ccc;
+            background: rgba(0,0,0,0.6);
+            padding: 4px 10px;
+            border-radius: 20px;
+            border: 1px solid #444;
+            z-index: 50;
+        }
+        .contador-canto span {
+            color: #f4a900;
+            font-weight: bold;
+        }
+
         .cartaz {
             max-width: 450px;
             margin: 0 auto;
@@ -159,6 +178,10 @@
 </head>
 <body>
     <div class="cartaz" id="areaPrincipal">
+        
+        <!-- ✅ CONTADOR NO CANTO — PEQUENO E COMPACTO -->
+        <div class="contador-canto">👁️ <span id="contadorVisualizacoes">0</span></div>
+
         <div class="logo-topo">
             <img src="https://cdn.jsdelivr.net/gh/wwwillweb777-ctrl/faclube-do-serginho-cabecao@main/imagens/LogoSerginho.jpg" alt="Logo Serginho Cabeção">
         </div>
@@ -191,9 +214,7 @@
                 alt="Fã Clube" style="width:90px; height:90px; border-radius:50%; border:3px solid #f4a900; object-fit:cover;">
             </div>
 
-            <div class="bloco" style="text-align:center; margin-bottom:0.8rem;">
-                Visualizações 👁️ <span id="contadorVisualizacoes">0</span>
-            </div>
+            <!-- ❌ Removi o contador daqui → agora está no canto -->
 
             <div class="bloco">
                 <h3>🏆 Destaque da Semana</h3>
@@ -242,21 +263,40 @@
                 abrirMenu();
             }
 
+            console.log('📄 Página carregada — verificando contador...');
+
             // ✅ Só conta se AINDA NÃO foi contado nesta visita
             if (!sessionStorage.getItem('visitaContada')) {
+                console.log('🆕 Nova visita — registrando...');
                 sessionStorage.setItem('visitaContada', 'sim');
-                const ref = db.ref("FãClube/visitas");
-                const snap = await ref.once("value");
-                await ref.set((snap.val() || 0) + 1);
+                
+                try {
+                    const ref = db.ref("FãClube/visitas");
+                    const snap = await ref.once("value");
+                    const valorAtual = snap.val() || 0;
+                    console.log(`📊 Valor atual: ${valorAtual} → salvando: ${valorAtual + 1}`);
+                    await ref.set(valorAtual + 1);
+                    console.log('✅ Visita registrada com sucesso!');
+                } catch (erro) {
+                    console.error('❌ Erro ao registrar visita:', erro);
+                    alert('Erro: ' + erro.message);
+                }
+            } else {
+                console.log('✅ Visita já contada nesta sessão — ignorando');
             }
 
             carregarVisualizacoes();
         };
 
         function carregarVisualizacoes() {
+            console.log('📡 Carregando número de visualizações...');
             db.ref("FãClube/visitas").on("value", snap => {
+                const valor = snap.val() || 0;
+                console.log(`👁️ Visualizações atualizadas: ${valor}`);
                 const el = document.getElementById('contadorVisualizacoes');
-                if (el) el.textContent = snap.val() || 0;
+                if (el) el.textContent = valor;
+            }, erro => {
+                console.error('❌ Erro ao ler contador:', erro);
             });
         }
 
