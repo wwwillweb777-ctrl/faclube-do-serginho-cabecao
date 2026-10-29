@@ -9,7 +9,7 @@
         body {
             background: #000;
             color: #fff;
-            font-family: 'Segoe UI', sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             min-height: 100vh;
             padding-bottom: 2rem;
         }
@@ -34,248 +34,276 @@
             color: #fff;
             font-size: 1rem;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 4px;
         }
-        .btn-voltar span { font-size: 1.1rem; }
         .cabecalho h1 {
             color: #f4a900;
-            font-size: 1.3rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            font-size: 1.2rem;
         }
 
         /* ===== GRADE DE VÍDEOS ===== */
         .grade-videos {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 16px;
-            padding: 16px;
+            gap: 12px;
+            padding: 12px;
             max-width: 520px;
             margin: 0 auto;
         }
         .card-video {
-            background: #1a1a1a;
-            border-radius: 12px;
+            position: relative;
+            border-radius: 8px;
             overflow: hidden;
-            border: 2px solid transparent;
-            transition: all 0.25s ease;
+            aspect-ratio: 9/16;
             cursor: pointer;
         }
-        .card-video:active {
-            transform: scale(0.97);
-            border-color: #f4a900;
-        }
-        .capa-container {
-            position: relative;
-            aspect-ratio: 9/16;
-            background: #222;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
         .capa-img {
-            position: absolute;
             width: 100%;
             height: 100%;
             object-fit: cover;
-            opacity: 0.7;
         }
-        .botao-play {
-            position: relative;
-            z-index: 2;
-            width: 80px;
-            height: 80px;
-            background: #fe2c55;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            color: #fff;
-            box-shadow: 0 0 0 3px rgba(255,255,255,0.9), 0 0 25px rgba(254, 44, 85, 0.5);
-            transition: all 0.2s;
-        }
-        .capa-container:hover .botao-play { transform: scale(1.08); }
-        .duracao {
+        .play-icon {
             position: absolute;
-            bottom: 10px;
-            right: 10px;
-            background: rgba(0,0,0,0.8);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 40px;
             color: #fff;
-            font-size: 0.75rem;
-            padding: 3px 8px;
-            border-radius: 4px;
-            z-index: 2;
+            opacity: 0.8;
         }
-        .fixado-tag {
+        .video-info {
             position: absolute;
-            top: 10px;
-            left: 10px;
-            background: #ff0000;
-            color: #fff;
-            font-size: 0.7rem;
-            font-weight: bold;
-            padding: 3px 8px;
-            border-radius: 4px;
-            z-index: 2;
-        }
-        .numero-video {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: rgba(0,0,0,0.8);
-            color: #f4a900;
-            font-size: 0.75rem;
-            font-weight: bold;
-            padding: 3px 8px;
-            border-radius: 4px;
-            z-index: 2;
-        }
-        .info-card { padding: 12px; }
-        .info-card h3 {
-            font-size: 0.95rem;
-            color: #fff;
-            margin-bottom: 4px;
-            line-height: 1.3;
-        }
-        .info-card p {
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 10px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
             font-size: 0.8rem;
-            color: #888;
-            line-height: 1.4;
         }
+        .video-info h4 { font-size: 0.85rem; margin-bottom: 2px; }
 
-        /* ===== TELA DO VÍDEO ===== */
-        .tela-video-overlay {
+        /* ===== TELA DO VÍDEO — ESTILO TIKTOK ===== */
+        .video-screen {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.97);
-            z-index: 9999;
+            background: #000;
+            z-index: 999;
             display: none;
+            flex-direction: row;
+        }
+        .video-screen.active { display: flex; }
+
+        /* Lado esquerdo: Vídeo + Info */
+        .video-left {
+            flex: 1;
+            display: flex;
             flex-direction: column;
-            justify-content: flex-start;
+            position: relative;
+        }
+        .video-player {
+            flex: 1;
+            display: flex;
             align-items: center;
-            padding: 1rem;
-            overflow-y: auto;
-        }
-        .tela-video-overlay.visivel { display: flex; }
-        .fechar-tela {
-            align-self: flex-end;
-            background: #111;
-            border: 2px solid #f4a900;
-            color: #f4a900;
-            font-size: 1rem;
-            padding: 0.5rem 1.2rem;
-            border-radius: 50px;
-            cursor: pointer;
-            z-index: 10;
-            margin-bottom: 1rem;
-        }
-        .video-container {
-            width: 100%;
-            max-width: 360px;
-        }
-        .video-container video {
-            width: 100%;
-            border-radius: 8px;
+            justify-content: center;
             background: #000;
         }
-
-        /* ===== AÇÕES: CURTIR E COMENTAR ===== */
-        .acoes-video {
+        .video-player video {
             width: 100%;
-            max-width: 360px;
-            display: flex;
-            justify-content: space-around;
-            padding: 1rem 0;
-            border-bottom: 1px solid #333;
+            height: 100%;
+            object-fit: contain;
         }
-        .botao-acao {
-            background: transparent;
-            border: none;
-            color: #ccc;
+        .video-bottom-info {
+            padding: 16px;
+            padding-bottom: 80px;
+        }
+        .video-bottom-info h3 {
             font-size: 1rem;
+            margin-bottom: 6px;
+        }
+        .video-bottom-info p {
+            font-size: 0.85rem;
+            color: #ccc;
+            line-height: 1.4;
+        }
+        .close-video {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            background: rgba(0,0,0,0.5);
+            border: none;
+            color: #fff;
+            font-size: 24px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        /* Lado direito: Botões verticais — IGUAL TIKTOK */
+        .actions-right {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 24px;
+            padding: 20px 12px;
+            justify-content: flex-end;
+            padding-bottom: 100px;
+        }
+        .action-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            background: none;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .action-btn:active { transform: scale(0.9); }
+        .action-btn span:first-child { font-size: 28px; }
+        .action-btn span:last-child { font-size: 11px; }
+
+        /* Botão Curtir */
+        .like-btn.liked span:first-child {
+            color: #fe2c55;
+            filter: drop-shadow(0 0 4px #fe2c55);
+        }
+
+        /* Botão Salvar */
+        .save-btn.saved span:first-child {
+            color: #ffd000;
+            filter: drop-shadow(0 0 4px #ffd000);
+        }
+
+        /* ===== ABA DE COMENTÁRIOS — IGUAL TIKTOK ===== */
+        .comments-overlay {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            top: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            display: none;
+        }
+        .comments-overlay.active { display: block; }
+        .comments-panel {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #121212;
+            border-radius: 16px 16px 0 0;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+        .comments-overlay.active .comments-panel {
+            transform: translateY(0);
+        }
+        .comments-header {
+            padding: 14px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #2a2a2a;
+        }
+        .comments-header h4 {
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+        .close-comments {
+            background: none;
+            border: none;
+            color: #888;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        .comments-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+        }
+        .comment-item {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        .comment-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #3a3a3a;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+        .comment-content { flex: 1; }
+        .comment-author {
+            font-size: 0.85rem;
+            color: #aaa;
+            margin-bottom: 4px;
+        }
+        .comment-text {
+            font-size: 0.9rem;
+            line-height: 1.4;
+            margin-bottom: 6px;
+        }
+        .comment-meta {
+            font-size: 0.75rem;
+            color: #666;
+            display: flex;
+            gap: 12px;
+        }
+        .comment-like-btn {
+            background: none;
+            border: none;
+            color: #666;
+            font-size: 0.8rem;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 6px;
-            transition: all 0.2s;
+            gap: 4px;
         }
-        .botao-acao span { font-size: 1.3rem; }
-        .botao-acao.curtido { color: #fe2c55; }
-        .botao-acao:hover { transform: scale(1.05); }
-
-        /* ===== COMENTÁRIOS ===== */
-        .area-comentarios {
-            width: 100%;
-            max-width: 360px;
-            padding: 1rem 0;
-        }
-        .area-comentarios h4 {
-            color: #f4a900;
-            margin-bottom: 0.8rem;
-            font-size: 0.95rem;
-        }
-        .lista-comentarios {
-            max-height: 200px;
-            overflow-y: auto;
-            margin-bottom: 1rem;
-        }
-        .comentario {
-            background: #1a1a1a;
-            padding: 0.7rem;
-            border-radius: 6px;
-            margin-bottom: 0.5rem;
-            font-size: 0.85rem;
-        }
-        .comentario strong { color: #f4a900; }
-        .comentario small { color: #666; font-size: 0.75rem; display: block; margin-top: 2px; }
-        .caixa-comentario {
+        .comment-like-btn.liked { color: #fe2c55; }
+        .comments-input-area {
+            padding: 12px 16px;
+            border-top: 1px solid #2a2a2a;
             display: flex;
-            gap: 8px;
+            gap: 10px;
+            align-items: center;
         }
-        .caixa-comentario input {
+        .comments-input-area input {
             flex: 1;
-            background: #1a1a1a;
-            border: 1px solid #333;
-            border-radius: 6px;
-            padding: 0.6rem 0.8rem;
+            background: #2a2a2a;
+            border: none;
+            border-radius: 20px;
+            padding: 10px 16px;
             color: #fff;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             outline: none;
         }
-        .caixa-comentario input:focus { border-color: #f4a900; }
-        .caixa-comentario button {
-            background: #f4a900;
+        .comments-input-area button {
+            background: none;
             border: none;
-            color: #000;
-            font-weight: bold;
-            padding: 0 1rem;
-            border-radius: 6px;
+            color: #fe2c55;
+            font-weight: 600;
+            font-size: 0.9rem;
             cursor: pointer;
-            transition: all 0.2s;
+            padding: 8px 12px;
         }
-        .caixa-comentario button:hover { background: #e09800; }
-
-        .descricao-video {
-            width: 100%;
-            max-width: 360px;
-            padding: 0.5rem 1rem 1rem;
+        .empty-comments {
             text-align: center;
-        }
-        .descricao-video h3 {
-            color: #f4a900;
-            font-size: 1.1rem;
-            margin-bottom: 0.4rem;
-        }
-        .descricao-video p {
-            color: #999;
+            padding: 40px 20px;
+            color: #666;
             font-size: 0.9rem;
         }
     </style>
@@ -284,9 +312,7 @@
 
     <!-- CABEÇALHO -->
     <div class="cabecalho">
-        <button class="btn-voltar" onclick="if(document.referrer) { history.back(); } else { window.location.href='index.html'; } return false;">
-            <span>←</span> Voltar
-        </button>
+        <button class="btn-voltar" onclick="window.location.href='index.html'">← Voltar</button>
         <h1>🎬 Vídeos do Fã Clube</h1>
     </div>
 
@@ -294,133 +320,153 @@
     <div class="grade-videos" id="gradeVideos"></div>
 
     <!-- TELA DO VÍDEO -->
-    <div class="tela-video-overlay" id="telaVideoGrande">
-        <button class="fechar-tela" onclick="fecharVideo()">✖️ Fechar</button>
-        
-        <div class="video-container">
-            <video id="playerVideo" controls playsinline webkit-playsinline></video>
-        </div>
-
-        <div class="descricao-video">
-            <h3 id="tituloVideoGrande">Título do Vídeo</h3>
-            <p id="descricaoVideoGrande">Descrição do Vídeo</p>
-        </div>
-
-        <!-- CURTIR E COMENTAR -->
-        <div class="acoes-video">
-            <button class="botao-acao" id="btnCurtir" onclick="curtirVideo()">
-                <span>❤️</span>
-                <span id="contadorCurtidas">0</span>
-            </button>
-            <button class="botao-acao" onclick="document.getElementById('inputComentario').focus()">
-                <span>💬</span> Comentar
-            </button>
-        </div>
-
-        <!-- COMENTÁRIOS -->
-        <div class="area-comentarios">
-            <h4>💬 Comentários (<span id="qtdComentarios">0</span>)</h4>
-            <div class="lista-comentarios" id="listaComentarios">
-                <p style="color:#666; font-size:0.85rem; text-align:center; padding:1rem;">Seja o primeiro a comentar! ✨</p>
+    <div class="video-screen" id="videoScreen">
+        <div class="video-left">
+            <button class="close-video" onclick="fecharVideo()">×</button>
+            <div class="video-player">
+                <video id="playerVideo" playsinline></video>
             </div>
-            <div class="caixa-comentario">
-                <input type="text" id="inputComentario" placeholder="Escreva seu comentário..." maxlength="150">
-                <button onclick="adicionarComentario()">Enviar</button>
+            <div class="video-bottom-info">
+                <h3 id="videoTitulo"></h3>
+                <p id="videoDescricao"></p>
+            </div>
+        </div>
+
+        <!-- BOTÕES VERTICAIS — IGUAL TIKTOK -->
+        <div class="actions-right">
+            <!-- Curtir -->
+            <button class="action-btn like-btn" id="likeBtn" onclick="toggleCurtir()">
+                <span>❤️</span>
+                <span id="likeCount">0</span>
+            </button>
+            <!-- Comentário -->
+            <button class="action-btn comment-btn" onclick="abrirComentarios()">
+                <span>💬</span>
+                <span id="commentCount">0</span>
+            </button>
+            <!-- Salvar -->
+            <button class="action-btn save-btn" id="saveBtn" onclick="toggleSalvar()">
+                <span>📌</span>
+                <span id="saveText">Salvar</span>
+            </button>
+            <!-- Compartilhar -->
+            <button class="action-btn share-btn">
+                <span>↗️</span>
+                <span>Compartilhar</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- ABA DE COMENTÁRIOS -- DESLIZA DE BAIXO PRA CIMA -->
+    <div class="comments-overlay" id="commentsOverlay" onclick="if(event.target === this) fecharComentarios()">
+        <div class="comments-panel">
+            <div class="comments-header">
+                <h4>Comentários — <span id="totalComentarios">0</span></h4>
+                <button class="close-comments" onclick="fecharComentarios()">✕</button>
+            </div>
+            <div class="comments-list" id="commentsList">
+                <div class="empty-comments">
+                    Seja o primeiro a comentar! ✨
+                </div>
+            </div>
+            <div class="comments-input-area">
+                <input type="text" id="commentInput" placeholder="Adicione um comentário...">
+                <button onclick="enviarComentario()">Publicar</button>
             </div>
         </div>
     </div>
 
     <script>
         // ==================================================
-        // 📋 LISTA DOS VÍDEOS — SÓ OS 2 VÍDEOS LOCAIS
+        // 📋 DADOS DOS VÍDEOS
         // ==================================================
         const videos = [
             {
-                numero: 1,
+                id: 1,
                 capa: "imagens/capa-biografia.jpg",
                 arquivo: "videos/BiografiaSerginho.mp4",
                 titulo: "📖 Biografia do Serginho",
-                descricao: "Conheça a história do nosso querido Serginho Cabeção!",
-                duracao: "0:00",
-                fixado: true
+                descricao: "Conheça a história do nosso querido Serginho Cabeção! 💛"
             },
             {
-                numero: 2,
+                id: 2,
                 capa: "imagens/capa-goku.jpg",
                 arquivo: "videos/SerginhoGoku.mp4",
                 titulo: "🐉 Serginho e Goku",
-                descricao: "Um vídeo especial do Serginho!",
-                duracao: "0:00",
-                fixado: false
+                descricao: "Um vídeo especial do Serginho! ⚡"
             }
         ];
 
-        // 📊 DADOS: Curtidas e Comentários (salvos no navegador)
+        // 📊 DADOS SALVOS
         let videoAtual = null;
         let curtidas = {};
         let curtido = {};
+        let salvos = {};
         let comentarios = {};
 
-        // Carrega dados salvos
+        // Carregar dados
         function carregarDados() {
-            const dadosSalvos = localStorage.getItem('dadosVideos');
-            if (dadosSalvos) {
-                const d = JSON.parse(dadosSalvos);
+            const dados = localStorage.getItem('dadosVideos');
+            if (dados) {
+                const d = JSON.parse(dados);
                 curtidas = d.curtidas || {};
                 curtido = d.curtido || {};
+                salvos = d.salvos || {};
                 comentarios = d.comentarios || {};
             }
+            videos.forEach(v => {
+                if (!curtidas[v.id]) curtidas[v.id] = 0;
+                if (!curtido[v.id]) curtido[v.id] = false;
+                if (!salvos[v.id]) salvos[v.id] = false;
+                if (!comentarios[v.id]) comentarios[v.id] = [];
+            });
         }
         function salvarDados() {
-            localStorage.setItem('dadosVideos', JSON.stringify({ curtidas, curtido, comentarios }));
+            localStorage.setItem('dadosVideos', JSON.stringify({ curtidas, curtido, salvos, comentarios }));
         }
 
-        // 🖼️ MONTA A GRADE
+        // 🖼️ Montar grade
         const grade = document.getElementById('gradeVideos');
         videos.forEach(video => {
-            curtidas[video.numero] = curtidas[video.numero] || 0;
-            curtido[video.numero] = curtido[video.numero] || false;
-            comentarios[video.numero] = comentarios[video.numero] || [];
-
             const card = document.createElement('div');
             card.className = 'card-video';
+            card.onclick = () => abrirVideo(video.id);
             card.innerHTML = `
-                <div class="capa-container" onclick="abrirVideo(${video.numero})">
-                    ${video.fixado ? '<span class="fixado-tag">📌 Fixado</span>' : ''}
-                    <span class="numero-video">#${video.numero}</span>
-                    <img src="${video.capa}" alt="Vídeo ${video.numero}" class="capa-img" loading="lazy">
-                    <span class="botao-play">▶</span>
-                    <span class="duracao">${video.duracao}</span>
-                </div>
-                <div class="info-card">
-                    <h3>${video.titulo}</h3>
-                    <p>${video.descricao}</p>
+                <img src="${video.capa}" class="capa-img" alt="${video.titulo}">
+                <span class="play-icon">▶</span>
+                <div class="video-info">
+                    <h4>${video.titulo}</h4>
                 </div>
             `;
             grade.appendChild(card);
         });
 
-        // ▶️ ABRE O VÍDEO
-        function abrirVideo(numero) {
+        // ▶️ Abrir vídeo
+        function abrirVideo(id) {
             carregarDados();
-            videoAtual = numero;
-            const video = videos.find(v => v.numero === numero);
-            const overlay = document.getElementById('telaVideoGrande');
-            const player = document.getElementById('playerVideo');
+            videoAtual = id;
+            const video = videos.find(v => v.id === id);
             
-            document.getElementById('tituloVideoGrande').textContent = video.titulo;
-            document.getElementById('descricaoVideoGrande').textContent = video.descricao;
+            document.getElementById('videoTitulo').textContent = video.titulo;
+            document.getElementById('videoDescricao').textContent = video.descricao;
+            document.getElementById('playerVideo').src = video.arquivo;
+            document.getElementById('videoScreen').classList.add('active');
+            document.getElementById('playerVideo').play();
             
-            player.src = video.arquivo;
-            overlay.classList.add('visivel');
-            document.body.style.overflow = 'hidden';
-            player.play();
-
-            atualizarInterface();
+            atualizarBotoes();
         }
 
-        // ❤️ CURTIR
-        function curtirVideo() {
+        // ✖️ Fechar vídeo
+        function fecharVideo() {
+            document.getElementById('playerVideo').pause();
+            document.getElementById('playerVideo').src = '';
+            document.getElementById('videoScreen').classList.remove('active');
+            fecharComentarios();
+            videoAtual = null;
+        }
+
+        // ❤️ Curtir
+        function toggleCurtir() {
             if (!videoAtual) return;
             if (curtido[videoAtual]) {
                 curtidas[videoAtual]--;
@@ -430,76 +476,128 @@
                 curtido[videoAtual] = true;
             }
             salvarDados();
-            atualizarInterface();
+            atualizarBotoes();
         }
 
-        // 💬 ADICIONAR COMENTÁRIO
-        function adicionarComentario() {
-            const input = document.getElementById('inputComentario');
-            const texto = input.value.trim();
-            if (!texto || !videoAtual) return;
+        // 📌 Salvar
+        function toggleSalvar() {
+                if (!videoAtual) return;
+    salvos[videoAtual] = !salvos[videoAtual];
+    salvarDados();
+    atualizarBotoes();
+}
 
-            comentarios[videoAtual].unshift({
-                texto: texto,
-                data: new Date().toLocaleString('pt-BR')
-            });
-            input.value = '';
-            salvarDados();
-            atualizarInterface();
-        }
+// 🔄 Atualizar botões na tela
+function atualizarBotoes() {
+    if (!videoAtual) return;
 
-        // 🔄 ATUALIZA A INTERFACE
-        function atualizarInterface() {
-            if (!videoAtual) return;
+    // Curtir
+    const likeBtn = document.getElementById('likeBtn');
+    document.getElementById('likeCount').textContent = curtidas[videoAtual];
+    if (curtido[videoAtual]) {
+        likeBtn.classList.add('liked');
+    } else {
+        likeBtn.classList.remove('liked');
+    }
 
-            // Curtir
-            const btnCurtir = document.getElementById('btnCurtir');
-            document.getElementById('contadorCurtidas').textContent = curtidas[videoAtual];
-            if (curtido[videoAtual]) {
-                            btnCurtir.classList.remove('curtido');
-        }
+    // Salvar
+    const saveBtn = document.getElementById('saveBtn');
+    const saveText = document.getElementById('saveText');
+    if (salvos[videoAtual]) {
+        saveBtn.classList.add('saved');
+        saveText.textContent = 'Salvo';
+    } else {
+        saveBtn.classList.remove('saved');
+        saveText.textContent = 'Salvar';
+    }
 
-        // Comentários
-        const lista = document.getElementById('listaComentarios');
-        const qtd = document.getElementById('qtdComentarios');
-        qtd.textContent = comentarios[videoAtual].length;
+    // Comentários
+    document.getElementById('commentCount').textContent = comentarios[videoAtual].length;
+    document.getElementById('totalComentarios').textContent = comentarios[videoAtual].length;
+}
 
-        if (comentarios[videoAtual].length === 0) {
-            lista.innerHTML = '<p style="color:#666; font-size:0.85rem; text-align:center; padding:1rem;">Seja o primeiro a comentar! ✨</p>';
-        } else {
-            lista.innerHTML = comentarios[videoAtual].map(c => `
-                <div class="comentario">
-                    <strong>Visitante</strong>
-                    <p>${c.texto}</p>
-                    <small>${c.data}</small>
+// 💬 Abrir aba de comentários
+function abrirComentarios() {
+    if (!videoAtual) return;
+    document.getElementById('commentsOverlay').classList.add('active');
+    atualizarListaComentarios();
+}
+
+// ✖️ Fechar comentários
+function fecharComentarios() {
+    document.getElementById('commentsOverlay').classList.remove('active');
+    document.getElementById('commentInput').value = '';
+}
+
+// 📝 Atualizar lista de comentários
+function atualizarListaComentarios() {
+    if (!videoAtual) return;
+    const lista = document.getElementById('commentsList');
+    const listaComentarios = comentarios[videoAtual];
+
+    if (listaComentarios.length === 0) {
+        lista.innerHTML = '<div class="empty-comments">Seja o primeiro a comentar! ✨</div>';
+        return;
+    }
+
+    lista.innerHTML = listaComentarios.map((c, index) => `
+        <div class="comment-item">
+            <div class="comment-avatar">👤</div>
+            <div class="comment-content">
+                <div class="comment-author">Visitante</div>
+                <div class="comment-text">${c.texto}</div>
+                <div class="comment-meta">
+                    <span>${c.data}</span>
+                    <button class="comment-like-btn" id="curtir-comentario-${index}" onclick="curtirComentario(${index})">
+                        ❤️ ${c.curtidas || 0}
+                    </button>
                 </div>
-            `).join('');
-        }
-    }
+            </div>
+        </div>
+    `).reverse().join('');
+}
 
-    // ✕ FECHA O VÍDEO
-    function fecharVideo() {
-        const overlay = document.getElementById('telaVideoGrande');
-        const player = document.getElementById('playerVideo');
-        
-        player.pause();
-        player.src = '';
-        overlay.classList.remove('visivel');
-        document.body.style.overflow = 'auto';
-        videoAtual = null;
-    }
+// ✉️ Enviar comentário
+function enviarComentario() {
+    const input = document.getElementById('commentInput');
+    const texto = input.value.trim();
+    if (!texto || !videoAtual) return;
 
-    // ⌨️ Tecla ENTER envia comentário
-    document.getElementById('inputComentario').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') adicionarComentario();
+    comentarios[videoAtual].push({
+        texto: texto,
+        data: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) + ' — ' + 
+              new Date().toLocaleDateString('pt-BR'),
+        curtidas: 0,
+        curtido: false
     });
 
-    // ⌨️ Tecla ESC fecha o vídeo
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') fecharVideo();
-    });
+    input.value = '';
+    salvarDados();
+    atualizarListaComentarios();
+    atualizarBotoes();
+}
 
-    carregarDados();
+// ❤️ Curtir comentário
+function curtirComentario(index) {
+    if (!videoAtual) return;
+    const comentario = comentarios[videoAtual][index];
+    if (!comentario.curtido) {
+        comentario.curtidas = (comentario.curtidas || 0) + 1;
+        comentario.curtido = true;
+    } else {
+        comentario.curtidas = Math.max(0, (comentario.curtidas || 0) - 1);
+        comentario.curtido = false;
+    }
+    salvarDados();
+    atualizarListaComentarios();
+}
+
+// ⌨️ Enter envia comentário
+document.getElementById('commentInput').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') enviarComentario();
+});
+
+carregarDados();
 </script>
 </body>
 </html>
