@@ -81,7 +81,7 @@
         }
         .video-info h4 { font-size: 0.85rem; margin-bottom: 2px; }
 
-        /* ===== TELA DO VÍDEO — ESTILO TIKTOK ===== */
+        /* ===== TELA DO VÍDEO ===== */
         .video-screen {
             position: fixed;
             top: 0;
@@ -95,7 +95,6 @@
         }
         .video-screen.active { display: flex; }
 
-        /* Lado esquerdo: Vídeo + Info */
         .video-left {
             flex: 1;
             display: flex;
@@ -142,15 +141,15 @@
             z-index: 10;
         }
 
-        /* Lado direito: Botões verticais — IGUAL TIKTOK */
+        /* ===== BOTÕES VERTICAIS — SÓ CURTIR E COMENTAR ===== */
         .actions-right {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 24px;
+            gap: 28px;
             padding: 20px 12px;
             justify-content: flex-end;
-            padding-bottom: 100px;
+            padding-bottom: 120px;
         }
         .action-btn {
             display: flex;
@@ -164,22 +163,15 @@
             transition: transform 0.2s;
         }
         .action-btn:active { transform: scale(0.9); }
-        .action-btn span:first-child { font-size: 28px; }
-        .action-btn span:last-child { font-size: 11px; }
+        .action-btn span:first-child { font-size: 30px; }
+        .action-btn span:last-child { font-size: 12px; }
 
-        /* Botão Curtir */
         .like-btn.liked span:first-child {
             color: #fe2c55;
             filter: drop-shadow(0 0 4px #fe2c55);
         }
 
-        /* Botão Salvar */
-        .save-btn.saved span:first-child {
-            color: #ffd000;
-            filter: drop-shadow(0 0 4px #ffd000);
-        }
-
-        /* ===== ABA DE COMENTÁRIOS — IGUAL TIKTOK ===== */
+        /* ===== ABA DE COMENTÁRIOS ===== */
         .comments-overlay {
             position: fixed;
             bottom: 0;
@@ -198,7 +190,7 @@
             right: 0;
             background: #121212;
             border-radius: 16px 16px 0 0;
-            max-height: 80vh;
+            max-height: 85vh;
             display: flex;
             flex-direction: column;
             transform: translateY(100%);
@@ -233,55 +225,77 @@
         .comment-item {
             display: flex;
             gap: 12px;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #222;
         }
         .comment-avatar {
-            width: 36px;
-            height: 36px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
-            background: #3a3a3a;
+            background: linear-gradient(135deg, #f4a900, #fe2c55);
             flex-shrink: 0;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 18px;
+            font-weight: bold;
         }
-        .comment-content { flex: 1; }
+        .comment-content { flex: 1; min-width: 0; }
         .comment-author {
             font-size: 0.85rem;
-            color: #aaa;
+            color: #f4a900;
             margin-bottom: 4px;
+            font-weight: 500;
         }
         .comment-text {
             font-size: 0.9rem;
-            line-height: 1.4;
+            line-height: 1.5;
             margin-bottom: 6px;
+            word-break: break-word;
         }
         .comment-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .comment-time {
             font-size: 0.75rem;
             color: #666;
-            display: flex;
-            gap: 12px;
         }
-        .comment-like-btn {
+        .delete-comment-btn {
             background: none;
             border: none;
             color: #666;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 4px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: all 0.2s;
         }
-        .comment-like-btn.liked { color: #fe2c55; }
+        .delete-comment-btn:hover {
+            color: #ff4444;
+            background: rgba(255,68,68,0.1);
+        }
+        .empty-comments {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* Área de envio */
         .comments-input-area {
-            padding: 12px 16px;
+            padding: 12px 16px 20px;
             border-top: 1px solid #2a2a2a;
-            display: flex;
-            gap: 10px;
-            align-items: center;
         }
-        .comments-input-area input {
+        .name-input-wrapper {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        .name-input-wrapper input,
+        .comment-input-wrapper input {
             flex: 1;
             background: #2a2a2a;
             border: none;
@@ -291,20 +305,34 @@
             font-size: 0.9rem;
             outline: none;
         }
-        .comments-input-area button {
-            background: none;
+        .name-input-wrapper input:focus,
+        .comment-input-wrapper input:focus {
+            background: #333;
+        }
+        .comment-input-wrapper {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .comment-input-wrapper button {
+            background: #fe2c55;
             border: none;
-            color: #fe2c55;
+            color: #fff;
             font-weight: 600;
             font-size: 0.9rem;
             cursor: pointer;
-            padding: 8px 12px;
+            padding: 10px 16px;
+            border-radius: 20px;
+            transition: background 0.2s;
         }
-        .empty-comments {
-            text-align: center;
-            padding: 40px 20px;
-            color: #666;
-            font-size: 0.9rem;
+        .comment-input-wrapper button:hover {
+            background: #e0264b;
+        }
+        .hint-text {
+            font-size: 0.75rem;
+            color: #555;
+            margin-top: 6px;
+            padding-left: 4px;
         }
     </style>
 </head>
@@ -324,7 +352,8 @@
         <div class="video-left">
             <button class="close-video" onclick="fecharVideo()">×</button>
             <div class="video-player">
-                <video id="playerVideo" playsinline></video>
+                <!-- ✅ loop = verdadeiro → vídeo repete infinitamente -->
+                <video id="playerVideo" playsinline loop></video>
             </div>
             <div class="video-bottom-info">
                 <h3 id="videoTitulo"></h3>
@@ -332,32 +361,20 @@
             </div>
         </div>
 
-        <!-- BOTÕES VERTICAIS — IGUAL TIKTOK -->
+        <!-- ✅ SÓ CURTIR E COMENTAR -->
         <div class="actions-right">
-            <!-- Curtir -->
             <button class="action-btn like-btn" id="likeBtn" onclick="toggleCurtir()">
                 <span>❤️</span>
                 <span id="likeCount">0</span>
             </button>
-            <!-- Comentário -->
             <button class="action-btn comment-btn" onclick="abrirComentarios()">
                 <span>💬</span>
                 <span id="commentCount">0</span>
             </button>
-            <!-- Salvar -->
-            <button class="action-btn save-btn" id="saveBtn" onclick="toggleSalvar()">
-                <span>📌</span>
-                <span id="saveText">Salvar</span>
-            </button>
-            <!-- Compartilhar -->
-            <button class="action-btn share-btn">
-                <span>↗️</span>
-                <span>Compartilhar</span>
-            </button>
         </div>
     </div>
 
-    <!-- ABA DE COMENTÁRIOS -- DESLIZA DE BAIXO PRA CIMA -->
+    <!-- ABA DE COMENTÁRIOS -->
     <div class="comments-overlay" id="commentsOverlay" onclick="if(event.target === this) fecharComentarios()">
         <div class="comments-panel">
             <div class="comments-header">
@@ -370,8 +387,14 @@
                 </div>
             </div>
             <div class="comments-input-area">
-                <input type="text" id="commentInput" placeholder="Adicione um comentário...">
-                <button onclick="enviarComentario()">Publicar</button>
+                <div class="name-input-wrapper">
+                    <input type="text" id="nameInput" placeholder="Seu nome (opcional)" maxlength="20">
+                </div>
+                <div class="comment-input-wrapper">
+                    <input type="text" id="commentInput" placeholder="Escreva seu comentário..." maxlength="200">
+                    <button onclick="enviarComentario()">Publicar</button>
+                </div>
+                <p class="hint-text">Se não colocar nome, será usado seu ID de visitante</p>
             </div>
         </div>
     </div>
@@ -397,32 +420,46 @@
             }
         ];
 
+        // 🆓 GERAR ID ÚNICO DO USUÁRIO
+        function gerarOuObterUsuarioId() {
+            let userId = localStorage.getItem('usuarioId');
+            if (!userId) {
+                const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+                let parte1 = '';
+                let parte2 = '';
+                for (let i = 0; i < 4; i++) {
+                    parte1 += chars.charAt(Math.floor(Math.random() * chars.length));
+                    parte2 += chars.charAt(Math.floor(Math.random() * chars.length));
+                }
+                userId = `${parte1}-${parte2}`;
+                localStorage.setItem('usuarioId', userId);
+            }
+            return userId;
+        }
+        const MEU_USUARIO_ID = gerarOuObterUsuarioId();
+
         // 📊 DADOS SALVOS
         let videoAtual = null;
         let curtidas = {};
         let curtido = {};
-        let salvos = {};
         let comentarios = {};
 
-        // Carregar dados
         function carregarDados() {
             const dados = localStorage.getItem('dadosVideos');
             if (dados) {
                 const d = JSON.parse(dados);
                 curtidas = d.curtidas || {};
                 curtido = d.curtido || {};
-                salvos = d.salvos || {};
                 comentarios = d.comentarios || {};
             }
             videos.forEach(v => {
                 if (!curtidas[v.id]) curtidas[v.id] = 0;
                 if (!curtido[v.id]) curtido[v.id] = false;
-                if (!salvos[v.id]) salvos[v.id] = false;
                 if (!comentarios[v.id]) comentarios[v.id] = [];
             });
         }
         function salvarDados() {
-            localStorage.setItem('dadosVideos', JSON.stringify({ curtidas, curtido, salvos, comentarios }));
+            localStorage.setItem('dadosVideos', JSON.stringify({ curtidas, curtido, comentarios }));
         }
 
         // 🖼️ Montar grade
@@ -432,173 +469,166 @@
             card.className = 'card-video';
             card.onclick = () => abrirVideo(video.id);
             card.innerHTML = `
-                <img src="${video.capa}" class="capa-img" alt="${video.titulo}">
-                <span class="play-icon">▶</span>
-                <div class="video-info">
-                    <h4>${video.titulo}</h4>
-                </div>
-            `;
-            grade.appendChild(card);
-        });
-
-        // ▶️ Abrir vídeo
-        function abrirVideo(id) {
-            carregarDados();
-            videoAtual = id;
-            const video = videos.find(v => v.id === id);
-            
-            document.getElementById('videoTitulo').textContent = video.titulo;
-            document.getElementById('videoDescricao').textContent = video.descricao;
-            document.getElementById('playerVideo').src = video.arquivo;
-            document.getElementById('videoScreen').classList.add('active');
-            document.getElementById('playerVideo').play();
-            
-            atualizarBotoes();
-        }
-
-        // ✖️ Fechar vídeo
-        function fecharVideo() {
-            document.getElementById('playerVideo').pause();
-            document.getElementById('playerVideo').src = '';
-            document.getElementById('videoScreen').classList.remove('active');
-            fecharComentarios();
-            videoAtual = null;
-        }
-
-        // ❤️ Curtir
-        function toggleCurtir() {
-            if (!videoAtual) return;
-            if (curtido[videoAtual]) {
-                curtidas[videoAtual]--;
-                curtido[videoAtual] = false;
-            } else {
-                curtidas[videoAtual]++;
-                curtido[videoAtual] = true;
-            }
-            salvarDados();
-            atualizarBotoes();
-        }
-
-        // 📌 Salvar
-        function toggleSalvar() {
-                if (!videoAtual) return;
-    salvos[videoAtual] = !salvos[videoAtual];
-    salvarDados();
-    atualizarBotoes();
-}
-
-// 🔄 Atualizar botões na tela
-function atualizarBotoes() {
-    if (!videoAtual) return;
-
-    // Curtir
-    const likeBtn = document.getElementById('likeBtn');
-    document.getElementById('likeCount').textContent = curtidas[videoAtual];
-    if (curtido[videoAtual]) {
-        likeBtn.classList.add('liked');
-    } else {
-        likeBtn.classList.remove('liked');
-    }
-
-    // Salvar
-    const saveBtn = document.getElementById('saveBtn');
-    const saveText = document.getElementById('saveText');
-    if (salvos[videoAtual]) {
-        saveBtn.classList.add('saved');
-        saveText.textContent = 'Salvo';
-    } else {
-        saveBtn.classList.remove('saved');
-        saveText.textContent = 'Salvar';
-    }
-
-    // Comentários
-    document.getElementById('commentCount').textContent = comentarios[videoAtual].length;
-    document.getElementById('totalComentarios').textContent = comentarios[videoAtual].length;
-}
-
-// 💬 Abrir aba de comentários
-function abrirComentarios() {
-    if (!videoAtual) return;
-    document.getElementById('commentsOverlay').classList.add('active');
-    atualizarListaComentarios();
-}
-
-// ✖️ Fechar comentários
-function fecharComentarios() {
-    document.getElementById('commentsOverlay').classList.remove('active');
-    document.getElementById('commentInput').value = '';
-}
-
-// 📝 Atualizar lista de comentários
-function atualizarListaComentarios() {
-    if (!videoAtual) return;
-    const lista = document.getElementById('commentsList');
-    const listaComentarios = comentarios[videoAtual];
-
-    if (listaComentarios.length === 0) {
-        lista.innerHTML = '<div class="empty-comments">Seja o primeiro a comentar! ✨</div>';
-        return;
-    }
-
-    lista.innerHTML = listaComentarios.map((c, index) => `
-        <div class="comment-item">
-            <div class="comment-avatar">👤</div>
-            <div class="comment-content">
-                <div class="comment-author">Visitante</div>
-                <div class="comment-text">${c.texto}</div>
-                <div class="comment-meta">
-                    <span>${c.data}</span>
-                    <button class="comment-like-btn" id="curtir-comentario-${index}" onclick="curtirComentario(${index})">
-                        ❤️ ${c.curtidas || 0}
-                    </button>
-                </div>
+                            <img src="${video.capa}" class="capa-img" alt="${video.titulo}">
+            <span class="play-icon">▶</span>
+            <div class="video-info">
+                <h4>${video.titulo}</h4>
             </div>
-        </div>
-    `).reverse().join('');
-}
-
-// ✉️ Enviar comentário
-function enviarComentario() {
-    const input = document.getElementById('commentInput');
-    const texto = input.value.trim();
-    if (!texto || !videoAtual) return;
-
-    comentarios[videoAtual].push({
-        texto: texto,
-        data: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) + ' — ' + 
-              new Date().toLocaleDateString('pt-BR'),
-        curtidas: 0,
-        curtido: false
+        `;
+        grade.appendChild(card);
     });
 
-    input.value = '';
-    salvarDados();
-    atualizarListaComentarios();
-    atualizarBotoes();
-}
-
-// ❤️ Curtir comentário
-function curtirComentario(index) {
-    if (!videoAtual) return;
-    const comentario = comentarios[videoAtual][index];
-    if (!comentario.curtido) {
-        comentario.curtidas = (comentario.curtidas || 0) + 1;
-        comentario.curtido = true;
-    } else {
-        comentario.curtidas = Math.max(0, (comentario.curtidas || 0) - 1);
-        comentario.curtido = false;
+    // ▶️ Abrir vídeo — com loop infinito ✅
+    function abrirVideo(id) {
+        carregarDados();
+        videoAtual = id;
+        const video = videos.find(v => v.id === id);
+        
+        document.getElementById('videoTitulo').textContent = video.titulo;
+        document.getElementById('videoDescricao').textContent = video.descricao;
+        
+        const player = document.getElementById('playerVideo');
+        player.src = video.arquivo;
+        player.loop = true;  // 🔄 Loop infinito — não para sozinho!
+        player.load();
+        
+        document.getElementById('videoScreen').classList.add('active');
+        
+        // Toca o vídeo
+        player.play().catch(err => {
+            console.log('Clique no vídeo para iniciar a reprodução:', err);
+        });
+        
+        atualizarBotoes();
     }
-    salvarDados();
-    atualizarListaComentarios();
-}
 
-// ⌨️ Enter envia comentário
-document.getElementById('commentInput').addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') enviarComentario();
-});
+    // ✖️ Fechar vídeo
+    function fecharVideo() {
+        const player = document.getElementById('playerVideo');
+        player.pause();
+        player.src = '';
+        document.getElementById('videoScreen').classList.remove('active');
+        fecharComentarios();
+        videoAtual = null;
+    }
 
-carregarDados();
+    // ❤️ Curtir
+    function toggleCurtir() {
+        if (!videoAtual) return;
+        if (curtido[videoAtual]) {
+            curtidas[videoAtual]--;
+            curtido[videoAtual] = false;
+        } else {
+            curtidas[videoAtual]++;
+            curtido[videoAtual] = true;
+        }
+        salvarDados();
+        atualizarBotoes();
+    }
+
+    // 🔄 Atualizar botões na tela
+    function atualizarBotoes() {
+        if (!videoAtual) return;
+
+        // Curtir
+        const likeBtn = document.getElementById('likeBtn');
+        document.getElementById('likeCount').textContent = curtidas[videoAtual];
+        if (curtido[videoAtual]) {
+            likeBtn.classList.add('liked');
+        } else {
+            likeBtn.classList.remove('liked');
+        }
+
+        // Comentários
+        const total = comentarios[videoAtual].length;
+        document.getElementById('commentCount').textContent = total;
+        document.getElementById('totalComentarios').textContent = total;
+    }
+
+    // 💬 Abrir aba de comentários
+    function abrirComentarios() {
+        if (!videoAtual) return;
+        document.getElementById('commentsOverlay').classList.add('active');
+        atualizarListaComentarios();
+    }
+
+    // ✖️ Fechar comentários
+    function fecharComentarios() {
+        document.getElementById('commentsOverlay').classList.remove('active');
+        document.getElementById('nameInput').value = '';
+        document.getElementById('commentInput').value = '';
+    }
+
+    // 📝 Atualizar lista de comentários
+    function atualizarListaComentarios() {
+        if (!videoAtual) return;
+        const lista = document.getElementById('commentsList');
+        const listaComentarios = comentarios[videoAtual];
+
+        if (listaComentarios.length === 0) {
+            lista.innerHTML = '<div class="empty-comments">Seja o primeiro a comentar! ✨</div>';
+            return;
+        }
+
+        lista.innerHTML = listaComentarios.map((c, index) => {
+            const ehMeu = c.autorId === MEU_USUARIO_ID;
+            const nomeExibido = c.nome || `Visitante ${c.autorId}`;
+            
+            return `
+                <div class="comment-item">
+                    <div class="comment-avatar">${nomeExibido.charAt(0).toUpperCase()}</div>
+                    <div class="comment-content">
+                        <div class="comment-author">${nomeExibido}</div>
+                        <div class="comment-text">${c.texto}</div>
+                        <div class="comment-meta">
+                            <span class="comment-time">${c.data}</span>
+                            ${ehMeu ? `<button class="delete-comment-btn" onclick="apagarComentario(${index})">🗑️ Apagar</button>` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).reverse().join('');
+    }
+
+    // ✉️ Enviar comentário
+    function enviarComentario() {
+        const nomeInput = document.getElementById('nameInput');
+        const commentInput = document.getElementById('commentInput');
+        const nome = nomeInput.value.trim();
+        const texto = commentInput.value.trim();
+        
+        if (!texto || !videoAtual) return;
+
+        comentarios[videoAtual].push({
+            texto: texto,
+            nome: nome || null,
+            autorId: MEU_USUARIO_ID,
+            data: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) + ' — ' + 
+                  new Date().toLocaleDateString('pt-BR')
+        });
+
+        nomeInput.value = '';
+        commentInput.value = '';
+        salvarDados();
+        atualizarListaComentarios();
+        atualizarBotoes();
+    }
+
+    // 🗑️ Apagar comentário
+    function apagarComentario(index) {
+        if (!videoAtual) return;
+        comentarios[videoAtual].splice(index, 1);
+        salvarDados();
+        atualizarListaComentarios();
+        atualizarBotoes();
+    }
+
+    // ⌨️ Enter envia comentário
+    document.getElementById('commentInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') enviarComentario();
+    });
+
+    carregarDados();
 </script>
 </body>
 </html>
-
