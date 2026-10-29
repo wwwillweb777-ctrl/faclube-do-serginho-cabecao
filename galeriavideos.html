@@ -241,7 +241,7 @@
 
     <script>
         // ==================================================
-        // 📋 LISTA DOS VÍDEOS — JÁ COM OS CAMINHOS CORRETOS!
+        // 📋 LISTA DOS VÍDEOS — PRONTO E CONFIGURADO!
         // ==================================================
         const videos = [
             // 🎬 VÍDEO 1 — TikTok
@@ -249,9 +249,9 @@
                 numero: 1,
                 capa: "imagens/capa-video1.jpg",
                 tipo: "tiktok",
-                embedHtml: `<blockquote class="tiktok-embed" cite="https://vt.tiktok.com/ZSgGopwbw/" data-video-id="ZSgGopwbw" style="max-width: 605px;min-width: 325px;">
+                embedHtml: `<blockquote class="tiktok-embed" cite="https://vt.tiktok.com/ZSgtJhB5S/" data-video-id="ZSgtJhB5S" style="max-width: 605px;min-width: 325px;">
     <section>
-        <a target="_blank" title="Fã clube do Serginho cabeção" href="https://www.tiktok.com/@serginhocabecao/video/ZSgGopwbw">Fã clube do Serginho cabeção</a>
+        <a target="_blank" title="Fã clube do Serginho cabeção" href="https://vt.tiktok.com/ZSgtJhB5S/">Fã clube do Serginho cabeção</a>
         <p>Juntos nós somos mais fortes. 🤠😎😃🏆</p>
         <p>🎵 Te Levar Daqui - Charlie Brown Jr.</p>
     </section>
@@ -317,14 +317,10 @@
             tituloEl.textContent = video.titulo;
             descricaoEl.textContent = video.descricao;
             
-            // Limpa o conteúdo anterior
             containerEmbed.innerHTML = '';
             
             if (video.tipo === 'tiktok') {
-                // 📱 Vídeo do TikTok — incorporado
                 containerEmbed.innerHTML = video.embedHtml;
-                
-                // Carrega o script do TikTok se ainda não carregou
                 if (!window.tiktokEmbedLoaded) {
                     window.tiktokEmbedLoaded = true;
                     const script = document.createElement('script');
@@ -333,7 +329,6 @@
                     document.head.appendChild(script);
                 }
             } else {
-                // 🎬 Vídeo local (.mp4)
                 containerEmbed.innerHTML = `<video id="playerVideo" controls playsinline webkit-playsinline style="width:100%; border-radius:8px; background:#000;"></video>`;
                 const player = document.getElementById('playerVideo');
                 player.src = video.arquivo;
