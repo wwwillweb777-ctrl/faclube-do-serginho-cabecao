@@ -128,7 +128,7 @@
         }
         .aba {
             flex: 1;
-            min-width: 120px;
+            min-width: 100px;
             padding: 0.7rem;
             background: #222;
             border: 2px solid #444;
@@ -293,16 +293,16 @@
         <div class="abas">
             <button class="aba" id="abaApoio">📝 Mural</button>
             <button class="aba" id="abaChat">💬 Chat</button>
-            <button class="aba ativa" id="abaVideos">🎬 Comentários de Vídeos</button>
+            <button class="aba ativa" id="abaVideos">🎬 Vídeos</button>
         </div>
 
         <div id="listaApoio" class="escondido"></div>
         <div id="listaChat" class="escondido"></div>
         <div id="listaVideos"></div>
 
-        <button class="btn-limpar-tudo escondido" id="btnLimparApoio">🗑️ Apagar TODAS as Mensagens do Mural</button>
-        <button class="btn-limpar-tudo escondido" id="btnLimparChat">🗑️ Apagar TODAS as Mensagens do Chat</button>
-        <button class="btn-limpar-tudo" id="btnLimparVideos">🗑️ Apagar TODOS os Comentários de Vídeos</button>
+        <button class="btn-limpar-tudo escondido" id="btnLimparApoio">🗑️ Apagar Tudo — Mural</button>
+        <button class="btn-limpar-tudo escondido" id="btnLimparChat">🗑️ Apagar Tudo — Chat</button>
+        <button class="btn-limpar-tudo" id="btnLimparVideos">🗑️ Apagar Tudo — Vídeos</button>
 
         <a href="javascript:history.back()" class="link-voltar" style="display:block;text-align:center;margin-top:2rem;color:#888;">← Voltar para o site</a>
     </div>
@@ -330,18 +330,12 @@
 
         botaoOlho.addEventListener('click', function() {
             senhaVisivel = !senhaVisivel;
-            if (senhaVisivel) {
-                campoSenha.type = 'text';
-                botaoOlho.textContent = '👁️';
-            } else {
-                campoSenha.type = 'password';
-                botaoOlho.textContent = '🙈';
-            }
+            campoSenha.type = senhaVisivel ? 'text' : 'password';
+            botaoOlho.textContent = senhaVisivel ? '👁️' : '🙈';
         });
 
         document.getElementById('botaoEntrar').addEventListener('click', function() {
             const digitada = campoSenha.value.trim();
-            
             if (typeof SENHA_ADMIN !== 'undefined' && digitada === SENHA_ADMIN) {
                 avisoErro.classList.add('escondido');
                 document.getElementById('telaLogin').classList.add('escondido');
@@ -435,14 +429,13 @@
                 const chaves = Object.keys(dados).reverse();
 
                 chaves.forEach(function(chave) {
-                                        const msg = dados[chave];
+                    const msg = dados[chave];
                     const div = document.createElement('div');
                     div.className = 'bloco-mensagem';
-                    
+
                     let respostaHTML = "";
                     if (msg.resposta) {
                         respostaHTML = `
-                            <div class="resposta-area">
                                 <span class="resposta-label">✅ Resposta enviada:</span>
                                 <div class="resposta-dada">
                                     ${msg.resposta}
@@ -510,7 +503,7 @@
                 });
             });
         }
-
+          // 💬 CARREGAR MENSAGENS DO CHAT
         function carregarChat() {
             if (!db) {
                 document.getElementById('listaChat').innerHTML = 
@@ -608,21 +601,21 @@
             });
         }
 
-        // 🎬 CARREGAR COMENTÁRIOS DE VÍDEOS
+        // 🎬 CARREGAR MENSAGENS DE VÍDEOS
         function carregarVideos() {
             if (!db) {
                 document.getElementById('listaVideos').innerHTML = 
-                    '<div class="vazio">⚠️ Firebase não conectado</div>';
+                    '<div class="vazio">⚠️ Firebase não conectado. Verifique o config.js</div>';
                 return;
             }
             pararOuvirTudo();
             
-            ouvinteVideos = db.ref(CAMINHO_VIDEOS).orderByChild('data').on("value", function(snapshot) {
+            ouvinteVideos = db.ref(CAMINHO_VIDEOS).on("value", function(snapshot) {
                 const container = document.getElementById('listaVideos');
                 container.innerHTML = '';
 
                 if (!snapshot.exists()) {
-                    container.innerHTML = '<div class="vazio">🎬 Nenhum comentário de vídeo ainda</div>';
+                    container.innerHTML = '<div class="vazio">🎬 Nenhuma mensagem de vídeo ainda</div>';
                     return;
                 }
 
@@ -634,72 +627,30 @@
                     const div = document.createElement('div');
                     div.className = 'bloco-mensagem';
                     
-                    let respostaHTML = '';
-                    if (msg.resposta) {
-                        respostaHTML = `
-                            <div class="resposta-area">
-                                <span class="resposta-label">✅ Sua resposta:</span>
-                                <div class="resposta-dada">
-                                    ${msg.resposta}
-                                    <div class="horario">🕒 ${msg.dataResposta || ''}</div>
-                                </div>
-                            </div>
-                        `;
-                    } else {
-                        respostaHTML = `
-                            <div class="resposta-area">
-                                <span class="resposta-label">✏️ Responder este comentário:</span>
-                                <textarea class="resposta-input" id="resposta-videos-${chave}" placeholder="Escreva sua resposta aqui..."></textarea>
-                                <button class="btn-responder" data-chave="${chave}" data-caminho="${CAMINHO_VIDEOS}">📤 Enviar Resposta</button>
-                            </div>
-                        `;
-                    }
-                    
                     div.innerHTML = `
-                        <div class="msg-cabecalho">🎬 Comentário de Vídeo</div>
+                        <div class="msg-cabecalho">🎬 Mensagem de Vídeo</div>
                         <div class="msg-remetente">
-                            👤 ${msg.nome || 'Visitante'}
-                            <span class="id-usuario">🆔 ${msg.autorId || '—'}</span>
+                            👤 ${msg.nomeRemetente || 'Anônimo'}
+                            <span class="id-usuario">🆔 ${msg.idRemetente || '—'}</span>
                             <div class="horario">🕒 ${msg.data || 'Sem data'}</div>
                         </div>
-                        <div class="msg-conteudo">📹 Vídeo ID: ${msg.videoId || 'Desconhecido'}</div>
-                        <div class="msg-conteudo">${msg.texto || ''}</div>
-                        ${respostaHTML}
+                        <div class="msg-conteudo">
+                            <strong>Vídeo:</strong> ${msg.nomeVideo || 'Não informado'}<br><br>
+                            <strong>Mensagem:</strong><br>
+                            ${msg.mensagem || msg.texto || ''}
+                        </div>
                         <div class="msg-botoes">
-                            <button class="btn-apagar" data-caminho="${CAMINHO_VIDEOS}" data-chave="${chave}">🗑️ Apagar este comentário</button>
+                            <button class="btn-apagar" data-caminho="${CAMINHO_VIDEOS}" data-chave="${chave}">🗑️ Apagar esta mensagem</button>
                         </div>
                     `;
                     container.appendChild(div);
-                });
-
-                container.querySelectorAll('.btn-responder').forEach(function(botao) {
-                    botao.addEventListener('click', function() {
-                        const chave = this.getAttribute('data-chave');
-                        const caminho = this.getAttribute('data-caminho');
-                        const campo = document.getElementById(`resposta-videos-${chave}`);
-                        const textoResposta = campo.value.trim();
-                        
-                        if (!textoResposta) {
-                            alert('⚠️ Escreva uma resposta primeiro!');
-                            return;
-                        }
-                        
-                        db.ref(`${caminho}/${chave}`).update({
-                            resposta: textoResposta,
-                            dataResposta: dataRespostaAtual()
-                        }).then(() => {
-                            alert('✅ Resposta enviada com sucesso!');
-                        }).catch(err => {
-                            alert('❌ Erro: ' + err.message);
-                        });
-                    });
                 });
 
                 container.querySelectorAll('.btn-apagar').forEach(function(botao) {
                     botao.addEventListener('click', function() {
                         const caminho = this.getAttribute('data-caminho');
                         const chave = this.getAttribute('data-chave');
-                        if (confirm('Apagar este comentário?')) {
+                        if (confirm('Apagar esta mensagem?')) {
                             db.ref(`${caminho}/${chave}`).remove();
                         }
                     });
@@ -707,20 +658,21 @@
             });
         }
 
+        // 🗑️ BOTÕES DE LIMPAR TUDO
         document.getElementById('btnLimparApoio').addEventListener('click', function() {
-            if (confirm('⚠️ Tem certeza? Isso apagará TODAS as mensagens do Mural!')) {
+            if (confirm('⚠️ TEM CERTEZA? Vai apagar TODAS as mensagens do Mural?')) {
                 db.ref(CAMINHO_APOIO).remove();
             }
         });
 
         document.getElementById('btnLimparChat').addEventListener('click', function() {
-            if (confirm('⚠️ Tem certeza? Isso apagará TODAS as mensagens do Chat!')) {
+            if (confirm('⚠️ TEM CERTEZA? Vai apagar TODAS as mensagens do Chat?')) {
                 db.ref(CAMINHO_CHAT).remove();
             }
         });
 
         document.getElementById('btnLimparVideos').addEventListener('click', function() {
-            if (confirm('⚠️ Tem certeza? Isso apagará TODOS os comentários de vídeos!')) {
+            if (confirm('⚠️ TEM CERTEZA? Vai apagar TODAS as mensagens de Vídeos?')) {
                 db.ref(CAMINHO_VIDEOS).remove();
             }
         });
