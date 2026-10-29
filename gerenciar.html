@@ -264,6 +264,13 @@
             color: #666;
             margin-top: 0.3rem;
         }
+        
+        /* ===== COMENTÁRIOS DE VÍDEOS ===== */
+        .video-titulo-ref {
+            font-size: 0.8rem;
+            color: #888;
+            margin-bottom: 0.5rem;
+        }
     </style>
 </head>
 <body>
@@ -293,16 +300,19 @@
         <div class="abas">
             <button class="aba" id="abaApoio">📝 Mural</button>
             <button class="aba" id="abaChat">💬 Chat</button>
-            <button class="aba ativa" id="abaVideos">🎬 Vídeos</button>
+            <button class="aba" id="abaComentariosVideos">💬 Vídeos</button>
+            <button class="aba" id="abaVideos">🎬 Mensagens</button>
         </div>
 
         <div id="listaApoio" class="escondido"></div>
         <div id="listaChat" class="escondido"></div>
-        <div id="listaVideos"></div>
+        <div id="listaComentariosVideos" class="escondido"></div>
+        <div id="listaVideos" class="escondido"></div>
 
         <button class="btn-limpar-tudo escondido" id="btnLimparApoio">🗑️ Apagar Tudo — Mural</button>
         <button class="btn-limpar-tudo escondido" id="btnLimparChat">🗑️ Apagar Tudo — Chat</button>
-        <button class="btn-limpar-tudo" id="btnLimparVideos">🗑️ Apagar Tudo — Vídeos</button>
+        <button class="btn-limpar-tudo escondido" id="btnLimparComentariosVideos">🗑️ Apagar Tudo — Comentários de Vídeos</button>
+        <button class="btn-limpar-tudo" id="btnLimparVideos">🗑️ Apagar Tudo — Mensagens de Vídeos</button>
 
         <a href="javascript:history.back()" class="link-voltar" style="display:block;text-align:center;margin-top:2rem;color:#888;">← Voltar para o site</a>
     </div>
@@ -314,13 +324,15 @@
             db = firebase.database();
         }
 
-        let abaAtual = 'videos';
+        let abaAtual = 'apoio';
         let ouvinteApoio = null;
         let ouvinteChat = null;
+        let ouvinteComentariosVideos = null;
         let ouvinteVideos = null;
 
         const CAMINHO_CHAT = "FãClube/chat/mensagens";
         const CAMINHO_APOIO = "MensagensApoio";
+        const CAMINHO_COMENTARIOS_VIDEOS = "videos";
         const CAMINHO_VIDEOS = "todas_mensagens";
 
         const campoSenha = document.getElementById('campoSenha');
@@ -340,7 +352,9 @@
                 avisoErro.classList.add('escondido');
                 document.getElementById('telaLogin').classList.add('escondido');
                 document.getElementById('telaPainel').classList.remove('escondido');
-                carregarVideos();
+                abaAtual = 'apoio';
+                atualizarAbas();
+                carregarApoio();
             } else {
                 avisoErro.classList.remove('escondido');
                 campoSenha.value = '';
@@ -350,7 +364,7 @@
         document.getElementById('botaoSair').addEventListener('click', function() {
             if (confirm("Sair da área administrativa?")) {
                 pararOuvirTudo();
-                abaAtual = 'videos';
+                abaAtual = 'apoio';
                 document.getElementById('telaPainel').classList.add('escondido');
                 document.getElementById('telaLogin').classList.remove('escondido');
                 avisoErro.classList.add('escondido');
@@ -371,6 +385,11 @@
             atualizarAbas();
             carregarChat();
         });
+        document.getElementById('abaComentariosVideos').addEventListener('click', function() {
+            abaAtual = 'comentarios-videos';
+            atualizarAbas();
+            carregarComentariosVideos();
+        });
         document.getElementById('abaVideos').addEventListener('click', function() {
             abaAtual = 'videos';
             atualizarAbas();
@@ -380,14 +399,17 @@
         function atualizarAbas() {
             document.getElementById('abaApoio').classList.toggle('ativa', abaAtual === 'apoio');
             document.getElementById('abaChat').classList.toggle('ativa', abaAtual === 'chat');
+            document.getElementById('abaComentariosVideos').classList.toggle('ativa', abaAtual === 'comentarios-videos');
             document.getElementById('abaVideos').classList.toggle('ativa', abaAtual === 'videos');
             
             document.getElementById('listaApoio').classList.toggle('escondido', abaAtual !== 'apoio');
             document.getElementById('listaChat').classList.toggle('escondido', abaAtual !== 'chat');
+            document.getElementById('listaComentariosVideos').classList.toggle('escondido', abaAtual !== 'comentarios-videos');
             document.getElementById('listaVideos').classList.toggle('escondido', abaAtual !== 'videos');
             
             document.getElementById('btnLimparApoio').classList.toggle('escondido', abaAtual !== 'apoio');
             document.getElementById('btnLimparChat').classList.toggle('escondido', abaAtual !== 'chat');
+            document.getElementById('btnLimparComentariosVideos').classList.toggle('escondido', abaAtual !== 'comentarios-videos');
             document.getElementById('btnLimparVideos').classList.toggle('escondido', abaAtual !== 'videos');
         }
 
@@ -400,282 +422,401 @@
                 db.ref(CAMINHO_CHAT).off("value", ouvinteChat);
                 ouvinteChat = null;
             }
-            if (ouvinteVideos && db) {
-                db.ref(CAMINHO_VIDEOS).off("value", ouvinteVideos);
-                ouvinteVideos = null;
+            if (ouvinteComentariosVideos && db) {
+                db.ref(CAMINHO_COMENTARIOS_VIDEOS).off("value", ouvinteComentariosVideos);
+                ouvinteComentariosVideos = null;
             }
+                    if (ouvinteVideos && db) {
+            db.ref(CAMINHO_VIDEOS).off("value", ouvinteVideos);
+            ouvinteVideos = null;
+        }
+    }
+
+    function dataRespostaAtual() {
+        return new Date().toLocaleString('pt-BR', {
+            day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit'
+        });
         }
 
-        function dataRespostaAtual() {
-            return new Date().toLocaleString('pt-BR', {
-                day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit'
-            });
+    function carregarComentariosVideos() {
+        if (!db) {
+            document.getElementById('listaComentariosVideos').innerHTML = 
+                '<div class="vazio">⚠️ Firebase não conectado. Verifique o config.js</div>';
+            return;
         }
+        pararOuvirTudo();
+        
+        ouvinteComentariosVideos = db.ref(CAMINHO_COMENTARIOS_VIDEOS).on("value", function(snapshot) {
+            const container = document.getElementById('listaComentariosVideos');
+            container.innerHTML = '';
 
-        function carregarApoio() {
-            if (!db) return;
-            pararOuvirTudo();
-            
-            ouvinteApoio = db.ref(CAMINHO_APOIO).on("value", function(snapshot) {
-                const container = document.getElementById('listaApoio');
-                container.innerHTML = '';
-
-                if (!snapshot.exists()) {
-                    container.innerHTML = '<div class="vazio">📭 Nenhuma mensagem no Mural ainda</div>';
-                    return;
-                }
-
-                const dados = snapshot.val();
-                const chaves = Object.keys(dados).reverse();
-
-                chaves.forEach(function(chave) {
-                    const msg = dados[chave];
-                    const div = document.createElement('div');
-                    div.className = 'bloco-mensagem';
-
-                    let respostaHTML = "";
-                    if (msg.resposta) {
-                        respostaHTML = `
-                                <span class="resposta-label">✅ Resposta enviada:</span>
-                                <div class="resposta-dada">
-                                    ${msg.resposta}
-                                    <div class="horario">🕒 ${msg.dataResposta || ''}</div>
-                                </div>
-                            </div>
-                        `;
-                    } else {
-                        respostaHTML = `
-                            <div class="resposta-area">
-                                <span class="resposta-label">✏️ Responder para o fã:</span>
-                                <textarea class="resposta-input" id="resposta-${chave}" placeholder="Escreva sua resposta aqui..."></textarea>
-                                <button class="btn-responder" data-chave="${chave}" data-caminho="${CAMINHO_APOIO}">📤 Enviar Resposta</button>
-                            </div>
-                        `;
-                    }
-
-                    div.innerHTML = `
-                        <div class="msg-cabecalho">📝 Mensagem do Mural</div>
-                        <div class="msg-remetente">
-                            👤 ${msg.nomeRemetente || msg.nome || 'Anônimo'}
-                            <span class="id-usuario">🆔 ${msg.idRemetente || msg.id || '—'}</span>
-                            <div class="horario">🕒 ${msg.data || msg.horario || 'Sem data'}</div>
-                        </div>
-                        <div class="msg-conteudo">${msg.texto || msg.mensagem || ''}</div>
-                        ${respostaHTML}
-                        <div class="msg-botoes">
-                            <button class="btn-apagar" data-caminho="${CAMINHO_APOIO}" data-chave="${chave}">🗑️ Apagar esta mensagem</button>
-                        </div>
-                    `;
-                    container.appendChild(div);
-                });
-
-                container.querySelectorAll('.btn-responder').forEach(function(botao) {
-                    botao.addEventListener('click', function() {
-                        const chave = this.getAttribute('data-chave');
-                        const caminho = this.getAttribute('data-caminho');
-                        const campo = document.getElementById(`resposta-${chave}`);
-                        const textoResposta = campo.value.trim();
-                        
-                        if (!textoResposta) {
-                            alert('⚠️ Escreva uma resposta primeiro!');
-                            return;
-                        }
-                        
-                        db.ref(`${caminho}/${chave}`).update({
-                            resposta: textoResposta,
-                            dataResposta: dataRespostaAtual()
-                        }).then(() => {
-                            alert('✅ Resposta enviada com sucesso!');
-                        }).catch(err => {
-                            alert('❌ Erro ao enviar resposta: ' + err.message);
-                        });
-                    });
-                });
-
-                container.querySelectorAll('.btn-apagar').forEach(function(botao) {
-                    botao.addEventListener('click', function() {
-                        const caminho = this.getAttribute('data-caminho');
-                        const chave = this.getAttribute('data-chave');
-                        if (confirm('Apagar esta mensagem?')) {
-                            db.ref(`${caminho}/${chave}`).remove();
-                        }
-                    });
-                });
-            });
-        }
-          // 💬 CARREGAR MENSAGENS DO CHAT
-        function carregarChat() {
-            if (!db) {
-                document.getElementById('listaChat').innerHTML = 
-                    '<div class="vazio">⚠️ Firebase não conectado. Verifique o config.js</div>';
+            if (!snapshot.exists()) {
+                container.innerHTML = '<div class="vazio">💬 Nenhum comentário de vídeo ainda</div>';
                 return;
             }
-            pararOuvirTudo();
-            
-            ouvinteChat = db.ref(CAMINHO_CHAT).on("value", function(snapshot) {
-                const container = document.getElementById('listaChat');
-                container.innerHTML = '';
 
-                if (!snapshot.exists()) {
-                    container.innerHTML = '<div class="vazio">💬 Nenhuma mensagem de chat ainda</div>';
-                    return;
-                }
-
-                const dados = snapshot.val();
-                const chaves = Object.keys(dados).reverse();
-
-                chaves.forEach(function(chave) {
-                    const msg = dados[chave];
+            let temComentarios = false;
+            snapshot.forEach(function(videoSnap) {
+                const videoId = videoSnap.key;
+                const dadosVideo = videoSnap.val();
+                const comentarios = dadosVideo.comentarios || {};
+                
+                for (const chave in comentarios) {
+                    temComentarios = true;
+                    const c = comentarios[chave];
+                    const temResposta = c.resposta && c.resposta.trim() !== '';
+                    
                     const div = document.createElement('div');
                     div.className = 'bloco-mensagem';
                     
                     let respostaHTML = '';
-                    if (msg.resposta) {
+                    if (temResposta) {
                         respostaHTML = `
                             <div class="resposta-area">
                                 <span class="resposta-label">✅ Resposta enviada:</span>
                                 <div class="resposta-dada">
-                                    ${msg.resposta}
-                                    <div class="horario">🕒 ${msg.dataResposta || ''}</div>
+                                    ${c.resposta}
+                                    <div class="horario">🕒 ${c.dataResposta || ''}</div>
                                 </div>
                             </div>
                         `;
                     } else {
                         respostaHTML = `
                             <div class="resposta-area">
-                                <span class="resposta-label">✏️ Responder para o fã:</span>
-                                <textarea class="resposta-input" id="resposta-${chave}" placeholder="Escreva sua resposta aqui..."></textarea>
-                                <button class="btn-responder" data-chave="${chave}" data-caminho="${CAMINHO_CHAT}">📤 Enviar Resposta</button>
+                                <span class="resposta-label">✏️ Responder comentário:</span>
+                                <textarea class="resposta-input" id="resposta-cmt-${chave}" placeholder="Escreva sua resposta aqui..."></textarea>
+                                <button class="btn-responder" data-video="${videoId}" data-chave="${chave}">📤 Enviar Resposta</button>
                             </div>
                         `;
                     }
                     
                     div.innerHTML = `
-                        <div class="msg-cabecalho">💬 Mensagem do Chat</div>
+                        <div class="msg-cabecalho">💬 Comentário de Vídeo</div>
+                        <div class="video-titulo-ref">🎬 Vídeo: ${videoId}</div>
                         <div class="msg-remetente">
-                            👤 ${msg.nomeRemetente || 'Anônimo'}
-                            <span class="id-usuario">🆔 ${msg.idRemetente || '—'}</span>
-                            <div class="horario">🕒 ${msg.data || 'Sem data'}</div>
+                            👤 ${c.nome || 'Visitante'}
+                            <div class="horario">🕒 ${c.data || 'Sem data'}</div>
                         </div>
-                        <div class="msg-conteudo">${msg.texto || ''}</div>
+                        <div class="msg-conteudo">${c.texto}</div>
                         ${respostaHTML}
                         <div class="msg-botoes">
-                            <button class="btn-apagar" data-caminho="${CAMINHO_CHAT}" data-chave="${chave}">🗑️ Apagar esta mensagem</button>
+                            <button class="btn-apagar" data-video="${videoId}" data-chave="${chave}">🗑️ Apagar este comentário</button>
                         </div>
                     `;
                     container.appendChild(div);
-                });
-
-                container.querySelectorAll('.btn-responder').forEach(function(botao) {
-                    botao.addEventListener('click', function() {
-                        const chave = this.getAttribute('data-chave');
-                        const caminho = this.getAttribute('data-caminho');
-                        const campo = document.getElementById(`resposta-${chave}`);
-                        const textoResposta = campo.value.trim();
-                        
-                        if (!textoResposta) {
-                            alert('⚠️ Escreva uma resposta primeiro!');
-                            return;
-                        }
-                        
-                        db.ref(`${caminho}/${chave}`).update({
-                            resposta: textoResposta,
-                            dataResposta: dataRespostaAtual()
-                        }).then(() => {
-                            alert('✅ Resposta enviada com sucesso!');
-                        }).catch(err => {
-                            alert('❌ Erro ao enviar resposta: ' + err.message);
-                        });
-                    });
-                });
-
-                container.querySelectorAll('.btn-apagar').forEach(function(botao) {
-                    botao.addEventListener('click', function() {
-                        const caminho = this.getAttribute('data-caminho');
-                        const chave = this.getAttribute('data-chave');
-                        if (confirm('Apagar esta mensagem?')) {
-                            db.ref(`${caminho}/${chave}`).remove();
-                        }
-                    });
-                });
+                }
             });
-        }
 
-        // 🎬 CARREGAR MENSAGENS DE VÍDEOS
-        function carregarVideos() {
-            if (!db) {
-                document.getElementById('listaVideos').innerHTML = 
-                    '<div class="vazio">⚠️ Firebase não conectado. Verifique o config.js</div>';
+            if (!temComentarios) {
+                container.innerHTML = '<div class="vazio">💬 Nenhum comentário de vídeo ainda</div>';
                 return;
             }
-            pararOuvirTudo();
-            
-            ouvinteVideos = db.ref(CAMINHO_VIDEOS).on("value", function(snapshot) {
-                const container = document.getElementById('listaVideos');
-                container.innerHTML = '';
 
-                if (!snapshot.exists()) {
-                    container.innerHTML = '<div class="vazio">🎬 Nenhuma mensagem de vídeo ainda</div>';
-                    return;
-                }
-
-                const dados = snapshot.val();
-                const chaves = Object.keys(dados).reverse();
-
-                chaves.forEach(function(chave) {
-                    const msg = dados[chave];
-                    const div = document.createElement('div');
-                    div.className = 'bloco-mensagem';
+            container.querySelectorAll('.btn-responder').forEach(function(botao) {
+                botao.addEventListener('click', function() {
+                    const videoId = this.getAttribute('data-video');
+                    const chave = this.getAttribute('data-chave');
+                    const campo = document.getElementById(`resposta-cmt-${chave}`);
+                    const textoResposta = campo.value.trim();
                     
-                    div.innerHTML = `
-                        <div class="msg-cabecalho">🎬 Mensagem de Vídeo</div>
-                        <div class="msg-remetente">
-                            👤 ${msg.nomeRemetente || 'Anônimo'}
-                            <span class="id-usuario">🆔 ${msg.idRemetente || '—'}</span>
-                            <div class="horario">🕒 ${msg.data || 'Sem data'}</div>
-                        </div>
-                        <div class="msg-conteudo">
-                            <strong>Vídeo:</strong> ${msg.nomeVideo || 'Não informado'}<br><br>
-                            <strong>Mensagem:</strong><br>
-                            ${msg.mensagem || msg.texto || ''}
-                        </div>
-                        <div class="msg-botoes">
-                            <button class="btn-apagar" data-caminho="${CAMINHO_VIDEOS}" data-chave="${chave}">🗑️ Apagar esta mensagem</button>
-                        </div>
-                    `;
-                    container.appendChild(div);
-                });
-
-                container.querySelectorAll('.btn-apagar').forEach(function(botao) {
-                    botao.addEventListener('click', function() {
-                        const caminho = this.getAttribute('data-caminho');
-                        const chave = this.getAttribute('data-chave');
-                        if (confirm('Apagar esta mensagem?')) {
-                            db.ref(`${caminho}/${chave}`).remove();
-                        }
+                    if (!textoResposta) {
+                        alert('⚠️ Escreva uma resposta primeiro!');
+                        return;
+                    }
+                    
+                    db.ref(`${CAMINHO_COMENTARIOS_VIDEOS}/${videoId}/comentarios/${chave}`).update({
+                        resposta: textoResposta,
+                        dataResposta: dataRespostaAtual()
+                    }).then(() => {
+                        alert('✅ Resposta enviada com sucesso! Aparecerá no vídeo automaticamente.');
+                    }).catch(err => {
+                        alert('❌ Erro: ' + err.message);
                     });
                 });
             });
+
+            container.querySelectorAll('.btn-apagar').forEach(function(botao) {
+                botao.addEventListener('click', function() {
+                    const videoId = this.getAttribute('data-video');
+                    const chave = this.getAttribute('data-chave');
+                    if (confirm('Apagar este comentário?')) {
+                        db.ref(`${CAMINHO_COMENTARIOS_VIDEOS}/${videoId}/comentarios/${chave}`).remove();
+                    }
+                });
+            });
+        });
         }
 
-        // 🗑️ BOTÕES DE LIMPAR TUDO
-        document.getElementById('btnLimparApoio').addEventListener('click', function() {
-            if (confirm('⚠️ TEM CERTEZA? Vai apagar TODAS as mensagens do Mural?')) {
-                db.ref(CAMINHO_APOIO).remove();
-            }
-        });
+    function carregarApoio() {
+        if (!db) return;
+        pararOuvirTudo();
+        
+        ouvinteApoio = db.ref(CAMINHO_APOIO).on("value", function(snapshot) {
+            const container = document.getElementById('listaApoio');
+            container.innerHTML = '';
 
-        document.getElementById('btnLimparChat').addEventListener('click', function() {
-            if (confirm('⚠️ TEM CERTEZA? Vai apagar TODAS as mensagens do Chat?')) {
-                db.ref(CAMINHO_CHAT).remove();
+            if (!snapshot.exists()) {
+                container.innerHTML = '<div class="vazio">📭 Nenhuma mensagem no Mural ainda</div>';
+                return;
             }
-        });
 
-        document.getElementById('btnLimparVideos').addEventListener('click', function() {
-            if (confirm('⚠️ TEM CERTEZA? Vai apagar TODAS as mensagens de Vídeos?')) {
-                db.ref(CAMINHO_VIDEOS).remove();
-            }
+            const dados = snapshot.val();
+            const chaves = Object.keys(dados).reverse();
+
+            chaves.forEach(function(chave) {
+                const msg = dados[chave];
+                const div = document.createElement('div');
+                div.className = 'bloco-mensagem';
+
+                let respostaHTML = "";
+                if (msg.resposta) {
+                    respostaHTML = `
+                        <div class="resposta-area">
+                            <span class="resposta-label">✅ Resposta enviada:</span>
+                            <div class="resposta-dada">
+                                ${msg.resposta}
+                                <div class="horario">🕒 ${msg.dataResposta || ''}</div>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    respostaHTML = `
+                        <div class="resposta-area">
+                            <span class="resposta-label">✏️ Responder para o fã:</span>
+                            <textarea class="resposta-input" id="resposta-${chave}" placeholder="Escreva sua resposta aqui..."></textarea>
+                            <button class="btn-responder" data-chave="${chave}" data-caminho="${CAMINHO_APOIO}">📤 Enviar Resposta</button>
+                        </div>
+                    `;
+                }
+
+                div.innerHTML = `
+                    <div class="msg-cabecalho">📝 Mensagem do Mural</div>
+                    <div class="msg-remetente">
+                        👤 ${msg.nomeRemetente || msg.nome || 'Anônimo'}
+                        <span class="id-usuario">🆔 ${msg.idRemetente || msg.id || '—'}</span>
+                        <div class="horario">🕒 ${msg.data || msg.horario || 'Sem data'}</div>
+                    </div>
+                    <div class="msg-conteudo">${msg.texto || msg.mensagem || ''}</div>
+                    ${respostaHTML}
+                    <div class="msg-botoes">
+                        <button class="btn-apagar" data-caminho="${CAMINHO_APOIO}" data-chave="${chave}">🗑️ Apagar esta mensagem</button>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+
+            container.querySelectorAll('.btn-responder').forEach(function(botao) {
+                botao.addEventListener('click', function() {
+                    const chave = this.getAttribute('data-chave');
+                    const caminho = this.getAttribute('data-caminho');
+                    const campo = document.getElementById(`resposta-${chave}`);
+                    const textoResposta = campo.value.trim();
+                    
+                    if (!textoResposta) {
+                        alert('⚠️ Escreva uma resposta primeiro!');
+                        return;
+                    }
+                    
+                    db.ref(`${caminho}/${chave}`).update({
+                        resposta: textoResposta,
+                        dataResposta: dataRespostaAtual()
+                    }).then(() => {
+                        alert('✅ Resposta enviada com sucesso!');
+                    }).catch(err => {
+                        alert('❌ Erro ao enviar resposta: ' + err.message);
+                    });
+                });
+            });
+
+            container.querySelectorAll('.btn-apagar').forEach(function(botao) {
+                botao.addEventListener('click', function() {
+                    const caminho = this.getAttribute('data-caminho');
+                    const chave = this.getAttribute('data-chave');
+                    if (confirm('Apagar esta mensagem?')) {
+                        db.ref(`${caminho}/${chave}`).remove();
+                    }
+                });
+            });
         });
+    }
+
+    function carregarChat() {
+        if (!db) {
+            document.getElementById('listaChat').innerHTML = 
+                '<div class="vazio">⚠️ Firebase não conectado. Verifique o config.js</div>';
+            return;
+        }
+        pararOuvirTudo();
+        
+        ouvinteChat = db.ref(CAMINHO_CHAT).on("value", function(snapshot) {
+            const container = document.getElementById('listaChat');
+            container.innerHTML = '';
+
+            if (!snapshot.exists()) {
+                container.innerHTML = '<div class="vazio">💬 Nenhuma mensagem de chat ainda</div>';
+                return;
+            }
+
+            const dados = snapshot.val();
+            const chaves = Object.keys(dados).reverse();
+
+            chaves.forEach(function(chave) {
+                const msg = dados[chave];
+                const div = document.createElement('div');
+                div.className = 'bloco-mensagem';
+                
+                let respostaHTML = '';
+                if (msg.resposta) {
+                    respostaHTML = `
+                        <div class="resposta-area">
+                            <span class="resposta-label">✅ Resposta enviada:</span>
+                            <div class="resposta-dada">
+                                ${msg.resposta}
+                                <div class="horario">🕒 ${msg.dataResposta || ''}</div>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    respostaHTML = `
+                        <div class="resposta-area">
+                            <span class="resposta-label">✏️ Responder para o fã:</span>
+                            <textarea class="resposta-input" id="resposta-${chave}" placeholder="Escreva sua resposta aqui..."></textarea>
+                            <button class="btn-responder" data-chave="${chave}" data-caminho="${CAMINHO_CHAT}">📤 Enviar Resposta</button>
+                        </div>
+                    `;
+                }
+                
+                div.innerHTML = `
+                    <div class="msg-cabecalho">💬 Mensagem do Chat</div>
+                    <div class="msg-remetente">
+                        👤 ${msg.nomeRemetente || 'Anônimo'}
+                        <span class="id-usuario">🆔 ${msg.idRemetente || '—'}</span>
+                        <div class="horario">🕒 ${msg.data || 'Sem data'}</div>
+                    </div>
+                    <div class="msg-conteudo">${msg.texto || ''}</div>
+                    ${respostaHTML}
+                    <div class="msg-botoes">
+                        <button class="btn-apagar" data-caminho="${CAMINHO_CHAT}" data-chave="${chave}">🗑️ Apagar esta mensagem</button>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+
+            container.querySelectorAll('.btn-responder').forEach(function(botao) {
+                botao.addEventListener('click', function() {
+                    const chave = this.getAttribute('data-chave');
+                    const caminho = this.getAttribute('data-caminho');
+                    const campo = document.getElementById(`resposta-${chave}`);
+                    const textoResposta = campo.value.trim();
+                    
+                    if (!textoResposta) {
+                        alert('⚠️ Escreva uma resposta primeiro!');
+                        return;
+                    }
+                    
+                    db.ref(`${caminho}/${chave}`).update({
+                        resposta: textoResposta,
+                        dataResposta: dataRespostaAtual()
+                    }).then(() => {
+                        alert('✅ Resposta enviada com sucesso!');
+                    }).catch(err => {
+                        alert('❌ Erro ao enviar resposta: ' + err.message);
+                    });
+                });
+            });
+
+            container.querySelectorAll('.btn-apagar').forEach(function(botao) {
+                botao.addEventListener('click', function() {
+                    const caminho = this.getAttribute('data-caminho');
+                    const chave = this.getAttribute('data-chave');
+                    if (confirm('Apagar esta mensagem?')) {
+                        db.ref(`${caminho}/${chave}`).remove();
+                    }
+                });
+            });
+        });
+    }
+
+    function carregarVideos() {
+        if (!db) {
+            document.getElementById('listaVideos').innerHTML = 
+                '<div class="vazio">⚠️ Firebase não conectado. Verifique o config.js</div>';
+            return;
+        }
+        pararOuvirTudo();
+        
+        ouvinteVideos = db.ref(CAMINHO_VIDEOS).on("value", function(snapshot) {
+            const container = document.getElementById('listaVideos');
+            container.innerHTML = '';
+
+            if (!snapshot.exists()) {
+                container.innerHTML = '<div class="vazio">🎬 Nenhuma mensagem de vídeo ainda</div>';
+                return;
+            }
+
+            const dados = snapshot.val();
+            const chaves = Object.keys(dados).reverse();
+
+            chaves.forEach(function(chave) {
+                const msg = dados[chave];
+                const div = document.createElement('div');
+                div.className = 'bloco-mensagem';
+                
+                div.innerHTML = `
+                    <div class="msg-cabecalho">🎬 Mensagem de Vídeo</div>
+                    <div class="msg-remetente">
+                        👤 ${msg.nomeRemetente || 'Anônimo'}
+                        <span class="id-usuario">🆔 ${msg.idRemetente || '—'}</span>
+                        <div class="horario">🕒 ${msg.data || 'Sem data'}</div>
+                    </div>
+                    <div class="msg-conteudo">
+                        <strong>Vídeo:</strong> ${msg.nomeVideo || 'Não informado'}<br><br>
+                        <strong>Mensagem:</strong><br>
+                        ${msg.mensagem || msg.texto || ''}
+                    </div>
+                    <div class="msg-botoes">
+                        <button class="btn-apagar" data-caminho="${CAMINHO_VIDEOS}" data-chave="${chave}">🗑️ Apagar esta mensagem</button>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+
+            container.querySelectorAll('.btn-apagar').forEach(function(botao) {
+                botao.addEventListener('click', function() {
+                    const caminho = this.getAttribute('data-caminho');
+                    const chave = this.getAttribute('data-chave');
+                    if (confirm('Apagar esta mensagem?')) {
+                        db.ref(`${caminho}/${chave}`).remove();
+                    }
+                });
+            });
+        });
+    }
+
+    // 🗑️ BOTÕES DE LIMPAR TUDO
+    document.getElementById('btnLimparApoio').addEventListener('click', function() {
+        if (confirm('⚠️ TEM CERTEZA? Vai apagar TODAS as mensagens do Mural?')) {
+            db.ref(CAMINHO_APOIO).remove();
+        }
+    });
+
+    document.getElementById('btnLimparChat').addEventListener('click', function() {
+        if (confirm('⚠️ TEM CERTEZA? Vai apagar TODAS as mensagens do Chat?')) {
+            db.ref(CAMINHO_CHAT).remove();
+        }
+    });
+
+    document.getElementById('btnLimparComentariosVideos').addEventListener('click', function() {
+        if (confirm('⚠️ TEM CERTEZA? Vai apagar TODOS os comentários de vídeos?')) {
+            db.ref(CAMINHO_COMENTARIOS_VIDEOS).remove();
+        }
+    });
+
+    document.getElementById('btnLimparVideos').addEventListener('click', function() {
+        if (confirm('⚠️ TEM CERTEZA? Vai apagar TODAS as mensagens de Vídeos?')) {
+            db.ref(CAMINHO_VIDEOS).remove();
+        }
+    });
     </script>
 </body>
 </html>
