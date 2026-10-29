@@ -107,12 +107,42 @@
             align-items: center;
             justify-content: center;
             background: #000;
+            position: relative;
         }
         .video-player video {
             width: 100%;
             height: 100%;
             object-fit: contain;
         }
+
+        /* ⏸️ BOTÃO PAUSA/PLAY NO CENTRO DO VÍDEO */
+        .play-pause-btn {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.5);
+            border: none;
+            color: #fff;
+            font-size: 48px;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 10;
+        }
+        .play-pause-btn.visivel {
+            opacity: 1;
+        }
+        .play-pause-btn:active {
+            transform: translate(-50%, -50%) scale(0.9);
+        }
+
         .video-bottom-info {
             padding: 16px;
             padding-bottom: 80px;
@@ -138,10 +168,10 @@
             height: 40px;
             border-radius: 50%;
             cursor: pointer;
-            z-index: 10;
+            z-index: 20;
         }
 
-        /* ===== BOTÕES VERTICAIS — SÓ CURTIR E COMENTAR ===== */
+        /* ===== BOTÕES VERTICAIS ===== */
         .actions-right {
             display: flex;
             flex-direction: column;
@@ -351,8 +381,9 @@
     <div class="video-screen" id="videoScreen">
         <div class="video-left">
             <button class="close-video" onclick="fecharVideo()">×</button>
-            <div class="video-player">
-                <!-- ✅ loop = verdadeiro → vídeo repete infinitamente -->
+            <div class="video-player" id="videoPlayerContainer">
+                <!-- ⏸️ BOTÃO PAUSA/PLAY -->
+                <button class="play-pause-btn" id="playPauseBtn" onclick="alternarPlayPause()">⏸️</button>
                 <video id="playerVideo" playsinline loop></video>
             </div>
             <div class="video-bottom-info">
@@ -401,26 +432,8 @@
 
     <script>
         // ==================================================
-        // 📋 DADOS DOS VÍDEOS
+        // 🆓 GERAR OU OBTER ID DO USUÁRIO
         // ==================================================
-        const videos = [
-            {
-                id: 1,
-                capa: "imagens/capa-biografia.jpg",
-                arquivo: "videos/BiografiaSerginho.mp4",
-                titulo: "📖 Biografia do Serginho",
-                descricao: "Conheça a história do nosso querido Serginho Cabeção! 💛"
-            },
-            {
-                id: 2,
-                capa: "imagens/capa-goku.jpg",
-                arquivo: "videos/SerginhoGoku.mp4",
-                titulo: "🐉 Serginho e Goku",
-                descricao: "Um vídeo especial do Serginho! ⚡"
-            }
-        ];
-
-        // 🆓 GERAR ID ÚNICO DO USUÁRIO
         function gerarOuObterUsuarioId() {
             let userId = localStorage.getItem('usuarioId');
             if (!userId) {
@@ -438,197 +451,265 @@
         }
         const MEU_USUARIO_ID = gerarOuObterUsuarioId();
 
-        // 📊 DADOS SALVOS
-        let videoAtual = null;
-        let curtidas = {};
-        let curtido = {};
-        let comentarios = {};
-
-        function carregarDados() {
+        // ==================================================
+        // 🧹 LIMPAR COMENTÁRIOS ANTIGOS (SEM autorId)
+        // ==================================================
+        function limparComentariosAntigos() {
             const dados = localStorage.getItem('dadosVideos');
             if (dados) {
                 const d = JSON.parse(dados);
-                curtidas = d.curtidas || {};
-                curtido = d.curtido || {};
-                comentarios = d.comentarios || {};
+                if (d.comentarios) {
+                    for (let videoId in d.comentarios) {
+                        // Mantém APENAS comentários que tenham autorId — apaga os antigos
+                        d.comentarios[videoId] = d.comentarios[videoId].filter(c => c.autorId !== undefined);
+                    }
+                    localStorage.setItem('dadosVideos', JSON.stringify(d));
+                    console.log('✅ Comentários antigos limpos!');
+                }
             }
-            videos.forEach(v => {
-                if (!curtidas[v.id]) curtidas[v.id] = 0;
-                if (!curtido[v.id]) curtido[v.id] = false;
-                if (!comentarios[v.id]) comentarios[v.id] = [];
-            });
         }
-        function salvarDados() {
-            localStorage.setItem('dadosVideos', JSON.stringify({ curtidas, curtido, comentarios }));
-        }
+        // Executa uma vez ao carregar a página
+        limparComentariosAntigos();
 
-        // 🖼️ Montar grade
-        const grade = document.getElementById('gradeVideos');
-        videos.forEach(video => {
-            const card = document.createElement('div');
-            card.className = 'card-video';
-            card.onclick = () => abrirVideo(video.id);
-            card.innerHTML = `
-                            <img src="${video.capa}" class="capa-img" alt="${video.titulo}">
-            <span class="play-icon">▶</span>
-            <div class="video-info">
-                <h4>${video.titulo}</h4>
-            </div>
-        `;
-        grade.appendChild(card);
+        // ==================================================
+        // 📋 DADOS DOS VÍDEOS
+const videos = [
+    {
+        id: 1,
+        capa: "imagens/capa-biografia.jpg",
+        arquivo: "videos/BiografiaSerginho.mp4",
+        titulo: "📖 Biografia do Serginho",
+        descricao: "Conheça a história do nosso querido Serginho Cabeção! 💛"
+    },
+    {
+        id: 2,
+        capa: "imagens/capa-goku.jpg",
+        arquivo: "videos/SerginhoGoku.mp4",
+        titulo: "🐉 Serginho e Goku",
+        descricao: "Um vídeo especial do Serginho! ⚡"
+    }
+];
+
+// 📊 DADOS SALVOS
+let videoAtual = null;
+let curtidas = {};
+let curtido = {};
+let comentarios = {};
+
+function carregarDados() {
+    const dados = localStorage.getItem('dadosVideos');
+    if (dados) {
+        const d = JSON.parse(dados);
+        curtidas = d.curtidas || {};
+        curtido = d.curtido || {};
+        comentarios = d.comentarios || {};
+    }
+    videos.forEach(v => {
+        if (!curtidas[v.id]) curtidas[v.id] = 0;
+        if (!curtido[v.id]) curtido[v.id] = false;
+        if (!comentarios[v.id]) comentarios[v.id] = [];
     });
+}
+function salvarDados() {
+    localStorage.setItem('dadosVideos', JSON.stringify({ curtidas, curtido, comentarios }));
+}
 
-    // ▶️ Abrir vídeo — com loop infinito ✅
-    function abrirVideo(id) {
-        carregarDados();
-        videoAtual = id;
-        const video = videos.find(v => v.id === id);
-        
-        document.getElementById('videoTitulo').textContent = video.titulo;
-        document.getElementById('videoDescricao').textContent = video.descricao;
-        
-        const player = document.getElementById('playerVideo');
-        player.src = video.arquivo;
-        player.loop = true;  // 🔄 Loop infinito — não para sozinho!
-        player.load();
-        
-        document.getElementById('videoScreen').classList.add('active');
-        
-        // Toca o vídeo
-        player.play().catch(err => {
-            console.log('Clique no vídeo para iniciar a reprodução:', err);
-        });
-        
-        atualizarBotoes();
-    }
+// 🖼️ Montar grade
+const grade = document.getElementById('gradeVideos');
+videos.forEach(video => {
+    const card = document.createElement('div');
+    card.className = 'card-video';
+    card.onclick = () => abrirVideo(video.id);
+    card.innerHTML = `
+        <img src="${video.capa}" class="capa-img" alt="${video.titulo}">
+        <span class="play-icon">▶</span>
+        <div class="video-info">
+            <h4>${video.titulo}</h4>
+        </div>
+    `;
+    grade.appendChild(card);
+});
 
-    // ✖️ Fechar vídeo
-    function fecharVideo() {
-        const player = document.getElementById('playerVideo');
+// ▶️ Abrir vídeo — com loop infinito ✅
+function abrirVideo(id) {
+    carregarDados();
+    videoAtual = id;
+    const video = videos.find(v => v.id === id);
+    
+    document.getElementById('videoTitulo').textContent = video.titulo;
+    document.getElementById('videoDescricao').textContent = video.descricao;
+    
+    const player = document.getElementById('playerVideo');
+    const playPauseBtn = document.getElementById('playPauseBtn');
+    
+    player.src = video.arquivo;
+    player.loop = true;  // 🔄 Loop infinito — não para sozinho!
+    player.load();
+    
+    document.getElementById('videoScreen').classList.add('active');
+    
+    // Toca o vídeo
+    player.play().then(() => {
+        playPauseBtn.textContent = '⏸️';
+        playPauseBtn.classList.remove('visivel');
+    }).catch(err => {
+        console.log('Clique no vídeo para iniciar:', err);
+        playPauseBtn.textContent = '▶️';
+        playPauseBtn.classList.add('visivel');
+    });
+    
+    atualizarBotoes();
+}
+
+// ⏸️ Botão Pausa / Play
+function alternarPlayPause() {
+    const player = document.getElementById('playerVideo');
+    const playPauseBtn = document.getElementById('playPauseBtn');
+    
+    if (player.paused) {
+        player.play();
+        playPauseBtn.textContent = '⏸️';
+        playPauseBtn.classList.remove('visivel');
+    } else {
         player.pause();
-        player.src = '';
-        document.getElementById('videoScreen').classList.remove('active');
-        fecharComentarios();
-        videoAtual = null;
+        playPauseBtn.textContent = '▶️';
+        playPauseBtn.classList.add('visivel');
+        
+        // Esconde o botão automaticamente após 3s se não for clicado
+        setTimeout(() => {
+            if (!player.paused) return;
+            playPauseBtn.classList.remove('visivel');
+        }, 3000);
+    }
+}
+
+// ✖️ Fechar vídeo
+function fecharVideo() {
+    const player = document.getElementById('playerVideo');
+    player.pause();
+    player.src = '';
+    document.getElementById('videoScreen').classList.remove('active');
+    fecharComentarios();
+    videoAtual = null;
+}
+
+// ❤️ Curtir
+function toggleCurtir() {
+    if (!videoAtual) return;
+    if (curtido[videoAtual]) {
+        curtidas[videoAtual]--;
+        curtido[videoAtual] = false;
+    } else {
+        curtidas[videoAtual]++;
+        curtido[videoAtual] = true;
+    }
+    salvarDados();
+    atualizarBotoes();
+}
+
+// 🔄 Atualizar botões na tela
+function atualizarBotoes() {
+    if (!videoAtual) return;
+
+    // Curtir
+    const likeBtn = document.getElementById('likeBtn');
+    document.getElementById('likeCount').textContent = curtidas[videoAtual];
+    if (curtido[videoAtual]) {
+        likeBtn.classList.add('liked');
+    } else {
+        likeBtn.classList.remove('liked');
     }
 
-    // ❤️ Curtir
-    function toggleCurtir() {
-        if (!videoAtual) return;
-        if (curtido[videoAtual]) {
-            curtidas[videoAtual]--;
-            curtido[videoAtual] = false;
-        } else {
-            curtidas[videoAtual]++;
-            curtido[videoAtual] = true;
-        }
-        salvarDados();
-        atualizarBotoes();
+    // Comentários
+    const total = comentarios[videoAtual].length;
+    document.getElementById('commentCount').textContent = total;
+    document.getElementById('totalComentarios').textContent = total;
+}
+
+// 💬 Abrir aba de comentários
+function abrirComentarios() {
+    if (!videoAtual) return;
+    document.getElementById('commentsOverlay').classList.add('active');
+    atualizarListaComentarios();
+}
+
+// ✖️ Fechar comentários
+function fecharComentarios() {
+    document.getElementById('commentsOverlay').classList.remove('active');
+    document.getElementById('nameInput').value = '';
+    document.getElementById('commentInput').value = '';
+}
+
+// 📝 Atualizar lista de comentários
+function atualizarListaComentarios() {
+    if (!videoAtual) return;
+    const lista = document.getElementById('commentsList');
+    const listaComentarios = comentarios[videoAtual];
+
+    if (listaComentarios.length === 0) {
+        lista.innerHTML = '<div class="empty-comments">Seja o primeiro a comentar! ✨</div>';
+        return;
     }
 
-    // 🔄 Atualizar botões na tela
-    function atualizarBotoes() {
-        if (!videoAtual) return;
-
-        // Curtir
-        const likeBtn = document.getElementById('likeBtn');
-        document.getElementById('likeCount').textContent = curtidas[videoAtual];
-        if (curtido[videoAtual]) {
-            likeBtn.classList.add('liked');
-        } else {
-            likeBtn.classList.remove('liked');
-        }
-
-        // Comentários
-        const total = comentarios[videoAtual].length;
-        document.getElementById('commentCount').textContent = total;
-        document.getElementById('totalComentarios').textContent = total;
-    }
-
-    // 💬 Abrir aba de comentários
-    function abrirComentarios() {
-        if (!videoAtual) return;
-        document.getElementById('commentsOverlay').classList.add('active');
-        atualizarListaComentarios();
-    }
-
-    // ✖️ Fechar comentários
-    function fecharComentarios() {
-        document.getElementById('commentsOverlay').classList.remove('active');
-        document.getElementById('nameInput').value = '';
-        document.getElementById('commentInput').value = '';
-    }
-
-    // 📝 Atualizar lista de comentários
-    function atualizarListaComentarios() {
-        if (!videoAtual) return;
-        const lista = document.getElementById('commentsList');
-        const listaComentarios = comentarios[videoAtual];
-
-        if (listaComentarios.length === 0) {
-            lista.innerHTML = '<div class="empty-comments">Seja o primeiro a comentar! ✨</div>';
-            return;
-        }
-
-        lista.innerHTML = listaComentarios.map((c, index) => {
-            const ehMeu = c.autorId === MEU_USUARIO_ID;
-            const nomeExibido = c.nome || `Visitante ${c.autorId}`;
-            
-            return `
-                <div class="comment-item">
-                    <div class="comment-avatar">${nomeExibido.charAt(0).toUpperCase()}</div>
-                    <div class="comment-content">
-                        <div class="comment-author">${nomeExibido}</div>
-                        <div class="comment-text">${c.texto}</div>
-                        <div class="comment-meta">
-                            <span class="comment-time">${c.data}</span>
-                            ${ehMeu ? `<button class="delete-comment-btn" onclick="apagarComentario(${index})">🗑️ Apagar</button>` : ''}
-                        </div>
+    lista.innerHTML = listaComentarios.map((c, index) => {
+        const ehMeu = c.autorId === MEU_USUARIO_ID;
+        const nomeExibido = c.nome || `ID: ${c.autorId}`;
+        
+        return `
+            <div class="comment-item">
+                <div class="comment-avatar">${nomeExibido.charAt(0).toUpperCase()}</div>
+                <div class="comment-content">
+                    <div class="comment-author">${nomeExibido}</div>
+                    <div class="comment-text">${c.texto}</div>
+                    <div class="comment-meta">
+                        <span class="comment-time">${c.data}</span>
+                        ${ehMeu ? `<button class="delete-comment-btn" onclick="apagarComentario(${index})">🗑️ Apagar</button>` : ''}
                     </div>
                 </div>
-            `;
-        }).reverse().join('');
-    }
+            </div>
+        `;
+    }).reverse().join('');
+}
 
-    // ✉️ Enviar comentário
-    function enviarComentario() {
-        const nomeInput = document.getElementById('nameInput');
-        const commentInput = document.getElementById('commentInput');
-        const nome = nomeInput.value.trim();
-        const texto = commentInput.value.trim();
-        
-        if (!texto || !videoAtual) return;
+// ✉️ Enviar comentário
+function enviarComentario() {
+    const nomeInput = document.getElementById('nameInput');
+    const commentInput = document.getElementById('commentInput');
+    const nome = nomeInput.value.trim();
+    const texto = commentInput.value.trim();
+    
+    if (!texto || !videoAtual) return;
 
-        comentarios[videoAtual].push({
-            texto: texto,
-            nome: nome || null,
-            autorId: MEU_USUARIO_ID,
-            data: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) + ' — ' + 
-                  new Date().toLocaleDateString('pt-BR')
-        });
-
-        nomeInput.value = '';
-        commentInput.value = '';
-        salvarDados();
-        atualizarListaComentarios();
-        atualizarBotoes();
-    }
-
-    // 🗑️ Apagar comentário
-    function apagarComentario(index) {
-        if (!videoAtual) return;
-        comentarios[videoAtual].splice(index, 1);
-        salvarDados();
-        atualizarListaComentarios();
-        atualizarBotoes();
-    }
-
-    // ⌨️ Enter envia comentário
-    document.getElementById('commentInput').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') enviarComentario();
+    comentarios[videoAtual].push({
+        texto: texto,
+        nome: nome || null,
+        autorId: MEU_USUARIO_ID,
+        data: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) + ' — ' + 
+              new Date().toLocaleDateString('pt-BR')
     });
 
-    carregarDados();
+    nomeInput.value = '';
+    commentInput.value = '';
+    salvarDados();
+    atualizarListaComentarios();
+    atualizarBotoes();
+}
+
+// 🗑️ Apagar comentário
+function apagarComentario(index) {
+    if (!videoAtual) return;
+    comentarios[videoAtual].splice(index, 1);
+    salvarDados();
+    atualizarListaComentarios();
+    atualizarBotoes();
+}
+
+// ⌨️ Enter envia comentário
+document.getElementById('commentInput').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') enviarComentario();
+});
+
+carregarDados();
 </script>
 </body>
 </html>
