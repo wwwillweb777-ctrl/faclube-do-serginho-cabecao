@@ -219,6 +219,7 @@
             </div>
 
             <a href="chat.html" class="link-opcao">💬 Conversar / Chat</a>
+            <a href="galeriavideos.html" class="link-opcao">🎬 Vídeos do Fã Clube</a>
             <a href="gerenciar.html" class="link-opcao">🔐 Área Administrativa</a>
             <button class="fechar-menu" onclick="fecharMenu()">✖️ Fechar</button>
         </div>
@@ -234,7 +235,6 @@
                 abrirMenu();
             }
 
-            // ✅ CONTA TODA VEZ — SEM BLOQUEIO
             try {
                 const ref = db.ref("FãClube/visitas");
                 const snap = await ref.once("value");
