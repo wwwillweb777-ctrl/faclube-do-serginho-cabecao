@@ -230,8 +230,8 @@
         <a href="#" onclick="history.back(); return false;">← Voltar</a>
     </div>
     <div class="cabecalho">
-        <h1>💬 Chat do Fã Clube 🐸</h1>
-        <p>Converse com outros fãs do Serginho Cabeção 💛</p>
+        <h1>💬 Chat com o Fã Clube 🐸</h1>
+        <p>Converse diretamente com o Fã Clube do Serginho Cabeção 💛</p>
         <div class="meu-id">🆔 Seu ID: <span id="exibirMeuId">—</span></div>
     </div>
 
@@ -244,7 +244,7 @@
 
         <div id="passoNome" class="form-etapa">
             <input type="text" id="nomeChat" placeholder="Digite seu nome ou @ ✨">
-            <button class="btn-principal" onclick="salvarNome()">Entrar no Chat →</button>
+            <button class="btn-principal" onclick="salvarNome()">Começar conversa →</button>
         </div>
 
         <div id="passoMensagem" class="form-etapa escondido">
@@ -261,7 +261,7 @@
                 <button class="btn-enviar-topo" onclick="enviarMensagem()">📤 Enviar</button>
             </div>
             
-            <textarea id="campoMensagem" rows="3" placeholder="Escreva sua mensagem aqui... 🐸💛"></textarea>
+            <textarea id="campoMensagem" rows="3" placeholder="Escreva sua mensagem para o Fã Clube... 🐸💛"></textarea>
         </div>
     </div>
 
@@ -325,7 +325,7 @@
         function entrarNoChat() {
             document.getElementById('passoNome').classList.add('escondido');
             document.getElementById('passoMensagem').classList.remove('escondido');
-            document.getElementById('mensagemBoasVindas').innerHTML = `👋 Bem-vindo, <strong>${nomeUsuario}</strong>! 🐸💛<br>Converse com a gente e com outros fãs!`;
+            document.getElementById('mensagemBoasVindas').innerHTML = `👋 Olá, <strong>${nomeUsuario}</strong>! 🐸💛<br>Envie sua mensagem que o Fã Clube irá responder em breve!`;
             carregarMensagens();
         }
 
@@ -347,7 +347,7 @@
             localStorage.setItem(CHAVE_NOME, novoNome);
             await db.ref(`${CAMINHO_ACESSOS}/${ID_VISITANTE}/nome`).set(novoNome);
             
-            document.getElementById('mensagemBoasVindas').innerHTML = `👋 Bem-vindo, <strong>${nomeUsuario}</strong>! 🐸💛<br>Converse com a gente e com outros fãs!`;
+            document.getElementById('mensagemBoasVindas').innerHTML = `👋 Olá, <strong>${nomeUsuario}</strong>! 🐸💛<br>Envie sua mensagem que o Fã Clube irá responder em breve!`;
             cancelarMudarNome();
             alert("✅ Nome alterado para: " + novoNome);
         }
@@ -379,7 +379,7 @@
             db.ref(CAMINHO_MSG).orderByChild("idRemetente").equalTo(ID_VISITANTE).on("value", snap => {
                 area.innerHTML = '';
                 if (!snap.exists()) {
-                    area.innerHTML = '<p class="aviso-vazio">Ainda não tem mensagens 💬<br>Seja o primeiro a falar!</p>';
+                    area.innerHTML = '<p class="aviso-vazio">Ainda não tem mensagens 💬<br>Escreva sua primeira mensagem abaixo!</p>';
                     return;
                 }
                 snap.forEach(item => {
@@ -403,9 +403,9 @@
                                 <p class="data">${m.dataResposta || ''}</p>
                             </div>
                         </div>
-                    `;
+                                    `;
                 });
-                                area.scrollTop = area.scrollHeight;
+                area.scrollTop = area.scrollHeight;
             });
         }
     </script>
