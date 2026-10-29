@@ -74,7 +74,7 @@
         /* Área da capa com botão de play */
         .capa-container {
             position: relative;
-            aspect-ratio: 16/10;
+            aspect-ratio: 9/16;
             background: #222;
             cursor: pointer;
             display: flex;
@@ -87,21 +87,21 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            opacity: 0.4;
+            opacity: 0.7;
         }
         .botao-play {
             position: relative;
             z-index: 2;
             width: 80px;
             height: 80px;
-            background: #f4a900;
+            background: #fe2c55;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 24px;
-            color: #000;
-            box-shadow: 0 0 0 3px rgba(255,255,255,0.9), 0 0 25px rgba(244, 169, 0, 0.5);
+            color: #fff;
+            box-shadow: 0 0 0 3px rgba(255,255,255,0.9), 0 0 25px rgba(254, 44, 85, 0.5);
             transition: all 0.2s;
         }
         .capa-container:hover .botao-play {
@@ -159,7 +159,7 @@
             line-height: 1.4;
         }
 
-        /* ===== TELA CHEIA DO VÍDEO ===== */
+        /* ===== TELA DO VÍDEO INCORPORADO ===== */
         .tela-video-overlay {
             position: fixed;
             top: 0;
@@ -170,36 +170,38 @@
             z-index: 9999;
             display: none;
             flex-direction: column;
-            justify-content: center;
+            justify-content: flex-start;
             align-items: center;
             padding: 1rem;
+            overflow-y: auto;
         }
         .tela-video-overlay.visivel {
             display: flex;
         }
         .fechar-tela {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background: transparent;
-            border: none;
-            color: #fff;
-            font-size: 1.8rem;
+            align-self: flex-end;
+            background: #111;
+            border: 2px solid #f4a900;
+            color: #f4a900;
+            font-size: 1rem;
+            padding: 0.5rem 1.2rem;
+            border-radius: 50px;
             cursor: pointer;
             z-index: 10;
+            margin-bottom: 1rem;
         }
-        .video-player-container {
+        .embed-container {
             width: 100%;
-            max-width: 720px;
+            max-width: 360px;
         }
-        .video-player-container video {
-            width: 100%;
-            border-radius: 8px;
-            background: #000;
+        .embed-container blockquote {
+            width: 100% !important;
+            max-width: 100% !important;
+            margin: 0 !important;
         }
         .descricao-video-grande {
             width: 100%;
-            max-width: 720px;
+            max-width: 360px;
             padding: 1rem;
             text-align: center;
         }
@@ -227,12 +229,10 @@
     <!-- GRADE DE VÍDEOS -->
     <div class="grade-videos" id="gradeVideos"></div>
 
-    <!-- TELA CHEIA DO VÍDEO -->
+    <!-- TELA DO VÍDEO INCORPORADO -->
     <div class="tela-video-overlay" id="telaVideoGrande">
-        <button class="fechar-tela" onclick="fecharVideo()">✕</button>
-        <div class="video-player-container">
-            <video id="playerVideo" controls playsinline webkit-playsinline></video>
-        </div>
+        <button class="fechar-tela" onclick="fecharVideo()">✖️ Fechar</button>
+        <div class="embed-container" id="containerEmbed"></div>
         <div class="descricao-video-grande">
             <h3 id="tituloVideoGrande">Título do Vídeo</h3>
             <p id="descricaoVideoGrande">Descrição do Vídeo</p>
@@ -241,23 +241,42 @@
 
     <script>
         // ==================================================
-        // 📋 LISTA DOS VÍDEOS — EDITE AQUI!
+        // 📋 LISTA DOS VÍDEOS — JÁ COM OS CAMINHOS CORRETOS!
         // ==================================================
         const videos = [
-            // 🎬 VÍDEO 1 — BIOGRAFIA DO SERGINHO
+            // 🎬 VÍDEO 1 — TikTok
             {
                 numero: 1,
-                capa: "imagens/COLOQUE-AQUI-FOTO-BIOGRAFIA.jpg",
+                capa: "imagens/capa-video1.jpg",
+                tipo: "tiktok",
+                embedHtml: `<blockquote class="tiktok-embed" cite="https://vt.tiktok.com/ZSgGopwbw/" data-video-id="ZSgGopwbw" style="max-width: 605px;min-width: 325px;">
+    <section>
+        <a target="_blank" title="Fã clube do Serginho cabeção" href="https://www.tiktok.com/@serginhocabecao/video/ZSgGopwbw">Fã clube do Serginho cabeção</a>
+        <p>Juntos nós somos mais fortes. 🤠😎😃🏆</p>
+        <p>🎵 Te Levar Daqui - Charlie Brown Jr.</p>
+    </section>
+</blockquote>`,
+                titulo: "🤠 Juntos nós somos mais fortes",
+                descricao: "Assista direto aqui no site! ❤️ Curtidas e 💬 comentários funcionando!",
+                duracao: "TikTok",
+                fixado: true
+            },
+            // 🎬 VÍDEO 2 — Arquivo de vídeo local
+            {
+                numero: 2,
+                capa: "imagens/capa-biografia.jpg",
+                tipo: "local",
                 arquivo: "videos/BiografiaSerginho.mp4",
                 titulo: "📖 Biografia do Serginho",
                 descricao: "Conheça a história do nosso querido Serginho Cabeção!",
                 duracao: "0:00",
-                fixado: true
+                fixado: false
             },
-            // 🎬 VÍDEO 2 — SERGINHO E GOKU
+            // 🎬 VÍDEO 3 — Arquivo de vídeo local
             {
-                numero: 2,
-                capa: "imagens/COLOQUE-AQUI-FOTO-GOKU.jpg",
+                numero: 3,
+                capa: "imagens/capa-goku.jpg",
+                tipo: "local",
                 arquivo: "videos/SerginhoGoku.mp4",
                 titulo: "🐉 Serginho e Goku",
                 descricao: "Um vídeo especial do Serginho!",
@@ -287,28 +306,55 @@
             grade.appendChild(card);
         });
 
-        // ▶️ ABRE O VÍDEO EM TELA GRANDE
+        // ▶️ ABRE O VÍDEO
         function abrirVideo(numero) {
             const video = videos.find(v => v.numero === numero);
             const overlay = document.getElementById('telaVideoGrande');
-            const player = document.getElementById('playerVideo');
+            const containerEmbed = document.getElementById('containerEmbed');
+            const tituloEl = document.getElementById('tituloVideoGrande');
+            const descricaoEl = document.getElementById('descricaoVideoGrande');
             
-            document.getElementById('tituloVideoGrande').textContent = video.titulo;
-            document.getElementById('descricaoVideoGrande').textContent = video.descricao;
+            tituloEl.textContent = video.titulo;
+            descricaoEl.textContent = video.descricao;
             
-            player.src = video.arquivo;
+            // Limpa o conteúdo anterior
+            containerEmbed.innerHTML = '';
+            
+            if (video.tipo === 'tiktok') {
+                // 📱 Vídeo do TikTok — incorporado
+                containerEmbed.innerHTML = video.embedHtml;
+                
+                // Carrega o script do TikTok se ainda não carregou
+                if (!window.tiktokEmbedLoaded) {
+                    window.tiktokEmbedLoaded = true;
+                    const script = document.createElement('script');
+                    script.src = 'https://www.tiktok.com/embed.js';
+                    script.async = true;
+                    document.head.appendChild(script);
+                }
+            } else {
+                // 🎬 Vídeo local (.mp4)
+                containerEmbed.innerHTML = `<video id="playerVideo" controls playsinline webkit-playsinline style="width:100%; border-radius:8px; background:#000;"></video>`;
+                const player = document.getElementById('playerVideo');
+                player.src = video.arquivo;
+                player.play();
+            }
+            
             overlay.classList.add('visivel');
             document.body.style.overflow = 'hidden';
-            player.play();
         }
 
         // ✕ FECHA O VÍDEO
         function fecharVideo() {
             const overlay = document.getElementById('telaVideoGrande');
+            const containerEmbed = document.getElementById('containerEmbed');
             const player = document.getElementById('playerVideo');
             
-            player.pause();
-            player.src = '';
+            if (player) {
+                player.pause();
+                player.src = '';
+            }
+            containerEmbed.innerHTML = '';
             overlay.classList.remove('visivel');
             document.body.style.overflow = 'auto';
         }
