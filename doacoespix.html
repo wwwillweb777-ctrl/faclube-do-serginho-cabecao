@@ -11,8 +11,8 @@
             color: #fff;
             font-family: 'Segoe UI', sans-serif;
             min-height: 100vh;
-            padding: 2rem;
-            max-width: 480px;
+            padding: 1.5rem; /* ✅ Reduzido para dar mais espaço */
+            max-width: 520px; /* ✅ Um pouquinho mais largo */
             margin: 0 auto;
         }
         .cabecalho {
@@ -32,9 +32,9 @@
         }
         .caixa {
             background: #1a1a1a;
-            border-radius: 16px;
-            padding: 1.8rem;
-            border: 2px solid #f4a900;
+            border-radius: 20px; /* ✅ Cantos mais suaves */
+            padding: 2rem; /* ✅ Mais espaço interno, fica mais arejado */
+            border: 5px solid #f4a900; /* ✅ Borda MAIS GROSSA e visível */
         }
         .caixa p {
             font-size: 1.05rem;
@@ -45,10 +45,10 @@
         .pix-container {
             background: #111;
             border-radius: 12px;
-            padding: 0.9rem 1.2rem;
+            padding: 1.2rem; /* ✅ Mais espaço interno */
             margin: 1.5rem 0;
             text-align: center;
-            border: 2px solid #39ff14;
+            border: 3px solid #39ff14; /* ✅ Também um pouco mais grossa */
         }
         .pix-label {
             color: #39ff14;
@@ -58,7 +58,7 @@
         .pix-chave-wrapper {
             background: #ffffff;
             border-radius: 6px;
-            padding: 0.7rem 1rem;
+            padding: 0.9rem 1rem; /* ✅ Mais espaço */
             margin-bottom: 0.7rem;
             width: 100%;
         }
@@ -78,7 +78,7 @@
             color: #000;
             border: none;
             border-radius: 6px;
-            padding: 0.5rem 1.2rem;
+            padding: 0.6rem 1.5rem;
             font-size: 0.9rem;
             font-weight: bold;
             cursor: pointer;
@@ -108,17 +108,19 @@
             color: #999;
             margin-top: 0.5rem;
         }
-        .voltar {
+        button.voltar {
             display: inline-block;
             color: #f4a900;
-            text-decoration: none;
-            margin-top: 1.5rem;
-            border: 2px solid #f4a900;
-            padding: 0.7rem 1.5rem;
-            border-radius: 8px;
+            background: transparent;
+            border: 3px solid #f4a900;
+            padding: 0.8rem 2rem;
+            border-radius: 10px;
             font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 1.5rem;
         }
-        .voltar:active {
+        button.voltar:active {
             background: #f4a900;
             color: #000;
         }
@@ -171,7 +173,7 @@
             <p class="referencia">— Eclesiastes 11:1 📖</p>
         </div>
         
-        <a href="index.html" class="voltar">← Voltar</a>
+        <button onclick="window.history.back()" class="voltar">← Voltar</button>
     </div>
 
     <script>
