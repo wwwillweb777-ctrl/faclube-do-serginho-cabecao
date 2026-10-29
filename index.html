@@ -29,7 +29,6 @@
             left: 0;
         }
 
-        /* ✅ CONTADOR COM TEXTO VISÍVEL */
         .contador-canto {
             position: absolute;
             top: 12px;
@@ -180,7 +179,6 @@
 <body>
     <div class="cartaz" id="areaPrincipal">
         
-        <!-- ✅ COM A PALAVRA ESCRITA BEM GRANDE E CLARA -->
         <div class="contador-canto">Visualizações 👁️<span id="contadorVisualizacoes">0</span></div>
 
         <div class="logo-topo">
@@ -254,7 +252,6 @@
                 abrirMenu();
             }
 
-            // ✅ CARREGA O NÚMERO PRIMEIRO PARA APARECER RÁPIDO
             carregarVisualizacoes();
 
             if (!sessionStorage.getItem('visitaContada')) {
@@ -267,7 +264,6 @@
                     await ref.set(valorAtual + 1);
                 } catch (erro) {
                     console.error('Erro:', erro);
-                    alert('Verifique as regras do Firebase!');
                 }
             }
         };
