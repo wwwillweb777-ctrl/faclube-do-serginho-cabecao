@@ -11,8 +11,8 @@
             color: #fff;
             font-family: 'Segoe UI', sans-serif;
             min-height: 100vh;
-            padding: 1.5rem; /* ✅ Reduzido para dar mais espaço */
-            max-width: 520px; /* ✅ Um pouquinho mais largo */
+            padding: 1.5rem;
+            max-width: 520px;
             margin: 0 auto;
         }
         .cabecalho {
@@ -32,9 +32,9 @@
         }
         .caixa {
             background: #1a1a1a;
-            border-radius: 20px; /* ✅ Cantos mais suaves */
-            padding: 2rem; /* ✅ Mais espaço interno, fica mais arejado */
-            border: 5px solid #f4a900; /* ✅ Borda MAIS GROSSA e visível */
+            border-radius: 20px;
+            padding: 2rem;
+            border: 5px solid #f4a900;
         }
         .caixa p {
             font-size: 1.05rem;
@@ -45,10 +45,10 @@
         .pix-container {
             background: #111;
             border-radius: 12px;
-            padding: 1.2rem; /* ✅ Mais espaço interno */
+            padding: 1.2rem;
             margin: 1.5rem 0;
             text-align: center;
-            border: 3px solid #39ff14; /* ✅ Também um pouco mais grossa */
+            border: 3px solid #39ff14;
         }
         .pix-label {
             color: #39ff14;
@@ -58,20 +58,24 @@
         .pix-chave-wrapper {
             background: #ffffff;
             border-radius: 6px;
-            padding: 0.9rem 1rem; /* ✅ Mais espaço */
+            padding: 0.9rem 1rem;
             margin-bottom: 0.7rem;
             width: 100%;
+            overflow-x: auto; /* ✅ Se for MUITO pequeno, permite rolar horizontal */
         }
         .pix-chave {
             color: #000000;
-            font-size: 0.75rem;
-            font-weight: 900;
-            font-family: 'Segoe UI', monospace;
+            font-size: 0.85rem; /* ✅ Um pouquinho maior e legível */
+            font-weight: 700;
+            font-family: 'Segoe UI', 'Roboto Mono', monospace;
             text-align: center;
-            white-space: nowrap;
+            white-space: nowrap; /* ✅ NUNCA quebra a linha */
+            word-break: keep-all; /* ✅ Mantém tudo junto */
+            overflow-wrap: normal;
             user-select: text;
             -webkit-user-select: text;
             cursor: text;
+            display: block;
         }
         .botao-copiar {
             background: #39ff14;
