@@ -395,7 +395,7 @@
 
     <!-- CABEÇALHO -->
     <div class="cabecalho">
-        <button class="btn-voltar" onclick="window.location.href='index.html'">← Voltar</button>
+        <button class="btn-voltar" onclick="voltarPagina()">← Voltar</button>
         <h1>🎬 Vídeos do Fã Clube</h1>
     </div>
 
@@ -461,6 +461,19 @@
 
     <script>
         // ==================================================
+        // 🔙 FUNÇÃO INTELIGENTE DE VOLTAR
+        // ==================================================
+        function voltarPagina() {
+            if (window.history.length > 1) {
+                // ✅ Tem página anterior → volta para onde veio
+                history.back();
+            } else {
+                // 🏠 Sem histórico → vai para o index
+                window.location.href ='index.html';
+        }
+    }
+
+        // ==================================================
         // 🔥 CONFIGURAÇÃO DO FIREBASE
         // Projeto: Fã Clube do Serginho Cabeção
         // ==================================================
@@ -487,277 +500,279 @@
             const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
             let parte1 = '', parte2 = '';
             for (let i = 0; i < 4; i++) {
-    parte1 += chars.charAt(Math.floor(Math.random() * chars.length));
-    parte2 += chars.charAt(Math.floor(Math.random() * chars.length));
-}
-userId = `${parte1}-${parte2}`;
-localStorage.setItem('usuarioId', userId);
-}
-return userId;
-}
-const MEU_USUARIO_ID = gerarOuObterUsuarioId();
-
-// ==================================================
-// 📋 DADOS DOS VÍDEOS
-const videos = [
-    {
-        id: 1,
-        capa: "imagens/capa-biografia.jpg",
-        arquivo: "videos/BiografiaSerginho.mp4",
-        titulo: "📖 Biografia do Serginho",
-        descricao: "Conheça a história do nosso querido Serginho Cabeção! 💛"
-    },
-    {
-        id: 2,
-        capa: "imagens/capa-goku.jpg",
-        arquivo: "videos/SerginhoGoku.mp4",
-        titulo: "🐉 Serginho e Goku",
-        descricao: "Um vídeo especial do Serginho! ⚡"
-    }
-];
-
-let videoAtual = null;
-let curtidasRef = null;
-let comentariosRef = null;
-let inscritoCurtidas = null;
-let inscritoComentarios = null;
-
-// 🖼️ Montar grade
-const grade = document.getElementById('gradeVideos');
-videos.forEach(video => {
-    const card = document.createElement('div');
-    card.className = 'card-video';
-    card.onclick = () => abrirVideo(video.id);
-    card.innerHTML = `
-        <img src="${video.capa}" class="capa-img" alt="${video.titulo}">
-        <span class="play-icon">▶</span>
-        <div class="video-info">
-            <h4>${video.titulo}</h4>
-        </div>
-    `;
-    grade.appendChild(card);
-});
-
-// ▶️ Abrir vídeo e conectar em tempo real
-function abrirVideo(id) {
-    videoAtual = id;
-    const video = videos.find(v => v.id === id);
-    
-    document.getElementById('videoTitulo').textContent = video.titulo;
-    document.getElementById('videoDescricao').textContent = video.descricao;
-    
-    const player = document.getElementById('playerVideo');
-    const playPauseBtn = document.getElementById('playPauseBtn');
-    
-    player.src = video.arquivo;
-    player.loop = true;
-    player.load();
-    
-    document.getElementById('videoScreen').classList.add('active');
-    
-    player.play().then(() => {
-        playPauseBtn.textContent = '⏸️';
-        playPauseBtn.classList.remove('visivel');
-    }).catch(() => {
-        playPauseBtn.textContent = '▶️';
-        playPauseBtn.classList.add('visivel');
-    });
-
-    // 🔄 Conectar ao Firebase — TEMPO REAL
-    conectarDadosVideo(id);
-}
-
-// 🔄 Conectar e escutar alterações em tempo real
-function conectarDadosVideo(videoId) {
-    // Cancela inscrições anteriores
-    if (inscritoCurtidas) inscritoCurtidas.off();
-    if (inscritoComentarios) inscritoComentarios.off();
-
-    curtidasRef = db.ref(`videos/${videoId}/curtidas`);
-    comentariosRef = db.ref(`videos/${videoId}/comentarios`);
-
-    // Inicializar se não existir
-    curtidasRef.once('value').then(snap => {
-        if (!snap.exists()) curtidasRef.set({ total: 0, usuarios: {} });
-    });
-
-    // 👀 Escutar CURTIDAS em tempo real — TODOS veem ao mesmo tempo
-    inscritoCurtidas = curtidasRef.on('value', snap => {
-        const dados = snap.val() || { total: 0, usuarios: {} };
-        const likeBtn = document.getElementById('likeBtn');
-        document.getElementById('likeCount').textContent = dados.total || 0;
-        
-        const euCurti = dados.usuarios && dados.usuarios[MEU_USUARIO_ID] === true;
-        if (euCurti) {
-            likeBtn.classList.add('liked');
-        } else {
-            likeBtn.classList.remove('liked');
+                parte1 += chars.charAt(Math.floor(Math.random() * chars.length));
+                parte2 += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            userId = `${parte1}-${parte2}`;
+            localStorage.setItem('usuarioId', userId);
+          }
+          return userId;
         }
-    });
+        const MEU_USUARIO_ID = gerarOuObterUsuarioId();
 
-    // 👀 Escutar COMENTÁRIOS em tempo real — TODOS veem ao mesmo tempo
-    inscritoComentarios = comentariosRef.on('value', snap => {
-        const dados = snap.val() || {};
-        const listaComentarios = Object.values(dados);
-        const total = listaComentarios.length;
-        
-        document.getElementById('commentCount').textContent = total;
-        document.getElementById('totalComentarios').textContent = total;
-        
-        renderizarComentarios(listaComentarios);
-    });
-}
+        // ==================================================
+        // 📋 DADOS DOS VÍDEOS
+        // ==================================================
+        const videos = [
+            {
+                id: 1,
+                capa: "imagens/capa-biografia.jpg",
+                arquivo: "videos/BiografiaSerginho.mp4",
+                titulo: "📖 Biografia do Serginho",
+                descricao: "Conheça a história do nosso querido Serginho Cabeção! 💛"
+            },
+            {
+                id: 2,
+                capa: "imagens/capa-goku.jpg",
+                arquivo: "videos/SerginhoGoku.mp4",
+                titulo: "🐉 Serginho e Goku",
+                descricao: "Um vídeo especial do Serginho! ⚡"
+            }
+        ];
 
-// ⏸️ Play / Pausa
-function alternarPlayPause() {
-    const player = document.getElementById('playerVideo');
-    const playPauseBtn = document.getElementById('playPauseBtn');
-    
-    if (player.paused) {
-        player.play();
-        playPauseBtn.textContent = '⏸️';
-        playPauseBtn.classList.remove('visivel');
-    } else {
-        player.pause();
-        playPauseBtn.textContent = '▶️';
-        playPauseBtn.classList.add('visivel');
-        setTimeout(() => {
-            if (player.paused) playPauseBtn.classList.remove('visivel');
-        }, 3000);
-    }
-}
+        let videoAtual = null;
+        let curtidasRef = null;
+        let comentariosRef = null;
+        let inscritoCurtidas = null;
+        let inscritoComentarios = null;
 
-// ✖️ Fechar vídeo
-function fecharVideo() {
-    const player = document.getElementById('playerVideo');
-    player.pause();
-    player.src = '';
-    document.getElementById('videoScreen').classList.remove('active');
-    fecharComentarios();
-    
-    // Para de escutar quando fechar
-    if (inscritoCurtidas) inscritoCurtidas.off();
-    if (inscritoComentarios) inscritoComentarios.off();
-    videoAtual = null;
-}
-
-// ❤️ Curtir / Descurtir — salva no Firebase
-function toggleCurtir() {
-    if (!videoAtual || !curtidasRef) return;
-    
-    curtidasRef.once('value').then(snap => {
-        const dados = snap.val() || { total: 0, usuarios: {} };
-        const jaCurtiu = dados.usuarios && dados.usuarios[MEU_USUARIO_ID];
-        
-        if (jaCurtiu) {
-            dados.total--;
-            delete dados.usuarios[MEU_USUARIO_ID];
-        } else {
-            dados.total++;
-            if (!dados.usuarios) dados.usuarios = {};
-            dados.usuarios[MEU_USUARIO_ID] = true;
-        }
-        curtidasRef.set(dados);
-    });
-}
-
-// 📝 Renderizar comentários na tela — COM SUPORTE A RESPOSTA
-function renderizarComentarios(listaComentarios) {
-    const lista = document.getElementById('commentsList');
-    
-    if (listaComentarios.length === 0) {
-        lista.innerHTML = '<div class="empty-comments">Seja o primeiro a comentar! ✨</div>';
-        return;
-    }
-
-    lista.innerHTML = listaComentarios.map(c => {
-        const ehMeu = c.autorId === MEU_USUARIO_ID;
-        const nomeExibido = c.nome || `Visitante ${c.autorId.slice(0,4)}`;
-        
-        // ✅ Verifica se tem resposta e monta o bloco
-        let blocoResposta = '';
-        if (c.resposta && c.resposta.trim() !== '') {
-            blocoResposta = `
-                <div class="admin-reply">
-                    <div class="reply-label">📢 Fã Clube:</div>
-                    <div class="reply-text">${c.resposta}</div>
-                    <div class="reply-time">🕒 ${c.dataResposta || ''}</div>
+        // 🖼️ Montar grade
+        const grade = document.getElementById('gradeVideos');
+        videos.forEach(video => {
+            const card = document.createElement('div');
+            card.className = 'card-video';
+            card.onclick = () => abrirVideo(video.id);
+            card.innerHTML = `
+                <img src="${video.capa}" class="capa-img" alt="${video.titulo}">
+                <span class="play-icon">▶</span>
+                <div class="video-info">
+                    <h4>${video.titulo}</h4>
                 </div>
             `;
+            grade.appendChild(card);
+        });
+
+        // ▶️ Abrir vídeo e conectar em tempo real
+        function abrirVideo(id) {
+            videoAtual = id;
+            const video = videos.find(v => v.id === id);
+            
+            document.getElementById('videoTitulo').textContent = video.titulo;
+            document.getElementById('videoDescricao').textContent = video.descricao;
+            
+            const player = document.getElementById('playerVideo');
+            const playPauseBtn = document.getElementById('playPauseBtn');
+            
+            player.src = video.arquivo;
+            player.loop = true;
+            player.load();
+            
+            document.getElementById('videoScreen').classList.add('active');
+            
+            player.play().then(() => {
+                playPauseBtn.textContent = '⏸️';
+                playPauseBtn.classList.remove('visivel');
+            }).catch(() => {
+                playPauseBtn.textContent = '▶️';
+                playPauseBtn.classList.add('visivel');
+            });
+
+            // 🔄 Conectar ao Firebase — TEMPO REAL
+            conectarDadosVideo(id);
         }
-        
-        return `
-            <div class="comment-item">
-                <div class="comment-avatar">${nomeExibido.charAt(0).toUpperCase()}</div>
-                <div class="comment-content">
-                    <div class="comment-author">${nomeExibido}</div>
-                    <div class="comment-text">${c.texto}</div>
-                    ${blocoResposta}
-                    <div class="comment-meta">
-                        <span class="comment-time">${c.data}</span>
-                        ${ehMeu ? `<button class="delete-comment-btn" onclick="apagarComentario('${c.chave}')">🗑️ Apagar</button>` : ''}
+
+        // 🔄 Conectar e escutar alterações em tempo real
+        function conectarDadosVideo(videoId) {
+            // Cancela inscrições anteriores
+            if (inscritoCurtidas) inscritoCurtidas.off();
+            if (inscritoComentarios) inscritoComentarios.off();
+
+            curtidasRef = db.ref(`videos/${videoId}/curtidas`);
+            comentariosRef = db.ref(`videos/${videoId}/comentarios`);
+
+            // Inicializar se não existir
+            curtidasRef.once('value').then(snap => {
+                if (!snap.exists()) curtidasRef.set({ total: 0, usuarios: {} });
+            });
+
+            // 👀 Escutar CURTIDAS em tempo real — TODOS veem ao mesmo tempo
+            inscritoCurtidas = curtidasRef.on('value', snap => {
+                const dados = snap.val() || { total: 0, usuarios: {} };
+                const likeBtn = document.getElementById('likeBtn');
+                document.getElementById('likeCount').textContent = dados.total || 0;
+                
+                const euCurti = dados.usuarios && dados.usuarios[MEU_USUARIO_ID] === true;
+                if (euCurti) {
+                    likeBtn.classList.add('liked');
+                } else {
+                    likeBtn.classList.remove('liked');
+                }
+            });
+
+            // 👀 Escutar COMENTÁRIOS em tempo real — TODOS veem ao mesmo tempo
+            inscritoComentarios = comentariosRef.on('value', snap => {
+                const dados = snap.val() || {};
+                const listaComentarios = Object.values(dados);
+                const total = listaComentarios.length;
+                
+                document.getElementById('commentCount').textContent = total;
+                document.getElementById('totalComentarios').textContent = total;
+                
+                renderizarComentarios(listaComentarios);
+            });
+        }
+
+        // ⏸️ Play / Pausa
+        function alternarPlayPause() {
+            const player = document.getElementById('playerVideo');
+            const playPauseBtn = document.getElementById('playPauseBtn');
+            
+            if (player.paused) {
+                player.play();
+                playPauseBtn.textContent = '⏸️';
+                playPauseBtn.classList.remove('visivel');
+            } else {
+                player.pause();
+                playPauseBtn.textContent = '▶️';
+                playPauseBtn.classList.add('visivel');
+                setTimeout(() => {
+                    if (player.paused) playPauseBtn.classList.remove('visivel');
+                }, 3000);
+            }
+        }
+
+        // ✖️ Fechar vídeo
+        function fecharVideo() {
+            const player = document.getElementById('playerVideo');
+            player.pause();
+            player.src = '';
+            document.getElementById('videoScreen').classList.remove('active');
+            fecharComentarios();
+            
+            // Para de escutar quando fechar
+            if (inscritoCurtidas) inscritoCurtidas.off();
+            if (inscritoComentarios) inscritoComentarios.off();
+            videoAtual = null;
+        }
+
+        // ❤️ Curtir / Descurtir — salva no Firebase
+        function toggleCurtir() {
+            if (!videoAtual || !curtidasRef) return;
+            
+            curtidasRef.once('value').then(snap => {
+                const dados = snap.val() || { total: 0, usuarios: {} };
+                const jaCurtiu = dados.usuarios && dados.usuarios[MEU_USUARIO_ID];
+                
+                if (jaCurtiu) {
+                    dados.total--;
+                    delete dados.usuarios[MEU_USUARIO_ID];
+                } else {
+                    dados.total++;
+                    if (!dados.usuarios) dados.usuarios = {};
+                    dados.usuarios[MEU_USUARIO_ID] = true;
+                }
+                curtidasRef.set(dados);
+            });
+        }
+
+        // 📝 Renderizar comentários na tela — COM SUPORTE A RESPOSTA
+        function renderizarComentarios(listaComentarios) {
+            const lista = document.getElementById('commentsList');
+            
+            if (listaComentarios.length === 0) {
+                lista.innerHTML = '<div class="empty-comments">Seja o primeiro a comentar! ✨</div>';
+                return;
+            }
+
+            lista.innerHTML = listaComentarios.map(c => {
+                const ehMeu = c.autorId === MEU_USUARIO_ID;
+                const nomeExibido = c.nome || `Visitante ${c.autorId.slice(0,4)}`;
+                
+                // ✅ Verifica se tem resposta e monta o bloco
+                let blocoResposta = '';
+                if (c.resposta && c.resposta.trim() !== '') {
+                    blocoResposta = `
+                        <div class="admin-reply">
+                            <div class="reply-label">📢 Fã Clube:</div>
+                            <div class="reply-text">${c.resposta}</div>
+                            <div class="reply-time">🕒 ${c.dataResposta || ''}</div>
+                        </div>
+                    `;
+                }
+                
+                return `
+                    <div class="comment-item">
+                        <div class="comment-avatar">${nomeExibido.charAt(0).toUpperCase()}</div>
+                        <div class="comment-content">
+                            <div class="comment-author">${nomeExibido}</div>
+                            <div class="comment-text">${c.texto}</div>
+                            ${blocoResposta}
+                            <div class="comment-meta">
+                                <span class="comment-time">${c.data}</span>
+                                ${ehMeu ? `<button class="delete-comment-btn" onclick="apagarComentario('${c.chave}')">🗑️ Apagar</button>` : ''}
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-        `;
-    }).reverse().join('');
-}
-
-// 💬 Abrir comentários
-function abrirComentarios() {
-    if (!videoAtual) return;
-    document.getElementById('commentsOverlay').classList.add('active');
-}
-
-// ✖️ Fechar comentários
-function fecharComentarios() {
-    document.getElementById('commentsOverlay').classList.remove('active');
-    document.getElementById('nameInput').value = '';
-    document.getElementById('commentInput').value = '';
-}
-
-// ✉️ Enviar comentário — vai para o Firebase, TODOS veem na hora
-function enviarComentario() {
-    const nomeInput = document.getElementById('nameInput');
-    const commentInput = document.getElementById('commentInput');
-    const nome = nomeInput.value.trim();
-    const texto = commentInput.value.trim();
-    
-    if (!texto || !videoAtual || !comentariosRef) return;
-
-    const novoComentarioRef = comentariosRef.push();
-    novoComentarioRef.set({
-        chave: novoComentarioRef.key,
-        texto: texto,
-        nome: nome || null,
-        autorId: MEU_USUARIO_ID,
-        data: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) + ' — ' + 
-              new Date().toLocaleDateString('pt-BR')
-    });
-
-    nomeInput.value = '';
-    commentInput.value = '';
-}
-
-// 🗑️ Apagar comentário — SÓ funciona se for SEU comentário
-function apagarComentario(chave) {
-    if (!videoAtual || !comentariosRef) return;
-    
-    comentariosRef.child(chave).once('value').then(snap => {
-        const comentario = snap.val();
-        if (comentario && comentario.autorId === MEU_USUARIO_ID) {
-            comentariosRef.child(chave).remove();
-        } else {
-            alert('Você só pode apagar seus próprios comentários ✅');
+                `;
+            }).reverse().join('');
         }
-    });
-}
 
-// ⌨️ Enter envia comentário
-document.getElementById('commentInput').addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') enviarComentario();
-});
-</script>
+        // 💬 Abrir comentários
+        function abrirComentarios() {
+            if (!videoAtual) return;
+            document.getElementById('commentsOverlay').classList.add('active');
+        }
+
+        // ✖️ Fechar comentários
+        function fecharComentarios() {
+            document.getElementById('commentsOverlay').classList.remove('active');
+            document.getElementById('nameInput').value = '';
+            document.getElementById('commentInput').value = '';
+        }
+
+        // ✉️ Enviar comentário — vai para o Firebase, TODOS veem na hora
+        function enviarComentario() {
+            const nomeInput = document.getElementById('nameInput');
+            const commentInput = document.getElementById('commentInput');
+            const nome = nomeInput.value.trim();
+            const texto = commentInput.value.trim();
+            
+            if (!texto || !videoAtual || !comentariosRef) return;
+
+            const novoComentarioRef = comentariosRef.push();
+            novoComentarioRef.set({
+                chave: novoComentarioRef.key,
+                texto: texto,
+                nome: nome || null,
+                autorId: MEU_USUARIO_ID,
+                data: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) + ' — ' + 
+                      new Date().toLocaleDateString('pt-BR')
+            });
+
+            nomeInput.value = '';
+            commentInput.value = '';
+        }
+
+        // 🗑️ Apagar comentário — SÓ funciona se for SEU comentário
+        function apagarComentario(chave) {
+            if (!videoAtual || !comentariosRef) return;
+            
+            comentariosRef.child(chave).once('value').then(snap => {
+                const comentario = snap.val();
+                if (comentario && comentario.autorId === MEU_USUARIO_ID) {
+                    comentariosRef.child(chave).remove();
+                } else {
+                    alert('Você só pode apagar seus próprios comentários ✅');
+                }
+            });
+        }
+
+        // ⌨️ Enter envia comentário
+        document.getElementById('commentInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') enviarComentario();
+        });
+    </script>
 
 </body>
 </html>
+
