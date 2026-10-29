@@ -14,6 +14,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body {
             height: 100%;
+            height: 100dvh;
             background: #1a1208;
             background-image: radial-gradient(#3a2a18 1px, transparent 1px), radial-gradient(#3a2a18 1px, transparent 1px);
             background-size: 20px 20px;
@@ -24,7 +25,7 @@
         .caixa-chat {
             display: flex;
             flex-direction: column;
-            height: 100vh;
+            height: 100dvh;
         }
         .cabecalho {
             position: fixed;
@@ -69,6 +70,7 @@
             flex: 1;
             overflow-y: auto;
             padding: 0.8rem;
+            padding-bottom: 1rem;
             background: #111;
         }
         .mensagem { 
@@ -126,6 +128,7 @@
         .aviso-vazio { text-align: center; color: #888; padding: 2rem; font-size: 0.95rem; }
         .form-etapa { 
             padding: 0.8rem 1rem; 
+            padding-bottom: max(0.8rem, env(safe-area-inset-bottom));
             border-top: 2px solid #333; 
             background: #111; 
             flex-shrink: 0;
@@ -137,6 +140,7 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 0.4rem;
+            flex-direction: row-reverse; /* ✅ Inverte: Mudar nome à DIREITA, Enviar à ESQUERDA */
         }
         .btn-mudar-nome {
             background: transparent;
@@ -148,7 +152,7 @@
             cursor: pointer;
         }
         .btn-enviar-topo {
-            background: #ff6b6b;
+            background: #39ff14; /* ✅ Fica mais visível */
             border: 2px solid #000;
             color: #000;
             font-weight: bold;
@@ -167,6 +171,9 @@
             outline: none; 
             background: #222; 
             color: #fff; 
+        }
+        textarea {
+            resize: none;
         }
         .boas-vindas { 
             background: #2a2315; 
@@ -249,8 +256,9 @@
                 <button class="btn-cancelar-nome" onclick="cancelarMudarNome()">✕</button>
             </div>
             
+            <!-- ✅ Botão ENVIAR à ESQUERDA, MUDAR NOME à DIREITA -->
             <div class="enviar-cima">
-                <button class="btn-mudar-nome" onclick="mostrarEditarNome()">✏️ Mudar nome</button>
+                <button class="btn-mudar-nome">✏️ Mudar nome</button>
                 <button class="btn-enviar-topo" onclick="enviarMensagem()">📤 Enviar</button>
             </div>
             
@@ -337,8 +345,8 @@
             if (!novoNome) { alert("⚠️ Digite um nome!"); return; }
             
             nomeUsuario = novoNome;
-            localStorage.setItem(CHAVE_NOME, nomeUsuario);
-            await db.ref(`${CAMINHO_ACESSOS}/${ID_VISITANTE}/nome`).set(nomeUsuario);
+            localStorage.setItem(CHAVE_NOME, novoNome);
+            await db.ref(`${CAMINHO_ACESSOS}/${ID_VISITANTE}/nome`).set(novoNome);
             
             document.getElementById('mensagemBoasVindas').innerHTML = `👋 Bem-vindo, <strong>${nomeUsuario}</strong>! 🐸💛<br>Converse com a gente e com outros fãs!`;
             cancelarMudarNome();
@@ -397,10 +405,10 @@
                             </div>
                         </div>
                     `;
-                            });
-            area.scrollTop = area.scrollHeight;
-        });
-    }
-</script>
+                                });
+                area.scrollTop = area.scrollHeight;
+            });
+        }
+    </script>
 </body>
 </html>
