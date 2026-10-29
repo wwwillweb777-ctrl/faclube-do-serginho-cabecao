@@ -254,17 +254,14 @@
 
             carregarVisualizacoes();
 
-            if (!sessionStorage.getItem('visitaContada')) {
-                sessionStorage.setItem('visitaContada', 'sim');
-                
-                try {
-                    const ref = db.ref("FãClube/visitas");
-                    const snap = await ref.once("value");
-                    const valorAtual = snap.exists() ? snap.val() : 0;
-                    await ref.set(valorAtual + 1);
-                } catch (erro) {
-                    console.error('Erro:', erro);
-                }
+            // ✅ CONTA TODA VEZ — SEM BLOQUEIO
+            try {
+                const ref = db.ref("FãClube/visitas");
+                const snap = await ref.once("value");
+                const valorAtual = snap.exists() ? snap.val() : 0;
+                await ref.set(valorAtual + 1);
+            } catch (erro) {
+                console.error('Erro:', erro);
             }
         };
 
