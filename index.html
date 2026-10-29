@@ -29,23 +29,23 @@
             left: 0;
         }
 
-        /* ✅ CONTADOR NO CANTO — COM TEXTO */
+        /* ✅ CONTADOR COM TEXTO VISÍVEL */
         .contador-canto {
             position: absolute;
-            top: 10px;
+            top: 12px;
             right: 15px;
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             color: #fff;
-            background: rgba(0,0,0,0.7);
-            padding: 5px 12px;
+            background: rgba(0,0,0,0.75);
+            padding: 6px 14px;
             border-radius: 20px;
-            border: 1px solid #f4a900;
+            border: 2px solid #f4a900;
             z-index: 50;
         }
         .contador-canto span {
             color: #f4a900;
             font-weight: bold;
-            margin-left: 3px;
+            margin-left: 5px;
         }
 
         .cartaz {
@@ -180,7 +180,7 @@
 <body>
     <div class="cartaz" id="areaPrincipal">
         
-        <!-- ✅ COM TEXTO "Visualizações" -->
+        <!-- ✅ COM A PALAVRA ESCRITA BEM GRANDE E CLARA -->
         <div class="contador-canto">Visualizações 👁️<span id="contadorVisualizacoes">0</span></div>
 
         <div class="logo-topo">
@@ -224,7 +224,7 @@
             <div id="mural" class="bloco">
                 <h3>✍️ Mural de Fãs</h3>
                 <p>Sua mensagem será lida por todos que visitarem este espaço.</p>
-                <a href="mensagensapoio.html" class="botao-mural">💪 Deixar Minha Mensagem</a>
+                <a href="mensagemapoio.html" class="botao-mural">💪 Deixar Minha Mensagem</a>
             </div>
 
             <div class="bloco" style="text-align: center; background: #2a1a0f; border: 2px solid #ff3333;">
@@ -245,6 +245,7 @@
     </div>
 
     <script>
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
         window.onload = async function() {
@@ -252,6 +253,9 @@
                 sessionStorage.removeItem('manterMenuAberto');
                 abrirMenu();
             }
+
+            // ✅ CARREGA O NÚMERO PRIMEIRO PARA APARECER RÁPIDO
+            carregarVisualizacoes();
 
             if (!sessionStorage.getItem('visitaContada')) {
                 sessionStorage.setItem('visitaContada', 'sim');
@@ -261,14 +265,11 @@
                     const snap = await ref.once("value");
                     const valorAtual = snap.exists() ? snap.val() : 0;
                     await ref.set(valorAtual + 1);
-                    console.log(`✅ Contador: ${valorAtual} → ${valorAtual + 1}`);
                 } catch (erro) {
-                    console.error('❌ Erro:', erro);
-                    alert('Erro no contador: ' + erro.message + '\nVerifique as regras do Firebase!');
+                    console.error('Erro:', erro);
+                    alert('Verifique as regras do Firebase!');
                 }
             }
-
-            carregarVisualizacoes();
         };
 
         function carregarVisualizacoes() {
@@ -276,8 +277,6 @@
                 const valor = snap.exists() ? snap.val() : 0;
                 const el = document.getElementById('contadorVisualizacoes');
                 if (el) el.textContent = valor;
-            }, erro => {
-                console.error('❌ Erro ao ler:', erro);
             });
         }
 
