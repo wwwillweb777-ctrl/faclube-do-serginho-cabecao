@@ -88,6 +88,23 @@
         .mensagem-texto {
             margin-bottom: 0.5rem;
         }
+        .resposta-publica {
+            background: #1a2e1a;
+            border-left: 3px solid #39ff14;
+            padding: 0.7rem;
+            margin-top: 0.7rem;
+            border-radius: 6px;
+        }
+        .resposta-titulo {
+            color: #39ff14;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-bottom: 0.3rem;
+        }
+        .resposta-texto {
+            color: #90ee90;
+            font-size: 0.9rem;
+        }
         .sem-mensagens {
             color: #666;
             text-align: center;
@@ -162,12 +179,26 @@
                 itens.forEach(([chave, mensagem]) => {
                     const div = document.createElement('div');
                     div.className = 'mensagem-item';
+                    
+                    let respostaHTML = '';
+                    if (mensagem.resposta) {
+                        respostaHTML = `
+                            <div class="resposta-publica">
+                                <div class="resposta-titulo">🌟 Resposta oficial:</div>
+                                <div class="resposta-texto">${mensagem.resposta}
+                                    <div style="font-size:0.75rem; color:#7ccd7c; margin-top:0.3rem;">🕒 ${mensagem.dataResposta || ''}</div>
+                                </div>
+                            </div>
+                        `;
+                    }
+
                     div.innerHTML = `
                         <div class="quem">
                             👤 ${mensagem.nome || 'Anônimo'} — 🌐 ${mensagem.rede || 'Não informado'} — ${mensagem.arroba || ''}
                             <br><span style="font-size:0.7rem; color:#777;">🕒 ${mensagem.horario || ''}</span>
                         </div>
                         <div class="mensagem-texto">${mensagem.texto}</div>
+                        ${respostaHTML}
                     `;
                     lista.appendChild(div);
                 });
