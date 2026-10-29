@@ -28,25 +28,6 @@
             top: 0;
             left: 0;
         }
-
-        .contador-canto {
-            position: absolute;
-            top: 12px;
-            right: 15px;
-            font-size: 0.8rem;
-            color: #fff;
-            background: rgba(0,0,0,0.75);
-            padding: 6px 14px;
-            border-radius: 20px;
-            border: 2px solid #f4a900;
-            z-index: 50;
-        }
-        .contador-canto span {
-            color: #f4a900;
-            font-weight: bold;
-            margin-left: 5px;
-        }
-
         .cartaz {
             max-width: 450px;
             margin: 0 auto;
@@ -178,9 +159,6 @@
 </head>
 <body>
     <div class="cartaz" id="areaPrincipal">
-        
-        <div class="contador-canto">Visualizações 👁️<span id="contadorVisualizacoes">0</span></div>
-
         <div class="logo-topo">
             <img src="https://cdn.jsdelivr.net/gh/wwwillweb777-ctrl/faclube-do-serginho-cabecao@main/imagens/LogoSerginho.jpg" alt="Logo Serginho Cabeção">
         </div>
@@ -213,6 +191,10 @@
                 alt="Fã Clube" style="width:90px; height:90px; border-radius:50%; border:3px solid #f4a900; object-fit:cover;">
             </div>
 
+            <div class="bloco" style="text-align:center; margin-bottom:0.8rem;">
+                Visualizações 👁️ <span id="contadorVisualizacoes">0</span>
+            </div>
+
             <div class="bloco">
                 <h3>🏆 Destaque da Semana</h3>
                 <p>Participe nas redes sociais e aqui no site. Quem mais interagir terá seu @ e foto em destaque. Ao participar, você autoriza a divulgação.</p>
@@ -222,7 +204,7 @@
             <div id="mural" class="bloco">
                 <h3>✍️ Mural de Fãs</h3>
                 <p>Sua mensagem será lida por todos que visitarem este espaço.</p>
-                <a href="mensagemapoio.html" class="botao-mural">💪 Deixar Minha Mensagem</a>
+                <a href="mensagensapoio.html" class="botao-mural">💪 Deixar Minha Mensagem</a>
             </div>
 
             <div class="bloco" style="text-align: center; background: #2a1a0f; border: 2px solid #ff3333;">
@@ -252,8 +234,6 @@
                 abrirMenu();
             }
 
-            carregarVisualizacoes();
-
             // ✅ CONTA TODA VEZ — SEM BLOQUEIO
             try {
                 const ref = db.ref("FãClube/visitas");
@@ -263,13 +243,14 @@
             } catch (erro) {
                 console.error('Erro:', erro);
             }
+
+            carregarVisualizacoes();
         };
 
         function carregarVisualizacoes() {
             db.ref("FãClube/visitas").on("value", snap => {
-                const valor = snap.exists() ? snap.val() : 0;
                 const el = document.getElementById('contadorVisualizacoes');
-                if (el) el.textContent = valor;
+                if (el) el.textContent = snap.val() || 0;
             });
         }
 
