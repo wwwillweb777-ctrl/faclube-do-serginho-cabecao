@@ -314,6 +314,31 @@
             font-size: 0.9rem;
         }
 
+        /* ✅ ESTILO DA RESPOSTA DO ADMINISTRADOR */
+        .admin-reply {
+            background: #1a2e1a;
+            border-left: 3px solid #39ff14;
+            padding: 10px 12px;
+            margin-top: 8px;
+            border-radius: 0 8px 8px 0;
+        }
+        .reply-label {
+            font-size: 0.75rem;
+            color: #39ff14;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+        .reply-text {
+            font-size: 0.9rem;
+            color: #90ee90;
+            line-height: 1.5;
+        }
+        .reply-time {
+            font-size: 0.7rem;
+            color: #666;
+            margin-top: 4px;
+        }
+
         /* Área de envio */
         .comments-input-area {
             padding: 12px 16px 20px;
@@ -454,26 +479,26 @@
         const db = firebase.database();
 
         // ==================================================
-        // 🆓 GERAR OU OBTER ID DO USUÁRIO
-        // ==================================================
-        function gerarOuObterUsuarioId() {
-          let userId = localStorage.getItem('usuarioId');
-          if (!userId) {
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-            let parte1 = '', parte2 = '';
-            for (let i = 0; i < 4; i++) {
-              parte1 += chars.charAt(Math.floor(Math.random() * chars.length));
-              parte2 += chars.charAt(Math.floor(Math.random() * chars.length));
-            }
-            userId = `${parte1}-${parte2}`;
-            localStorage.setItem('usuarioId', userId);
-          }
-          return userId;
-        }
-        const MEU_USUARIO_ID = gerarOuObterUsuarioId();
+// 🆓 GERAR OU OBTER ID DO USUÁRIO
+// ==================================================
+function gerarOuObterUsuarioId() {
+  let userId = localStorage.getItem('usuarioId');
+  if (!userId) {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let parte1 = '', parte2 = '';
+    for (let i = 0; i < 4; i++) {
+      parte1 += chars.charAt(Math.floor(Math.random() * chars.length));
+      parte2 += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    userId = `${parte1}-${parte2}`;
+    localStorage.setItem('usuarioId', userId);
+  }
+  return userId;
+}
+const MEU_USUARIO_ID = gerarOuObterUsuarioId();
 
-        // ==================================================
-        // 📋 DADOS DOS VÍDEOS
+// ==================================================
+// 📋 DADOS DOS VÍDEOS
 const videos = [
     {
         id: 1,
@@ -636,7 +661,7 @@ function toggleCurtir() {
     });
 }
 
-// 📝 Renderizar comentários na tela
+// 📝 Renderizar comentários na tela — COM SUPORTE A RESPOSTA
 function renderizarComentarios(listaComentarios) {
     const lista = document.getElementById('commentsList');
     
@@ -647,7 +672,19 @@ function renderizarComentarios(listaComentarios) {
 
     lista.innerHTML = listaComentarios.map(c => {
         const ehMeu = c.autorId === MEU_USUARIO_ID;
-        const nomeExibido = c.nome || `ID: ${c.autorId}`;
+        const nomeExibido = c.nome || `Visitante ${c.autorId.slice(0,4)}`;
+        
+        // ✅ Verifica se tem resposta e monta o bloco
+        let blocoResposta = '';
+        if (c.resposta && c.resposta.trim() !== '') {
+            blocoResposta = `
+                <div class="admin-reply">
+                    <div class="reply-label">📢 Resposta oficial:</div>
+                    <div class="reply-text">${c.resposta}</div>
+                    <div class="reply-time">🕒 ${c.dataResposta || ''}</div>
+                </div>
+            `;
+        }
         
         return `
             <div class="comment-item">
@@ -655,6 +692,7 @@ function renderizarComentarios(listaComentarios) {
                 <div class="comment-content">
                     <div class="comment-author">${nomeExibido}</div>
                     <div class="comment-text">${c.texto}</div>
+                    ${blocoResposta}
                     <div class="comment-meta">
                         <span class="comment-time">${c.data}</span>
                         ${ehMeu ? `<button class="delete-comment-btn" onclick="apagarComentario('${c.chave}')">🗑️ Apagar</button>` : ''}
