@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎬 Vídeos — Fã Clube Serginho Cabeção</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #000;
+            color: #fff;
+            font-family: 'Segoe UI', sans-serif;
+            min-height: 100vh;
+            padding-bottom: 2rem;
+        }
+
+        /* ===== CABEÇALHO ===== */
+        .cabecalho {
+            position: sticky;
+            top: 0;
+            background: #000;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 1px solid #222;
+            z-index: 100;
+        }
+        .btn-voltar {
+            position: absolute;
+            left: 1rem;
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .btn-voltar span {
+            font-size: 1.1rem;
+        }
+        .cabecalho h1 {
+            color: #f4a900;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* ===== GRADE DE VÍDEOS ===== */
+        .grade-videos {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            padding: 16px;
+            max-width: 520px;
+            margin: 0 auto;
+        }
+
+        .card-video {
+            background: #1a1a1a;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid transparent;
+            transition: all 0.25s ease;
+        }
+        .card-video:active {
+            transform: scale(0.97);
+            border-color: #f4a900;
+        }
+
+        /* Área da capa com botão de play */
+        .capa-container {
+            position: relative;
+            aspect-ratio: 16/10;
+            background: #222;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .capa-img {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.4;
+        }
+        .botao-play {
+            position: relative;
+            z-index: 2;
+            width: 80px;
+            height: 80px;
+            background: #f4a900;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #000;
+            box-shadow: 0 0 0 3px rgba(255,255,255,0.9), 0 0 25px rgba(244, 169, 0, 0.5);
+            transition: all 0.2s;
+        }
+        .capa-container:hover .botao-play {
+            transform: scale(1.08);
+        }
+        .duracao {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.8);
+            color: #fff;
+            font-size: 0.75rem;
+            padding: 3px 8px;
+            border-radius: 4px;
+            z-index: 2;
+        }
+        .fixado-tag {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: #ff0000;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: bold;
+            padding: 3px 8px;
+            border-radius: 4px;
+            z-index: 2;
+        }
+        .numero-video {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.8);
+            color: #f4a900;
+            font-size: 0.75rem;
+            font-weight: bold;
+            padding: 3px 8px;
+            border-radius: 4px;
+            z-index: 2;
+        }
+
+        /* Informações abaixo da capa */
+        .info-card {
+            padding: 12px;
+        }
+        .info-card h3 {
+            font-size: 0.95rem;
+            color: #fff;
+            margin-bottom: 4px;
+            line-height: 1.3;
+        }
+        .info-card p {
+            font-size: 0.8rem;
+            color: #888;
+            line-height: 1.4;
+        }
+
+        /* ===== TELA CHEIA DO VÍDEO ===== */
+        .tela-video-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.97);
+            z-index: 9999;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+        .tela-video-overlay.visivel {
+            display: flex;
+        }
+        .fechar-tela {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-size: 1.8rem;
+            cursor: pointer;
+            z-index: 10;
+        }
+        .video-player-container {
+            width: 100%;
+            max-width: 720px;
+        }
+        .video-player-container video {
+            width: 100%;
+            border-radius: 8px;
+            background: #000;
+        }
+        .descricao-video-grande {
+            width: 100%;
+            max-width: 720px;
+            padding: 1rem;
+            text-align: center;
+        }
+        .descricao-video-grande h3 {
+            color: #f4a900;
+            font-size: 1.1rem;
+            margin-bottom: 0.4rem;
+        }
+        .descricao-video-grande p {
+            color: #999;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- CABEÇALHO -->
+    <div class="cabecalho">
+        <button class="btn-voltar" onclick="window.location.href='index.html'">
+            <span>←</span> Voltar
+        </button>
+        <h1>🎬 Vídeos do Fã Clube</h1>
+    </div>
+
+    <!-- GRADE DE VÍDEOS -->
+    <div class="grade-videos" id="gradeVideos"></div>
+
+    <!-- TELA CHEIA DO VÍDEO -->
+    <div class="tela-video-overlay" id="telaVideoGrande">
+        <button class="fechar-tela" onclick="fecharVideo()">✕</button>
+        <div class="video-player-container">
+            <video id="playerVideo" controls playsinline webkit-playsinline></video>
+        </div>
+        <div class="descricao-video-grande">
+            <h3 id="tituloVideoGrande">Título do Vídeo</h3>
+            <p id="descricaoVideoGrande">Descrição do Vídeo</p>
+        </div>
+    </div>
+
+    <script>
+        // ==================================================
+        // 📋 LISTA DOS VÍDEOS — EDITE AQUI!
+        // ==================================================
+        const videos = [
+            // 🎬 VÍDEO 1
+            {
+                numero: 1,
+                capa: "COLOQUE_AQUI_O_LINK_DA_FOTO_DE_CAPA",
+                arquivo: "COLOQUE_AQUI_O_LINK_DO_VIDEO",
+                titulo: "Título do Vídeo 1",
+                descricao: "Descrição do Vídeo 1",
+                duracao: "0:00",
+                fixado: false
+            },
+            // 🎬 VÍDEO 2
+            {
+                numero: 2,
+                capa: "COLOQUE_AQUI_O_LINK_DA_FOTO_DE_CAPA",
+                arquivo: "COLOQUE_AQUI_O_LINK_DO_VIDEO",
+                titulo: "Título do Vídeo 2",
+                descricao: "Descrição do Vídeo 2",
+                duracao: "0:00",
+                fixado: false
+            },
+            // 🎬 VÍDEO 3
+            {
+                numero: 3,
+                capa: "COLOQUE_AQUI_O_LINK_DA_FOTO_DE_CAPA",
+                arquivo: "COLOQUE_AQUI_O_LINK_DO_VIDEO",
+                titulo: "Título do Vídeo 3",
+                descricao: "Descrição do Vídeo 3",
+                duracao: "0:00",
+                fixado: false
+            },
+            // 🎬 VÍDEO 4
+            {
+                numero: 4,
+                capa: "COLOQUE_AQUI_O_LINK_DA_FOTO_DE_CAPA",
+                arquivo: "COLOQUE_AQUI_O_LINK_DO_VIDEO",
+                titulo: "Título do Vídeo 4",
+                descricao: "Descrição do Vídeo 4",
+                duracao: "0:00",
+                fixado: false
+            }
+            // ✅ Para adicionar mais vídeos:
+            // Copie o bloco de cima, cole aqui e mude o número!
+        ];
+
+        // 🖼️ MONTA A GRADE
+        const grade = document.getElementById('gradeVideos');
+        videos.forEach(video => {
+            const card = document.createElement('div');
+            card.className = 'card-video';
+            card.innerHTML = `
+                <div class="capa-container" onclick="abrirVideo(${video.numero})">
+                    ${video.fixado ? '<span class="fixado-tag">Fixado</span>' : ''}
+                    <span class="numero-video">#${video.numero}</span>
+                    <img src="${video.capa}" alt="Vídeo ${video.numero}" class="capa-img" loading="lazy">
+                    <span class="botao-play">▶</span>
+                    <span class="duracao">${video.duracao}</span>
+                </div>
+                <div class="info-card">
+                    <h3>${video.titulo}</h3>
+                    <p>${video.descricao}</p>
+                </div>
+            `;
+            grade.appendChild(card);
+        });
+
+        // ▶️ ABRE O VÍDEO EM TELA GRANDE
+        function abrirVideo(numero) {
+            const video = videos.find(v => v.numero === numero);
+            const overlay = document.getElementById('telaVideoGrande');
+            const player = document.getElementById('playerVideo');
+            
+            document.getElementById('tituloVideoGrande').textContent = video.titulo;
+            document.getElementById('descricaoVideoGrande').textContent = video.descricao;
+            
+            player.src = video.arquivo;
+            overlay.classList.add('visivel');
+            document.body.style.overflow = 'hidden';
+            player.play();
+        }
+
+        // ✕ FECHA O VÍDEO
+        function fecharVideo() {
+            const overlay = document.getElementById('telaVideoGrande');
+            const player = document.getElementById('playerVideo');
+            
+            player.pause();
+            player.src = '';
+            overlay.classList.remove('visivel');
+            document.body.style.overflow = 'auto';
+        }
+
+        // ⌨️ Tecla ESC fecha o vídeo
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') fecharVideo();
+        });
+    </script>
+</body>
+</html>
