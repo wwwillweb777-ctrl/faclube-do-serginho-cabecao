@@ -29,7 +29,7 @@
             left: 0;
         }
 
-        /* ✅ CONTADOR — NO CANTO, MENOR E COMPACTO */
+        /* ✅ CONTADOR NO CANTO — PEQUENO E COMPACTO */
         .contador-canto {
             position: absolute;
             top: 10px;
@@ -214,8 +214,6 @@
                 alt="Fã Clube" style="width:90px; height:90px; border-radius:50%; border:3px solid #f4a900; object-fit:cover;">
             </div>
 
-            <!-- ❌ Removi o contador daqui → agora está no canto -->
-
             <div class="bloco">
                 <h3>🏆 Destaque da Semana</h3>
                 <p>Participe nas redes sociais e aqui no site. Quem mais interagir terá seu @ e foto em destaque. Ao participar, você autoriza a divulgação.</p>
@@ -246,15 +244,7 @@
     </div>
 
     <script>
-        if (!firebase.apps.length) firebase.initializeApp({
-            apiKey: "AIzaSyDQX0s0KfNQ5hPn8xY6Z7w8X9Y7Z6X5Y4Z3",
-            authDomain: "faclube-serginho-cabecao.firebaseapp.com",
-            databaseURL: "https://faclube-serginho-cabecao-default-rtdb.firebaseio.com",
-            projectId: "faclube-serginho-cabecao",
-            storageBucket: "faclube-serginho-cabecao.appspot.com",
-            messagingSenderId: "123456789012",
-            appId: "1:123456789012:web:abc123def456ghi789jkl01"
-        });
+        // ✅ Usando as configurações CORRETAS do config.js
         const db = firebase.database();
 
         window.onload = async function() {
@@ -279,7 +269,6 @@
                     console.log('✅ Visita registrada com sucesso!');
                 } catch (erro) {
                     console.error('❌ Erro ao registrar visita:', erro);
-                    alert('Erro: ' + erro.message);
                 }
             } else {
                 console.log('✅ Visita já contada nesta sessão — ignorando');
