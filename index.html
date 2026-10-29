@@ -242,9 +242,13 @@
                 abrirMenu();
             }
 
-            const ref = db.ref("FãClube/visitas");
-            const snap = await ref.once("value");
-            await ref.set((snap.val() || 0) + 1);
+            // ✅ Só conta se AINDA NÃO foi contado nesta visita
+            if (!sessionStorage.getItem('visitaContada')) {
+                sessionStorage.setItem('visitaContada', 'sim');
+                const ref = db.ref("FãClube/visitas");
+                const snap = await ref.once("value");
+                await ref.set((snap.val() || 0) + 1);
+            }
 
             carregarVisualizacoes();
         };
