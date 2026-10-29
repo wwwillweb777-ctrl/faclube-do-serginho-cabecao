@@ -244,48 +244,26 @@
         // 📋 LISTA DOS VÍDEOS — EDITE AQUI!
         // ==================================================
         const videos = [
-            // 🎬 VÍDEO 1
+            // 🎬 VÍDEO 1 — BIOGRAFIA DO SERGINHO
             {
                 numero: 1,
-                capa: "COLOQUE_AQUI_O_LINK_DA_FOTO_DE_CAPA",
-                arquivo: "COLOQUE_AQUI_O_LINK_DO_VIDEO",
-                titulo: "Título do Vídeo 1",
-                descricao: "Descrição do Vídeo 1",
+                capa: "imagens/COLOQUE-AQUI-FOTO-BIOGRAFIA.jpg",
+                arquivo: "videos/BiografiaSerginho.mp4",
+                titulo: "📖 Biografia do Serginho",
+                descricao: "Conheça a história do nosso querido Serginho Cabeção!",
                 duracao: "0:00",
-                fixado: false
+                fixado: true
             },
-            // 🎬 VÍDEO 2
+            // 🎬 VÍDEO 2 — SERGINHO E GOKU
             {
                 numero: 2,
-                capa: "COLOQUE_AQUI_O_LINK_DA_FOTO_DE_CAPA",
-                arquivo: "COLOQUE_AQUI_O_LINK_DO_VIDEO",
-                titulo: "Título do Vídeo 2",
-                descricao: "Descrição do Vídeo 2",
-                duracao: "0:00",
-                fixado: false
-            },
-            // 🎬 VÍDEO 3
-            {
-                numero: 3,
-                capa: "COLOQUE_AQUI_O_LINK_DA_FOTO_DE_CAPA",
-                arquivo: "COLOQUE_AQUI_O_LINK_DO_VIDEO",
-                titulo: "Título do Vídeo 3",
-                descricao: "Descrição do Vídeo 3",
-                duracao: "0:00",
-                fixado: false
-            },
-            // 🎬 VÍDEO 4
-            {
-                numero: 4,
-                capa: "COLOQUE_AQUI_O_LINK_DA_FOTO_DE_CAPA",
-                arquivo: "COLOQUE_AQUI_O_LINK_DO_VIDEO",
-                titulo: "Título do Vídeo 4",
-                descricao: "Descrição do Vídeo 4",
+                capa: "imagens/COLOQUE-AQUI-FOTO-GOKU.jpg",
+                arquivo: "videos/SerginhoGoku.mp4",
+                titulo: "🐉 Serginho e Goku",
+                descricao: "Um vídeo especial do Serginho!",
                 duracao: "0:00",
                 fixado: false
             }
-            // ✅ Para adicionar mais vídeos:
-            // Copie o bloco de cima, cole aqui e mude o número!
         ];
 
         // 🖼️ MONTA A GRADE
@@ -295,7 +273,7 @@
             card.className = 'card-video';
             card.innerHTML = `
                 <div class="capa-container" onclick="abrirVideo(${video.numero})">
-                    ${video.fixado ? '<span class="fixado-tag">Fixado</span>' : ''}
+                    ${video.fixado ? '<span class="fixado-tag">📌 Fixado</span>' : ''}
                     <span class="numero-video">#${video.numero}</span>
                     <img src="${video.capa}" alt="Vídeo ${video.numero}" class="capa-img" loading="lazy">
                     <span class="botao-play">▶</span>
