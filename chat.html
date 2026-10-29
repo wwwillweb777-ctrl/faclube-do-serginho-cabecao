@@ -140,7 +140,7 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 0.4rem;
-            flex-direction: row-reverse; /* ✅ Inverte: Mudar nome à DIREITA, Enviar à ESQUERDA */
+            flex-direction: row-reverse;
         }
         .btn-mudar-nome {
             background: transparent;
@@ -152,7 +152,7 @@
             cursor: pointer;
         }
         .btn-enviar-topo {
-            background: #39ff14; /* ✅ Fica mais visível */
+            background: #39ff14;
             border: 2px solid #000;
             color: #000;
             font-weight: bold;
@@ -256,9 +256,8 @@
                 <button class="btn-cancelar-nome" onclick="cancelarMudarNome()">✕</button>
             </div>
             
-            <!-- ✅ Botão ENVIAR à ESQUERDA, MUDAR NOME à DIREITA -->
             <div class="enviar-cima">
-                <button class="btn-mudar-nome">✏️ Mudar nome</button>
+                <button class="btn-mudar-nome" onclick="mostrarEditarNome()">✏️ Mudar nome</button>
                 <button class="btn-enviar-topo" onclick="enviarMensagem()">📤 Enviar</button>
             </div>
             
@@ -405,8 +404,8 @@
                             </div>
                         </div>
                     `;
-                                });
-                area.scrollTop = area.scrollHeight;
+                });
+                                area.scrollTop = area.scrollHeight;
             });
         }
     </script>
