@@ -314,7 +314,7 @@
             font-size: 0.9rem;
         }
 
-        /* ✅ ESTILO DA RESPOSTA DO ADMINISTRADOR */
+        /* ✅ ESTILO DA RESPOSTA DO FÃ CLUBE */
         .admin-reply {
             background: #1a2e1a;
             border-left: 3px solid #39ff14;
@@ -479,21 +479,21 @@
         const db = firebase.database();
 
         // ==================================================
-// 🆓 GERAR OU OBTER ID DO USUÁRIO
-// ==================================================
-function gerarOuObterUsuarioId() {
-  let userId = localStorage.getItem('usuarioId');
-  if (!userId) {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    let parte1 = '', parte2 = '';
-    for (let i = 0; i < 4; i++) {
-      parte1 += chars.charAt(Math.floor(Math.random() * chars.length));
-      parte2 += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    userId = `${parte1}-${parte2}`;
-    localStorage.setItem('usuarioId', userId);
-  }
-  return userId;
+        // 🆓 GERAR OU OBTER ID DO USUÁRIO
+        // ==================================================
+        function gerarOuObterUsuarioId() {
+          let userId = localStorage.getItem('usuarioId');
+          if (!userId) {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let parte1 = '', parte2 = '';
+            for (let i = 0; i < 4; i++) {
+    parte1 += chars.charAt(Math.floor(Math.random() * chars.length));
+    parte2 += chars.charAt(Math.floor(Math.random() * chars.length));
+}
+userId = `${parte1}-${parte2}`;
+localStorage.setItem('usuarioId', userId);
+}
+return userId;
 }
 const MEU_USUARIO_ID = gerarOuObterUsuarioId();
 
@@ -679,7 +679,7 @@ function renderizarComentarios(listaComentarios) {
         if (c.resposta && c.resposta.trim() !== '') {
             blocoResposta = `
                 <div class="admin-reply">
-                    <div class="reply-label">📢 Resposta oficial:</div>
+                    <div class="reply-label">📢 Fã Clube:</div>
                     <div class="reply-text">${c.resposta}</div>
                     <div class="reply-time">🕒 ${c.dataResposta || ''}</div>
                 </div>
