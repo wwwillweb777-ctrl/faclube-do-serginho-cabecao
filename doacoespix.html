@@ -237,6 +237,11 @@
             }
         }
 
+        // ✅ NOVO: Quando o áudio terminar, volta o botão sozinho!
+        audio.addEventListener('ended', function() {
+            botaoPlay.innerHTML = '▶';
+        });
+
         function ajustarVolume(delta) {
             audio.volume = Math.max(0, Math.min(1, audio.volume + delta));
         }
