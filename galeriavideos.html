@@ -488,8 +488,8 @@
           databaseURL: "https://faclubeserginho-e0c8e-default-rtdb.firebaseio.com",
           projectId: "faclubeserginho-e0c8e",
           storageBucket: "faclubeserginho-e0c8e.firebasestorage.app",
-          messagingSenderId: "871956894909",
-appId: "1:871956894909:web:a35251e63afb5166b993d4"
+                  messagingSenderId: "871956894909",
+        appId: "1:871956894909:web:a35251e63afb5166b993d4"
 };
 
 // Inicializar Firebase
@@ -516,19 +516,19 @@ function gerarOuObterUsuarioId() {
 const MEU_USUARIO_ID = gerarOuObterUsuarioId();
 
 // ==================================================
-// 📋 DADOS DOS VÍDEOS
+// 📋 DADOS DOS VÍDEOS — CAMINHO CORRIGIDO ✅
 // ==================================================
 const videos = [
     {
         id: 1,
-        capa: "imagens_capa_biografia.jpg",
+        capa: "imagens/imagens_capa_biografia.jpg",
         arquivo: "videos/BiografiaSerginho.mp4",
         titulo: "📖 Biografia do Serginho",
         descricao: "Conheça a história do nosso querido Serginho Cabeção! 💛"
     },
     {
         id: 2,
-        capa: "imagens_capa_goku.jpg",
+        capa: "imagens/imagens_capa_goku.jpg",
         arquivo: "videos/SerginhoGoku.mp4",
         titulo: "🐉 Serginho e Goku",
         descricao: "Um vídeo especial do Serginho! ⚡"
@@ -576,7 +576,7 @@ function abrirVideo(id) {
     
     player.play().then(() => {
         playPauseBtn.textContent = '⏸️';
-        playPauseBtn.classList.remove('visivel');
+        playPauseBtn.classList.add('visivel');
     }).catch(() => {
         playPauseBtn.textContent = '▶️';
         playPauseBtn.classList.add('visivel');
@@ -600,7 +600,7 @@ function conectarDadosVideo(videoId) {
         if (!snap.exists()) curtidasRef.set({ total: 0, usuarios: {} });
     });
 
-    // 👀 Escutar CURTIDAS em tempo real — TODOS veem ao mesmo tempo
+    // 👀 Escutar CURTIDAS em tempo real
     inscritoCurtidas = curtidasRef.on('value', snap => {
         const dados = snap.val() || { total: 0, usuarios: {} };
         const likeBtn = document.getElementById('likeBtn');
@@ -614,7 +614,7 @@ function conectarDadosVideo(videoId) {
         }
     });
 
-    // 👀 Escutar COMENTÁRIOS em tempo real — TODOS veem ao mesmo tempo
+    // 👀 Escutar COMENTÁRIOS em tempo real
     inscritoComentarios = comentariosRef.on('value', snap => {
         const dados = snap.val() || {};
         const listaComentarios = Object.values(dados);
@@ -627,7 +627,7 @@ function conectarDadosVideo(videoId) {
     });
 }
 
-// ⏸️ Play / Pausa
+// ⏸️ Play / Pausar
 function alternarPlayPause() {
     const player = document.getElementById('playerVideo');
     const playPauseBtn = document.getElementById('playPauseBtn');
@@ -635,15 +635,13 @@ function alternarPlayPause() {
     if (player.paused) {
         player.play();
         playPauseBtn.textContent = '⏸️';
-        playPauseBtn.classList.remove('visivel');
     } else {
         player.pause();
         playPauseBtn.textContent = '▶️';
-        playPauseBtn.classList.add('visivel');
-        setTimeout(() => {
-            if (player.paused) playPauseBtn.classList.remove('visivel');
-        }, 3000);
     }
+    setTimeout(() => {
+        if (player.paused) playPauseBtn.classList.remove('visivel');
+    }, 3000);
 }
 
 // ✖️ Fechar vídeo
