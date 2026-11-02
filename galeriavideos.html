@@ -115,6 +115,7 @@
             justify-content: center;
             background: #000;
             position: relative;
+            cursor: pointer;
         }
         .video-player video {
             width: 100%;
@@ -142,9 +143,11 @@
             opacity: 0;
             transition: opacity 0.3s;
             z-index: 10;
+            pointer-events: none;
         }
         .play-pause-btn.visivel {
             opacity: 1;
+            pointer-events: auto;
         }
         .play-pause-btn:active {
             transform: translate(-50%, -50%) scale(0.9);
@@ -484,12 +487,12 @@
         // ==================================================
         const firebaseConfig = {
           apiKey: "AIzaSyAROBYhE8GLFyJ3vrqkVYAa383pKAI88Yg",
-          authDomain: "faclubeserginho-e0c8e.firebaseapp.com",
-          databaseURL: "https://faclubeserginho-e0c8e-default-rtdb.firebaseio.com",
-          projectId: "faclubeserginho-e0c8e",
-          storageBucket: "faclubeserginho-e0c8e.firebasestorage.app",
-                  messagingSenderId: "871956894909",
-        appId: "1:871956894909:web:a35251e63afb5166b993d4"
+authDomain: "faclubeserginho-e0c8e.firebaseapp.com",
+databaseURL: "https://faclubeserginho-e0c8e-default-rtdb.firebaseio.com",
+projectId: "faclubeserginho-e0c8e",
+storageBucket: "faclubeserginho-e0c8e.firebasestorage.app",
+messagingSenderId: "871956894909",
+appId: "1:871956894909:web:a35251e63afb5166b993d4"
 };
 
 // Inicializar Firebase
@@ -516,7 +519,7 @@ function gerarOuObterUsuarioId() {
 const MEU_USUARIO_ID = gerarOuObterUsuarioId();
 
 // ==================================================
-// 📋 DADOS DOS VÍDEOS — CAMINHO CORRIGIDO ✅
+// 📋 DADOS DOS VÍDEOS — ✅ NOME CORRIGIDO
 // ==================================================
 const videos = [
     {
@@ -530,7 +533,7 @@ const videos = [
         id: 2,
         capa: "imagens/imagens_capa_goku.jpg",
         arquivo: "videos/SerginhoGoku.mp4",
-        titulo: "🐉 Serginho e Goku",
+        titulo: "🐉 Serginho Goku",
         descricao: "Um vídeo especial do Serginho! ⚡"
     }
 ];
@@ -557,7 +560,7 @@ videos.forEach(video => {
     grade.appendChild(card);
 });
 
-// ▶️ Abrir vídeo e conectar em tempo real
+// ▶️ Abrir vídeo — ✅ BOTÃO SOME AO INICIAR
 function abrirVideo(id) {
     videoAtual = id;
     const video = videos.find(v => v.id === id);
@@ -576,45 +579,36 @@ function abrirVideo(id) {
     
     player.play().then(() => {
         playPauseBtn.textContent = '⏸️';
-        playPauseBtn.classList.add('visivel');
+        playPauseBtn.classList.remove('visivel'); // ✅ Some ao tocar
     }).catch(() => {
         playPauseBtn.textContent = '▶️';
         playPauseBtn.classList.add('visivel');
     });
 
-    // 🔄 Conectar ao Firebase — TEMPO REAL
     conectarDadosVideo(id);
 }
 
 // 🔄 Conectar e escutar alterações em tempo real
 function conectarDadosVideo(videoId) {
-    // Cancela inscrições anteriores
     if (inscritoCurtidas) inscritoCurtidas.off();
     if (inscritoComentarios) inscritoComentarios.off();
 
     curtidasRef = db.ref(`videos/${videoId}/curtidas`);
     comentariosRef = db.ref(`videos/${videoId}/comentarios`);
 
-    // Inicializar se não existir
     curtidasRef.once('value').then(snap => {
         if (!snap.exists()) curtidasRef.set({ total: 0, usuarios: {} });
     });
 
-    // 👀 Escutar CURTIDAS em tempo real
     inscritoCurtidas = curtidasRef.on('value', snap => {
         const dados = snap.val() || { total: 0, usuarios: {} };
         const likeBtn = document.getElementById('likeBtn');
         document.getElementById('likeCount').textContent = dados.total || 0;
         
         const euCurti = dados.usuarios && dados.usuarios[MEU_USUARIO_ID] === true;
-        if (euCurti) {
-            likeBtn.classList.add('liked');
-        } else {
-            likeBtn.classList.remove('liked');
-        }
+        euCurti ? likeBtn.classList.add('liked') : likeBtn.classList.remove('liked');
     });
 
-    // 👀 Escutar COMENTÁRIOS em tempo real
     inscritoComentarios = comentariosRef.on('value', snap => {
         const dados = snap.val() || {};
         const listaComentarios = Object.values(dados);
@@ -627,7 +621,7 @@ function conectarDadosVideo(videoId) {
     });
 }
 
-// ⏸️ Play / Pausar
+// ⏸️ Play / Pausar — ✅ APARECE AO PAUSAR
 function alternarPlayPause() {
     const player = document.getElementById('playerVideo');
     const playPauseBtn = document.getElementById('playPauseBtn');
@@ -635,14 +629,30 @@ function alternarPlayPause() {
     if (player.paused) {
         player.play();
         playPauseBtn.textContent = '⏸️';
+        playPauseBtn.classList.remove('visivel'); // ✅ Some ao retomar
     } else {
         player.pause();
         playPauseBtn.textContent = '▶️';
+        playPauseBtn.classList.add('visivel'); // ✅ Aparece ao pausar
     }
-    setTimeout(() => {
-        if (player.paused) playPauseBtn.classList.remove('visivel');
-    }, 3000);
 }
+
+// ✅ CLIQUE NO VÍDEO → MOSTRA/ESCONDE BOTÃO
+const player = document.getElementById('playerVideo');
+const playPauseBtn = document.getElementById('playPauseBtn');
+const videoPlayerContainer = document.getElementById('videoPlayerContainer');
+
+videoPlayerContainer.addEventListener('click', function(e) {
+    if (e.target === playPauseBtn) return; // Não conta se clicar no botão
+    
+    if (player.paused) {
+        player.play();
+        playPauseBtn.textContent = '⏸️';
+        playPauseBtn.classList.remove('visivel');
+    } else {
+        playPauseBtn.classList.toggle('visivel');
+    }
+});
 
 // ✖️ Fechar vídeo
 function fecharVideo() {
@@ -652,13 +662,12 @@ function fecharVideo() {
     document.getElementById('videoScreen').classList.remove('active');
     fecharComentarios();
     
-    // Para de escutar quando fechar
     if (inscritoCurtidas) inscritoCurtidas.off();
     if (inscritoComentarios) inscritoComentarios.off();
     videoAtual = null;
 }
 
-// ❤️ Curtir / Descurtir — salva no Firebase
+// ❤️ Curtir / Descurtir
 function toggleCurtir() {
     if (!videoAtual || !curtidasRef) return;
     
@@ -678,7 +687,7 @@ function toggleCurtir() {
     });
 }
 
-// 📝 Renderizar comentários na tela — COM SUPORTE A RESPOSTA
+// 📝 Renderizar comentários
 function renderizarComentarios(listaComentarios) {
     const lista = document.getElementById('commentsList');
     
@@ -691,7 +700,6 @@ function renderizarComentarios(listaComentarios) {
         const ehMeu = c.autorId === MEU_USUARIO_ID;
         const nomeExibido = c.nome || `Visitante ${c.autorId.slice(0,4)}`;
         
-        // ✅ Verifica se tem resposta e monta o bloco
         let blocoResposta = '';
         if (c.resposta && c.resposta.trim() !== '') {
             blocoResposta = `
@@ -733,7 +741,7 @@ function fecharComentarios() {
     document.getElementById('commentInput').value = '';
 }
 
-// ✉️ Enviar comentário — vai para o Firebase, TODOS veem na hora
+// ✉️ Enviar comentário
 function enviarComentario() {
     const nomeInput = document.getElementById('nameInput');
     const commentInput = document.getElementById('commentInput');
@@ -756,7 +764,7 @@ function enviarComentario() {
     commentInput.value = '';
 }
 
-// 🗑️ Apagar comentário — SÓ funciona se for SEU comentário
+// 🗑️ Apagar comentário
 function apagarComentario(chave) {
     if (!videoAtual || !comentariosRef) return;
     
